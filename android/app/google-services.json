@@ -1,0 +1,88 @@
+{
+  "project_info": {
+    "project_number": "29465567254",
+    "project_id": "ooron-82352",
+    "storage_bucket": "ooron-82352.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:29465567254:android:a8072eafc93a2962695537",
+        "android_client_info": {
+          "package_name": "app.ooron.customer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "29465567254-fq36a01brkfuuhi49mrnqrm1f2f2v1u8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZzZdHPAgwkTjGSDIzRcHSPT079Ww36D4"
+        },
+        {
+          "current_key": "AIzaSyCqYKsgvjFZur_wdaUFzF7XLTw1egvA_DM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "29465567254-fq36a01brkfuuhi49mrnqrm1f2f2v1u8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "29465567254-o2vsm7jmrvm5nb5epi8aoomtkcvb9p25.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "app.ooron.customer"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:29465567254:android:97c03c8a73a10941695537",
+        "android_client_info": {
+          "package_name": "app.ooron.partners"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "29465567254-fq36a01brkfuuhi49mrnqrm1f2f2v1u8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZzZdHPAgwkTjGSDIzRcHSPT079Ww36D4"
+        },
+        {
+          "current_key": "AIzaSyCqYKsgvjFZur_wdaUFzF7XLTw1egvA_DM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "29465567254-fq36a01brkfuuhi49mrnqrm1f2f2v1u8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "29465567254-o2vsm7jmrvm5nb5epi8aoomtkcvb9p25.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "app.ooron.customer"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

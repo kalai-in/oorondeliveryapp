@@ -1,0 +1,125 @@
+import 'package:deliveryboy/commons/cubit/connectivity_cubit.dart';
+import 'package:deliveryboy/commons/widgets/app_no_internet_widget.dart';
+import 'package:deliveryboy/commons/widgets/app_scaffold.dart';
+import 'package:deliveryboy/commons/widgets/empty_state_widget.dart';
+import 'package:deliveryboy/core/constants/assets_constants.dart';
+import 'package:deliveryboy/core/constants/theme_constants.dart';
+import 'package:deliveryboy/core/localization/language_label_key.dart';
+import 'package:deliveryboy/utils/extensions/localization_extensions.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
+import '../../../commons/cubit/country_settings_cubit.dart';
+import '../../../commons/widgets/custom_app_bar.dart';
+import '../../../commons/widgets/loading_widget.dart';
+
+enum PoliciesType { privacyPolicy, termsConditions }
+
+/// Displays the privacy policy or terms and conditions HTML content.
+class PoliciesScreen extends StatelessWidget {
+  final PoliciesType type;
+
+  const PoliciesScreen({super.key, required this.type});
+
+  String _title(BuildContext context) => switch (type) {
+    PoliciesType.privacyPolicy => context.translate(
+      LanguageLabelKeys.privacyPolicy,
+    ),
+    PoliciesType.termsConditions => context.translate(
+      LanguageLabelKeys.termsAndConditions,
+    ),
+  };
+
+  String? _content(CountrySettingsLoaded state) => switch (type) {
+    PoliciesType.privacyPolicy => state.settings.data?.privacyPolicy,
+    PoliciesType.termsConditions => state.settings.data?.termsConditions,
+  };
+
+  Widget _getPolicyEmptyContent(BuildContext context, PoliciesType type) {
+    switch (type) {
+      case PoliciesType.privacyPolicy:
+        return EmptyStateWidget(
+          imagePath: AssetsConstants.noDataFound,
+          title: context.translate(LanguageLabelKeys.privacyPolicyNotAvailable),
+          subtitle: context.translate(LanguageLabelKeys.privacyPolicyNotFound),
+        );
+      case PoliciesType.termsConditions:
+        return EmptyStateWidget(
+          imagePath: AssetsConstants.noDataFound,
+          title: context.translate(LanguageLabelKeys.termsNotAvailable),
+          subtitle: context.translate(LanguageLabelKeys.termsNotFound),
+        );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<ConnectivityCubit, ConnectivityState>(
+      listener: (context, state) {
+        if (state is ConnectivityConnected) {
+          context.read<CountrySettingsCubit>().loadCountrySettings();
+        }
+      },
+      builder: (context, connectivityState) {
+        final isOffline = connectivityState is ConnectivityDisconnected;
+        return AppScaffold(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          appBar: CustomAppBar(title: _title(context)),
+          // Offline state lives in the body so the app bar — and its back
+          // button — stays available on this pushed route.
+          body: isOffline
+              ? AppNoInternetFullScreen(
+                  embedded: true,
+                  onRetry: () => context
+                      .read<CountrySettingsCubit>()
+                      .loadCountrySettings(force: true),
+                )
+              : BlocBuilder<CountrySettingsCubit, CountrySettingsState>(
+                  builder: (context, state) {
+                    if (state is CountrySettingsLoading) {
+                      return const LoadingWidget();
+                    }
+
+                    if (state is CountrySettingsError) {
+                      return EmptyStateWidget(
+                        imagePath: AssetsConstants.noDataFound,
+                        title: state.message,
+                        subtitle: context.translate(
+                          LanguageLabelKeys.pullDownToRefresh,
+                        ),
+                        onRetry: () => context
+                            .read<CountrySettingsCubit>()
+                            .loadCountrySettings(force: true),
+                      );
+                    }
+
+                    if (state is CountrySettingsInitial) {
+                      context
+                          .read<CountrySettingsCubit>()
+                          .loadCountrySettings();
+                      return const LoadingWidget();
+                    }
+
+                    if (state is CountrySettingsLoaded) {
+                      final html = _content(state);
+                      if (html == null || html.isEmpty) {
+                        return _getPolicyEmptyContent(context, type);
+                      }
+
+                      return SingleChildScrollView(
+                        padding: const EdgeInsetsDirectional.symmetric(
+                          horizontal: ThemeConstants.paddingM,
+                          vertical: ThemeConstants.paddingS,
+                        ),
+                        child: HtmlWidget(html),
+                      );
+                    }
+
+                    return const SizedBox.shrink();
+                  },
+                ),
+        );
+      },
+    );
+  }
+}

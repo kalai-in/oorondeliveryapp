@@ -1,0 +1,4 @@
+{
+  "BASE_URL": "https://admin.ooron.in/delivery_boy/",
+  "SOCKET_BASE_URL": "wss://admin.ooron.in/ws/chat"
+}
