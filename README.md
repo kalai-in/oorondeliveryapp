@@ -1,2 +1,2 @@
 # oorondeliveryapp
-Delivery Application
+Delivery Partner Application
