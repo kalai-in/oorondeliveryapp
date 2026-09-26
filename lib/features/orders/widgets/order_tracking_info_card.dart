@@ -60,8 +60,8 @@ class OrderTrackingInfoCard extends StatelessWidget {
         children: [
           Center(
             child: Container(
-              width: 36,
-              height: 4,
+              width: context.screenWidth * 0.096,
+              height: context.screenHeight * 0.005,
               decoration: AppDecorations.card(
                 color: context.cs.outlineVariant,
                 borderRadius: AppRadius.r2,
@@ -84,7 +84,7 @@ class OrderTrackingInfoCard extends StatelessWidget {
                 backgroundColor: context.cs.primaryContainer,
                 child: AppSvgIcon(
                   AssetsConstants.userIcon,
-                  size: 20,
+                  size: ThemeConstants.iconM,
                   color: context.cs.primary,
                 ),
               ),
@@ -163,8 +163,8 @@ class OrderTrackingInfoCard extends StatelessWidget {
                   ),
                   _RoundIconButton(
                     icon: AssetsConstants.phoneIcon,
-                    size: 32,
-                    iconSize: 15,
+                    size: ThemeConstants.iconXL,
+                    iconSize: ThemeConstants.iconXS,
                     onTap: () => launchCall(customerAlternateNumber),
                   ),
                 ],

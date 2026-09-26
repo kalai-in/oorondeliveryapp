@@ -25,7 +25,12 @@ void showWithdrawalSheet(BuildContext context) {
     context,
     isScrollControlled: true,
     title: context.translate(LanguageLabelKeys.withdrawalRequest),
-    padding: const EdgeInsetsDirectional.fromSTEB(ThemeConstants.paddingXL, ThemeConstants.paddingM, ThemeConstants.paddingXL, ThemeConstants.paddingXXL),
+    padding: const EdgeInsetsDirectional.fromSTEB(
+      ThemeConstants.paddingXL,
+      ThemeConstants.paddingM,
+      ThemeConstants.paddingXL,
+      ThemeConstants.paddingXXL,
+    ),
     builder: (sheetContext) => BlocProvider(
       create: (_) => WithdrawalCubit(),
       child: Padding(
@@ -87,53 +92,55 @@ class _WithdrawalSheetState extends State<_WithdrawalSheet> {
       },
       builder: (ctx, state) {
         final isLoading = state is WithdrawalLoading;
-        return SlideAnimationList(
-          crossAxisAlignment: .start,
-          children: [
-            AppTextField(
-              controller: _amountController,
-              hintText: context.translate(LanguageLabelKeys.enterAmount),
-              labelText: context.translate(LanguageLabelKeys.amount),
-              keyboardType: TextInputType.number,
-            ),
-            AppSpacing.h16,
-            AppTextField(
-              controller: _messageController,
-              hintText: context.translate(LanguageLabelKeys.enterMessage),
-              labelText: context.translate(LanguageLabelKeys.messageOptional),
-              maxLines: 3,
-            ),
-            AppSpacing.h24,
-            Row(
-              spacing: 12,
-              children: [
-                Expanded(
-                  child: AppButton(
-                    label: context.translate(LanguageLabelKeys.cancel),
-                    variant: AppButtonVariant.outline,
-                    color: context.cs.onSurfaceVariant,
-                    onPressed: isLoading
-                        ? null
-                        : () => AppNavigator.pop(context),
+        return SingleChildScrollView(
+          child: SlideAnimationList(
+            crossAxisAlignment: .start,
+            children: [
+              AppTextField(
+                controller: _amountController,
+                hintText: context.translate(LanguageLabelKeys.enterAmount),
+                labelText: context.translate(LanguageLabelKeys.amount),
+                keyboardType: TextInputType.number,
+              ),
+              AppSpacing.h16,
+              AppTextField(
+                controller: _messageController,
+                hintText: context.translate(LanguageLabelKeys.enterMessage),
+                labelText: context.translate(LanguageLabelKeys.messageOptional),
+                maxLines: 3,
+              ),
+              AppSpacing.h24,
+              Row(
+                spacing: ThemeConstants.spaceM,
+                children: [
+                  Expanded(
+                    child: AppButton(
+                      label: context.translate(LanguageLabelKeys.cancel),
+                      variant: AppButtonVariant.outline,
+                      color: context.cs.onSurfaceVariant,
+                      onPressed: isLoading
+                          ? null
+                          : () => AppNavigator.pop(context),
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: AppButton(
-                    label: context.translate(LanguageLabelKeys.submit),
-                    isLoading: isLoading,
-                    onPressed: () {
-                      final amount = _amountController.text.trim();
-                      if (amount.isEmpty) return;
-                      ctx.read<WithdrawalCubit>().submit(
-                        amount: amount,
-                        message: _messageController.text.trim(),
-                      );
-                    },
+                  Expanded(
+                    child: AppButton(
+                      label: context.translate(LanguageLabelKeys.submit),
+                      isLoading: isLoading,
+                      onPressed: () {
+                        final amount = _amountController.text.trim();
+                        if (amount.isEmpty) return;
+                        ctx.read<WithdrawalCubit>().submit(
+                          amount: amount,
+                          message: _messageController.text.trim(),
+                        );
+                      },
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         );
       },
     );

@@ -3,8 +3,10 @@ import 'package:deliveryboy/commons/widgets/app_svg_icon.dart';
 import 'package:deliveryboy/core/constants/assets_constants.dart';
 import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/core/theme/app_radius.dart';
+import 'package:deliveryboy/core/theme/app_spacing.dart';
 import 'package:deliveryboy/core/utils/app_logger.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
+import 'package:deliveryboy/utils/extensions/size_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:deliveryboy/core/theme/app_decorations.dart';
 import '../models/chat_message.dart';
@@ -118,15 +120,15 @@ class _ChatAudioAttachmentState extends State<ChatAudioAttachment> {
           GestureDetector(
             onTap: _togglePlay,
             child: Container(
-              width: 38,
-              height: 38,
+              width: context.screenWidth * 0.101,
+              height: context.screenWidth * 0.101,
               decoration: AppDecorations.circle(color: iconBg),
               child: AppSvgIcon(
                 isPlaying
                     ? AssetsConstants.pauseIcon
                     : AssetsConstants.playIcon,
                 color: iconColor,
-                size: 22,
+                size: ThemeConstants.iconL, fit: BoxFit.scaleDown,
               ),
             ),
           ),
@@ -145,7 +147,7 @@ class _ChatAudioAttachmentState extends State<ChatAudioAttachment> {
                     valueColor: AlwaysStoppedAnimation<Color>(iconColor),
                   ),
                 ),
-                const SizedBox(height: 4),
+                AppSpacing.h4,
                 AppText(
                   _duration > Duration.zero
                       ? '${_fmt(_position)} / ${_fmt(_duration)}'

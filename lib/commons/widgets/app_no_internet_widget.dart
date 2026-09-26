@@ -8,6 +8,7 @@ import 'package:deliveryboy/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import '../../utils/extensions/context_extensions.dart';
 import '../../utils/extensions/localization_extensions.dart';
+import '../../utils/extensions/size_extensions.dart';
 import 'package:deliveryboy/commons/widgets/app_text.dart';
 import 'package:deliveryboy/commons/widgets/app_button.dart';
 
@@ -66,7 +67,7 @@ class _AppNoInternetFullScreenState extends State<AppNoInternetFullScreen> {
             children: [
               AppSvgIcon(
                 AssetsConstants.noInternateFound,
-                size: 180,
+                size: context.widthFraction(0.48),
                 color: context.cs.primary,
                 useColorMapper: true,
               ),
@@ -101,8 +102,8 @@ class _AppNoInternetFullScreenState extends State<AppNoInternetFullScreen> {
                   fallback: 'Retry',
                 ),
                 variant: AppButtonVariant.outline,
-                width: 160,
-                height: 44,
+                width: context.screenWidth * 0.41,
+                height: context.screenHeight * 0.054,
                 isLoading: _retrying,
                 onPressed: _handleRetry,
               ),

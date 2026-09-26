@@ -1,8 +1,15 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 
 /// Holds the currently active translation map and resolves string keys to display text.
-class LocalizationService {
+///
+/// Extends [ChangeNotifier] so an [InheritedNotifier] wrapped around the app
+/// (see `main.dart`) can rebuild every widget that reads [translate] via the
+/// `context.translate()` extension when the active language changes —
+/// otherwise widgets outside the tree that first loaded a key never see the
+/// new value until a hot reload forces every `build()` to rerun.
+class LocalizationService extends ChangeNotifier {
   LocalizationService._();
   static final LocalizationService instance = LocalizationService._();
 
@@ -26,6 +33,7 @@ class LocalizationService {
       if (value.isNotEmpty) merged[k.toString()] = value;
     });
     _translations = merged;
+    notifyListeners();
   }
 
   /// Loads the bundled `en.json` translations as the base fallback layer.
@@ -35,9 +43,13 @@ class LocalizationService {
     _assetTranslations = map.map((k, v) => MapEntry(k, v?.toString() ?? ''));
     _assetsLoaded = true;
     _translations = Map.from(_assetTranslations);
+    notifyListeners();
   }
 
-  void clear() => _translations = {};
+  void clear() {
+    _translations = {};
+    notifyListeners();
+  }
 
   bool get hasTranslations => _translations.isNotEmpty;
 
@@ -47,4 +59,11 @@ class LocalizationService {
     if (val != null && val.isNotEmpty) return val;
     return fallback ?? key;
   }
+}
+
+/// Wraps the app so `context.translate()` can register a rebuild dependency
+/// on [LocalizationService] the same way `Directionality.of(context)` does
+/// for text direction — see `main.dart`.
+class LocalizationScope extends InheritedNotifier<LocalizationService> {
+  const LocalizationScope({super.key, required super.notifier, required super.child});
 }

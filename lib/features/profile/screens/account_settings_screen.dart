@@ -11,8 +11,21 @@ import 'package:deliveryboy/utils/extensions/localization_extensions.dart';
 import 'package:deliveryboy/core/constants/navigation_service.dart';
 
 /// Screen showing the account section (settings, logout) of the profile.
-class AccountSettingsScreen extends StatelessWidget {
+class AccountSettingsScreen extends StatefulWidget {
   const AccountSettingsScreen({super.key});
+
+  @override
+  State<AccountSettingsScreen> createState() => _AccountSettingsScreenState();
+}
+
+class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
+  final _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +33,10 @@ class AccountSettingsScreen extends StatelessWidget {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBar(
         title: context.translate(LanguageLabelKeys.settings),
+        scrollController: _scrollController,
       ),
       body: ListView(
+        controller: _scrollController,
         padding: const EdgeInsetsDirectional.fromSTEB(ThemeConstants.paddingL, ThemeConstants.paddingL, ThemeConstants.paddingL, 28),
         children: [
           ProfileMenuCard(

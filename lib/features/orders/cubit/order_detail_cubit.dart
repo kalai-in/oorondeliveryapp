@@ -30,4 +30,9 @@ class OrderDetailCubit extends BaseAsyncCubit<OrderDetailData> {
     }
     return result.data!;
   });
+
+  /// Emits already-fetched [data] straight away, without an API call — used
+  /// when the detail was resolved elsewhere (e.g. the QR-scan lookup) and
+  /// re-fetching it here would just be a redundant round trip.
+  void loadFromData(OrderDetailData data) => emit(OrderDetailLoaded(data));
 }

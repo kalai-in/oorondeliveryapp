@@ -1,8 +1,10 @@
+import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:deliveryboy/core/theme/app_decorations.dart';
 import '../../../commons/widgets/app_svg_icon.dart';
 import '../../../core/theme/app_radius.dart';
 import '../../../utils/extensions/context_extensions.dart';
+import '../../../utils/extensions/size_extensions.dart';
 import '../../../commons/widgets/app_text.dart';
 
 /// Flat gray-tile stat card (icon + title row, subtitle below) used on the home dashboard.
@@ -32,11 +34,11 @@ class DashboardStatCard extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsetsDirectional.all(14),
             child: Row(
-              spacing: 10,
+              spacing: ThemeConstants.spaceM,
               children: [
                 Container(
-                  width: 32,
-                  height: 32,
+                  width: context.screenWidth * 0.085,
+                  height: context.screenWidth * 0.085,
                   padding: EdgeInsetsDirectional.all(5),
                   decoration: AppDecorations.circle(
                     color: context.cs.surfaceContainerHighest,
@@ -44,7 +46,7 @@ class DashboardStatCard extends StatelessWidget {
                   child: AppSvgIcon(
                     icon,
                     color: context.cs.onSurface,
-                    size: 14,
+                    size: ThemeConstants.iconXS,
                     fit: BoxFit.scaleDown,
                   ),
                 ),
@@ -56,7 +58,7 @@ class DashboardStatCard extends StatelessWidget {
                     // once the real font's metrics are slightly taller than
                     // the fallback's.
                     mainAxisSize: MainAxisSize.min,
-                    spacing: 1,
+                    spacing: ThemeConstants.spaceXXS,
                     children: [
                       // Both lines are Flexible so they give way instead of
                       // overflowing: the row leaves this column only as much

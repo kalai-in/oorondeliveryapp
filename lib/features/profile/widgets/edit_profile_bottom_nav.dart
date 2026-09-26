@@ -44,7 +44,7 @@ class EditProfileBottomNav extends StatelessWidget {
         ],
       ),
       child: Row(
-        spacing: 12,
+        spacing: ThemeConstants.spaceM,
         children: [
           Expanded(
             child: AppButton(
@@ -53,7 +53,7 @@ class EditProfileBottomNav extends StatelessWidget {
                   : context.translate(LanguageLabelKeys.back),
               variant: AppButtonVariant.outline,
               color: context.cs.onSurfaceVariant,
-              height: 50,
+              height: context.screenHeight * 0.062,
               onPressed: isLoading ? null : onBack,
             ),
           ),
@@ -61,12 +61,12 @@ class EditProfileBottomNav extends StatelessWidget {
             child: currentStep == 0
                 ? AppButton(
                     label: context.translate(LanguageLabelKeys.next),
-                    height: 50,
+                    height: context.screenHeight * 0.062,
                     onPressed: onNext,
                   )
                 : AppButton(
                     label: context.translate(LanguageLabelKeys.updateProfile),
-                    height: 50,
+                    height: context.screenHeight * 0.062,
                     onPressed: onSubmit,
                     isLoading: isLoading,
                   ),

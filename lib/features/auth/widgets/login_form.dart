@@ -1,6 +1,7 @@
 import 'package:deliveryboy/commons/widgets/app_snack_bar.dart';
 import 'package:deliveryboy/commons/widgets/app_svg_icon.dart';
 import 'package:deliveryboy/core/constants/assets_constants.dart';
+import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/core/localization/language_label_key.dart';
 import 'package:deliveryboy/features/auth/cubit/sign_in_cubit.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
@@ -72,7 +73,7 @@ class _LoginFormState extends State<LoginForm> {
                   ? AssetsConstants.passwordHideIcon
                   : AssetsConstants.passwordVisibleIcon,
               color: context.cs.onSurfaceVariant,
-              size: 20,
+              size: ThemeConstants.iconM,
             ),
             onPressed: () =>
                 setState(() => _obscurePassword = !_obscurePassword),

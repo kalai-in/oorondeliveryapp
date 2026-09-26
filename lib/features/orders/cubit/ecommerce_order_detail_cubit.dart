@@ -18,4 +18,10 @@ class EcommerceOrderDetailCubit extends BaseAsyncCubit<EcommerceOrderDataModel> 
   /// Fetches the ecommerce order detail for [orderItemId].
   Future<void> loadOrderDetail(String orderItemId) =>
       run(() => _repository.getEcommerceOrderDetail(orderItemId));
+
+  /// Emits already-fetched [data] straight away, without an API call — used
+  /// when the detail was resolved elsewhere (e.g. the QR-scan lookup) and
+  /// re-fetching it here would just be a redundant round trip.
+  void loadFromData(EcommerceOrderDataModel data) =>
+      emit(EcommerceOrderDetailLoaded(data));
 }

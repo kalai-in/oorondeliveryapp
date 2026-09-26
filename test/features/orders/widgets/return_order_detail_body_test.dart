@@ -28,7 +28,7 @@ void main() {
     await HiveTestHelper.setUp(authBox);
     await Hive.openBox(settingsBox);
 
-    // The body mounts ReturnOrderStatusActionButton, which fetches the status
+    // The body mounts OrderStatusSlideBar.returnOrder, which fetches the status
     // list on build. Leaving that endpoint unstubbed leaves Dio's own request
     // timer pending and fails the test with "A Timer is still pending" long
     // after the assertions have passed.

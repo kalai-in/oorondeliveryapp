@@ -10,6 +10,7 @@ import 'package:deliveryboy/core/theme/app_spacing.dart';
 import 'package:deliveryboy/core/utils/app_logger.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
 import 'package:deliveryboy/utils/extensions/localization_extensions.dart';
+import 'package:deliveryboy/utils/extensions/size_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:deliveryboy/core/theme/app_decorations.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -136,18 +137,18 @@ class ForceUpdateDialog extends StatelessWidget {
           ThemeConstants.paddingL,
         ),
         title: Column(
-          spacing: 12,
+          spacing: ThemeConstants.spaceM,
           children: [
             Container(
-              width: 60,
-              height: 60,
+              width: context.screenWidth * 0.16,
+              height: context.screenWidth * 0.16,
               decoration: AppDecorations.circle(
                 color: context.cs.primary.withValues(alpha: 0.1),
               ),
               child: AppSvgIcon(
                 AssetsConstants.forceUpdateIcon,
                 color: context.cs.primary,
-                size: 30,
+                size: ThemeConstants.iconXL,
               ),
             ),
             AppText(
@@ -180,7 +181,7 @@ class ForceUpdateDialog extends StatelessWidget {
             children: [
               AppButton(
                 label: context.translate(LanguageLabelKeys.updateNow),
-                height: 44,
+                height: context.screenHeight * 0.054,
                 onPressed: () => ForceUpdateHelper.launchStore(data),
               ),
               if (!_isForce) ...[

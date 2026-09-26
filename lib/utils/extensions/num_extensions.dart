@@ -61,3 +61,15 @@ List<T> toSafeList<T>(dynamic value, T Function(dynamic) fromJson) {
   if (value is! List) return <T>[];
   return value.map(fromJson).toList();
 }
+
+extension NumFormatting on num {
+  /// Fixes to [decimals] places, then strips a trailing `.0` / `.00` (and
+  /// the dot itself) so whole-number amounts never show fake precision.
+  String trimmedFixed([int decimals = 2]) {
+    var value = toStringAsFixed(decimals);
+    if (value.contains('.')) {
+      value = value.replaceFirst(RegExp(r'\.?0+$'), '');
+    }
+    return value;
+  }
+}

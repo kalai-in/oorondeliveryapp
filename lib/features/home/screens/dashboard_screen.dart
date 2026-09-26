@@ -165,7 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   onEarningsPeriodChanged:
                                       _onEarningsPeriodChanged,
                                 ),
-                                AppSpacing.h90,
+                                AppSpacing.h20,
                               ],
                             ),
                           ),

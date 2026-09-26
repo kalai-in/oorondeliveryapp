@@ -1,8 +1,10 @@
 import 'package:deliveryboy/features/orders/models/additional_charges_model.dart';
 import 'package:deliveryboy/features/orders/models/address_model.dart';
 import 'package:deliveryboy/features/orders/models/delivery_boy_bonus_details_model.dart';
+import 'package:deliveryboy/features/orders/models/delivery_charges_model.dart';
 import 'package:deliveryboy/features/orders/models/storeinfo_model.dart';
 import 'package:deliveryboy/features/orders/models/surge_charges_model.dart';
+import 'package:deliveryboy/features/orders/models/tax_charges_model.dart';
 import 'package:deliveryboy/features/orders/models/timeline_model.dart';
 import 'package:deliveryboy/features/orders/models/variant_attributes_model.dart';
 import 'package:deliveryboy/utils/extensions/num_extensions.dart';
@@ -98,7 +100,7 @@ class Order {
   String? mobile;
   String? orderNote;
   double? total;
-  double? deliveryCharge;
+  DeliveryCharges? deliveryCharges;
   double? taxAmount;
   double? taxPercentage;
   double? walletBalance;
@@ -110,10 +112,12 @@ class Order {
   int? cashbackCredited;
   List<AdditionalCharges>? additionalCharges;
   List<SurgeCharges>? surgeCharges;
+  List<TaxCharges>? taxBreakdown;
   double? finalTotal;
   double? savedAmount;
   String? currency;
   String? currencyCode;
+  String? decimalPoint;
   String? paymentMethod;
   Address? address;
   int? activeStatus;
@@ -158,7 +162,7 @@ class Order {
     this.mobile,
     this.orderNote,
     this.total,
-    this.deliveryCharge,
+    this.deliveryCharges,
     this.taxAmount,
     this.taxPercentage,
     this.walletBalance,
@@ -170,10 +174,12 @@ class Order {
     this.cashbackCredited,
     this.additionalCharges,
     this.surgeCharges,
+    this.taxBreakdown,
     this.finalTotal,
     this.savedAmount,
     this.currency,
     this.currencyCode,
+    this.decimalPoint,
     this.paymentMethod,
     this.address,
     this.activeStatus,
@@ -221,7 +227,9 @@ class Order {
     mobile = json['mobile']?.toString();
     orderNote = json['order_note']?.toString();
     total = toSafeDouble(json['total']);
-    deliveryCharge = toSafeDouble(json['delivery_charge']);
+    deliveryCharges = json['delivery_charges'] is Map<String, dynamic>
+        ? DeliveryCharges.fromJson(json['delivery_charges'] as Map<String, dynamic>)
+        : null;
     taxAmount = toSafeDouble(json['tax_amount']);
     taxPercentage = toSafeDouble(json['tax_percentage']);
     walletBalance = toSafeDouble(json['wallet_balance']);
@@ -243,10 +251,17 @@ class Order {
         surgeCharges!.add(SurgeCharges.fromJson(v));
       });
     }
+    if (json['tax_breakdown'] != null) {
+      taxBreakdown = <TaxCharges>[];
+      json['tax_breakdown'].forEach((v) {
+        taxBreakdown!.add(TaxCharges.fromJson(v));
+      });
+    }
     finalTotal = toSafeDouble(json['final_total']);
     savedAmount = toSafeDouble(json['saved_amount']);
     currency = json['currency']?.toString();
     currencyCode = json['currency_code']?.toString();
+    decimalPoint = json['decimal_point']?.toString();
     paymentMethod = json['payment_method']?.toString();
     address = json['address'] != null
         ? Address.fromJson(json['address'])
@@ -306,7 +321,7 @@ class Order {
     data['mobile'] = mobile;
     data['order_note'] = orderNote;
     data['total'] = total;
-    data['delivery_charge'] = deliveryCharge;
+    data['delivery_charges'] = deliveryCharges?.toJson();
     data['tax_amount'] = taxAmount;
     data['tax_percentage'] = taxPercentage;
     data['wallet_balance'] = walletBalance;
@@ -324,10 +339,14 @@ class Order {
     if (surgeCharges != null) {
       data['surge_charges'] = surgeCharges!.map((v) => v.toJson()).toList();
     }
+    if (taxBreakdown != null) {
+      data['tax_breakdown'] = taxBreakdown!.map((v) => v.toJson()).toList();
+    }
     data['final_total'] = finalTotal;
     data['saved_amount'] = savedAmount;
     data['currency'] = currency;
     data['currency_code'] = currencyCode;
+    data['decimal_point'] = decimalPoint;
     data['payment_method'] = paymentMethod;
     if (address != null) {
       data['address'] = address!.toJson();
@@ -408,7 +427,7 @@ class OrderItems {
   double? taxAmount;
   double? taxPercentage;
   double? subTotal;
-  double? deliveryCharge;
+  DeliveryCharges? deliveryCharges;
   List<AdditionalCharges>? additionalCharges;
   List<SurgeCharges>? surgeCharges;
   double? promoDiscount;
@@ -463,7 +482,7 @@ class OrderItems {
     this.taxAmount,
     this.taxPercentage,
     this.subTotal,
-    this.deliveryCharge,
+    this.deliveryCharges,
     this.additionalCharges,
     this.surgeCharges,
     this.promoDiscount,
@@ -529,7 +548,9 @@ class OrderItems {
     taxAmount = toSafeDouble(json['tax_amount']);
     taxPercentage = toSafeDouble(json['tax_percentage']);
     subTotal = toSafeDouble(json['sub_total']);
-    deliveryCharge = toSafeDouble(json['delivery_charge']);
+    deliveryCharges = json['delivery_charges'] is Map<String, dynamic>
+        ? DeliveryCharges.fromJson(json['delivery_charges'] as Map<String, dynamic>)
+        : null;
     if (json['additional_charges'] != null) {
       additionalCharges = <AdditionalCharges>[];
       json['additional_charges'].forEach((v) {
@@ -606,7 +627,7 @@ class OrderItems {
     data['tax_amount'] = taxAmount;
     data['tax_percentage'] = taxPercentage;
     data['sub_total'] = subTotal;
-    data['delivery_charge'] = deliveryCharge;
+    data['delivery_charges'] = deliveryCharges?.toJson();
     if (additionalCharges != null) {
       data['additional_charges'] = additionalCharges!
           .map((v) => v.toJson())

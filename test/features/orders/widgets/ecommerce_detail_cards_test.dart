@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:deliveryboy/core/api/hive_box_keys.dart';
 import 'package:deliveryboy/features/orders/models/ecommerce_order_model.dart';
-import 'package:deliveryboy/features/orders/widgets/ecommerce_order_billing_card.dart';
-import 'package:deliveryboy/features/orders/widgets/ecommerce_order_customer_info_card.dart';
+import 'package:deliveryboy/features/orders/widgets/bill_summary_card.dart';
 import 'package:deliveryboy/features/orders/widgets/ecommerce_order_detail_items_card.dart';
 import 'package:deliveryboy/features/orders/widgets/payment_summary_section.dart';
 
@@ -56,55 +55,6 @@ void main() {
     await tester.pump();
   }
 
-  group('EcommerceOrderCustomerInfoCard', () {
-    testWidgets('shows the order number and payment method', (tester) async {
-      printTestDivider('shows the order number and payment method');
-      await pumpCard(tester, EcommerceOrderCustomerInfoCard(order: order));
-
-      printTestLog('order number → expected: "${order.orderNumber}" visible');
-      expect(find.textContaining('${order.orderNumber}'), findsWidgets);
-      printTestLog('payment method → expected: "${order.paymentMethod}" visible');
-      expect(find.textContaining(order.paymentMethod!), findsWidgets);
-    });
-
-    testWidgets('omits the rows the payload leaves null', (tester) async {
-      printTestDivider('omits the rows the payload leaves null');
-      // The real ecommerce detail payload carries no store name, mobile,
-      // address or note — every one of those rows is conditional, so the card
-      // renders without them rather than showing blanks.
-      printTestLog('storeName in payload → expected: null, actual: ${order.storeName}');
-      expect(order.storeName, isNull);
-
-      await pumpCard(tester, EcommerceOrderCustomerInfoCard(order: order));
-
-      printTestLog('exception → expected: none, actual: ${tester.takeException()}');
-      printTestLog('order number still shown → expected: visible');
-      expect(find.textContaining('${order.orderNumber}'), findsWidgets);
-    });
-
-    testWidgets('adds a row once the payload carries that field', (
-      tester,
-    ) async {
-      printTestDivider('adds a row once the payload carries that field');
-      order.storeName = 'Mumbai Store';
-      order.orderNote = 'Leave at the gate';
-      await pumpCard(tester, EcommerceOrderCustomerInfoCard(order: order));
-
-      printTestLog('store → expected: "Mumbai Store" visible');
-      expect(find.textContaining('Mumbai Store'), findsWidgets);
-      printTestLog('note → expected: "Leave at the gate" visible');
-      expect(find.textContaining('Leave at the gate'), findsWidgets);
-    });
-
-    testWidgets('renders an order with no customer details', (tester) async {
-      printTestDivider('renders an order with no customer details');
-      final bare = EcommerceOrderDataModel.fromJson(const {'id': 1});
-      await pumpCard(tester, EcommerceOrderCustomerInfoCard(order: bare));
-
-      printTestLog('exception → expected: none, actual: ${tester.takeException()}');
-    });
-  });
-
   group('EcommerceOrderDetailItemsCard', () {
     testWidgets('shows the item this row is for', (tester) async {
       printTestDivider('shows the item this row is for');
@@ -139,7 +89,11 @@ void main() {
       printTestDivider('EcommerceOrderBillingCard summarises the payment');
       await pumpCard(
         tester,
-        EcommerceOrderBillingCard(order: order, symbol: '₹'),
+        BillSummaryCard(
+          type: BillOrderType.ecommerce,
+          ecommerceOrder: order,
+          symbol: '₹',
+        ),
       );
 
       printTestLog(
@@ -157,7 +111,11 @@ void main() {
       expect(order.activeStatus, 6);
       await pumpCard(
         tester,
-        EcommerceOrderBillingCard(order: order, symbol: '₹'),
+        BillSummaryCard(
+          type: BillOrderType.ecommerce,
+          ecommerceOrder: order,
+          symbol: '₹',
+        ),
       );
 
       printTestLog(
@@ -174,7 +132,11 @@ void main() {
       order.paymentMethod = 'COD';
       await pumpCard(
         tester,
-        EcommerceOrderBillingCard(order: order, symbol: '₹'),
+        BillSummaryCard(
+          type: BillOrderType.ecommerce,
+          ecommerceOrder: order,
+          symbol: '₹',
+        ),
       );
 
       printTestLog(

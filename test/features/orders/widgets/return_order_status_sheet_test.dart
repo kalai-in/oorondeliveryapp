@@ -12,7 +12,7 @@ import 'package:deliveryboy/core/api/api_endpoints.dart';
 import 'package:deliveryboy/core/api/hive_box_keys.dart';
 import 'package:deliveryboy/features/orders/cubit/return_order_detail_cubit.dart';
 import 'package:deliveryboy/features/orders/models/return_order_model.dart';
-import 'package:deliveryboy/features/orders/widgets/return_order_status_sheet.dart';
+import 'package:deliveryboy/features/orders/widgets/order_status_slide_bar.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../../helpers/fake_api_adapter.dart';
@@ -23,9 +23,9 @@ import '../../../helpers/test_logging.dart';
 class MockReturnOrderDetailCubit extends MockCubit<ReturnOrderDetailState>
     implements ReturnOrderDetailCubit {}
 
-/// ReturnOrderStatusActionButton builds its own status-list and update cubits,
-/// so they can't be injected — the real ones run against the ApiClient adapter
-/// seam instead.
+/// OrderStatusSlideBar.returnOrder builds its own status-list and update
+/// cubits, so they can't be injected — the real ones run against the
+/// ApiClient adapter seam instead.
 void main() {
   late FakeApiAdapter adapter;
   late MockReturnOrderDetailCubit detailCubit;
@@ -80,7 +80,7 @@ void main() {
         child: pumpTestWidget(
           Align(
             alignment: Alignment.bottomCenter,
-            child: ReturnOrderStatusActionButton(detail: data),
+            child: OrderStatusSlideBar.returnOrder(detail: data),
           ),
         ),
       ),
@@ -154,7 +154,7 @@ void main() {
     await tester.pumpWidget(
       BlocProvider<ReturnOrderDetailCubit>.value(
         value: detailCubit,
-        child: pumpTestWidget(ReturnOrderStatusActionButton(detail: detail)),
+        child: pumpTestWidget(OrderStatusSlideBar.returnOrder(detail: detail)),
       ),
     );
     await tester.pump();

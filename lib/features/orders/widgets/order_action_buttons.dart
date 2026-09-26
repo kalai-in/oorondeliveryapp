@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:deliveryboy/commons/widgets/app_svg_icon.dart';
 import 'package:deliveryboy/core/constants/assets_constants.dart';
+import 'package:deliveryboy/core/constants/theme_constants.dart';
 
 import '../../../commons/widgets/app_text.dart';
 
@@ -11,11 +12,13 @@ import 'package:deliveryboy/core/routes/route_names.dart';
 import 'package:deliveryboy/features/orders/models/order_detail_model.dart'
     as detail_model
     show Order;
+import 'package:deliveryboy/features/orders/models/order_status.dart';
 import 'package:deliveryboy/features/orders/screens/order_tracking_screen.dart'
     show OrderTrackingArgs;
 import 'package:deliveryboy/core/utils/app_logger.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
 import 'package:deliveryboy/utils/extensions/localization_extensions.dart';
+import 'package:deliveryboy/utils/extensions/size_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:deliveryboy/core/theme/app_decorations.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -60,6 +63,12 @@ void openOrderTracking(BuildContext context, detail_model.Order? order) {
       customerAlternateNumber: order.address?.alternateMobile,
       customerId: order.userId ?? 0,
       chatVisible: order.isDeliveryBoyChatVisible == true,
+      orderStatus: order.activeStatus,
+      storeLatitude: double.tryParse(order.storeInfo?.latitude ?? ''),
+      storeLongitude: double.tryParse(order.storeInfo?.longitude ?? ''),
+      storeName: order.storeInfo?.storeName,
+      storeAddress: order.storeInfo?.formattedAddress,
+      storeNumber: order.storeInfo?.mobile,
     ),
   );
 }
@@ -70,7 +79,7 @@ class OrderActionButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final showTrack = order?.activeStatus == 5;
+    final showTrack = OrderStatus.isTrackable(order?.activeStatus);
     return Column(
       children: [
         Row(
@@ -168,7 +177,7 @@ class _ActionTile extends StatelessWidget {
             child: Row(
               mainAxisAlignment: .center,
               children: [
-                AppSvgIcon(icon, size: 18, color: color),
+                AppSvgIcon(icon, size: ThemeConstants.iconS, color: color),
                 AppSpacing.w8,
                 AppText(
                   label,
@@ -200,12 +209,12 @@ class _ActionTile extends StatelessWidget {
               mainAxisSize: .min,
               children: [
                 Container(
-                  width: 40,
-                  height: 40,
+                  width: context.screenWidth * 0.107,
+                  height: context.screenWidth * 0.107,
                   decoration: AppDecorations.circle(
                     color: color.withValues(alpha: 0.15),
                   ),
-                  child: AppSvgIcon(icon, size: 18, color: color),
+                  child: AppSvgIcon(icon, size: ThemeConstants.iconS, color: color),
                 ),
                 AppSpacing.h8,
                 AppText(

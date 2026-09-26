@@ -53,7 +53,7 @@ class EmptyStateWidget extends StatelessWidget {
           children: [
             AppSvgIcon(
               imagePath,
-              size: 140,
+              size: context.widthFraction(0.373),
               color: context.cs.primary,
               useColorMapper: true,
             ),
@@ -80,8 +80,8 @@ class EmptyStateWidget extends StatelessWidget {
                 label: retryLabel ?? context.translate(LanguageLabelKeys.retry),
                 onPressed: onRetry,
                 variant: AppButtonVariant.outline,
-                width: 160,
-                height: 44,
+                width: context.screenWidth * 0.427,
+                height: context.screenHeight * 0.054,
               ),
             ],
           ],

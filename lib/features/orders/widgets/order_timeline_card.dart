@@ -25,6 +25,20 @@ class OrderTimelineCard extends StatelessWidget {
     this.onTrackOrder,
   });
 
+  /// Shows current status + next status. If current is last status, shows
+  /// last 2 (previous + current) since there is no "next" to show.
+  List<Timeline> _buildPreviewList() {
+    if (timeline.length <= 2) return timeline;
+
+    final currentIndex = timeline.indexWhere((t) => t.isCurrent == true);
+    if (currentIndex == -1) return timeline.sublist(timeline.length - 2);
+
+    if (currentIndex >= timeline.length - 1) {
+      return timeline.sublist(timeline.length - 2);
+    }
+    return timeline.sublist(currentIndex, currentIndex + 2);
+  }
+
   void _showTimelineSheet(BuildContext context) {
     showAppBottomSheet(
       context,
@@ -47,9 +61,7 @@ class OrderTimelineCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final previewList = timeline.length > 2
-        ? timeline.sublist(timeline.length - 2)
-        : timeline;
+    final previewList = _buildPreviewList();
 
     return Container(
       width: double.infinity,
@@ -98,7 +110,7 @@ class OrderTimelineCard extends StatelessWidget {
                     AppSvgIcon(
                       AssetsConstants.arrowDownIcon,
                       color: context.cs.primary,
-                      size: 18,
+                      size: ThemeConstants.iconS,
                     ),
                   ],
                 ),
@@ -139,7 +151,7 @@ class _TrackOrderPillButton extends StatelessWidget {
             children: [
               AppSvgIcon(
                 AssetsConstants.enableLocationIcon,
-                size: 14,
+                size: ThemeConstants.iconXS,
                 color: context.cs.primary,
               ),
               AppSpacing.w4,

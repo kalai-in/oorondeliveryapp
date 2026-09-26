@@ -88,6 +88,8 @@ class AssetsConstants {
       '$path/order_payment_pending_icon.svg';
   static const String orderReceivedIcon = '$path/order_received_icon.svg';
   static const String destinationLocationIcon = '$path/destination_location_icon.svg';
+  static const String scannerIcon = '$path/scanner_icon.svg';
+  static const String storePinIcon = '$path/store_pin_icon.svg';
 
   //bottom navigationbar icon
   static const String bottomNavIconPath = '$path/bottom_nav_icon';
@@ -112,7 +114,8 @@ class AssetsConstants {
   static const String transactionIcon = '$path/transaction_icon.svg';
   static const String languageIcon = '$path/language_icon.svg';
   static const String themeIcon = '$path/theme_icon.svg';
-  static const String lightThemeIcon = '$path/light_icon.svg';
+  static const String lightThemeIcon = '$path/light_theme_icon.svg';
+  static const String darkThemeIcon = '$path/dark_theme_icon.svg';
   static const String systemThemeIcon = '$path/system_theme_icon.svg';
   static const String supportChatIcon = '$path/support_chat_icon.svg';
   static const String rateIcon = '$path/rate_icon.svg';

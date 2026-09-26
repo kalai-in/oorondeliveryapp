@@ -6,6 +6,7 @@ import 'package:deliveryboy/core/theme/app_radius.dart';
 import 'package:deliveryboy/core/theme/app_spacing.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
 import 'package:deliveryboy/utils/extensions/localization_extensions.dart';
+import 'package:deliveryboy/utils/extensions/size_extensions.dart';
 import 'package:deliveryboy/utils/extensions/string_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:deliveryboy/core/theme/app_decorations.dart';
@@ -139,14 +140,14 @@ class _RouteIcon extends StatelessWidget {
     return Column(
       children: [
         Container(
-          width: 40,
-          height: 40,
+          width: context.screenWidth * 0.107,
+          height: context.screenWidth * 0.107,
           decoration: AppDecorations.circle(
             color: context.cs.primary.withValues(alpha: 0.14),
           ),
           child: AppSvgIcon(
             icon,
-            size: 18,
+            size: ThemeConstants.iconS,
             color: context.cs.primary,
             fit: BoxFit.scaleDown,
           ),
@@ -201,7 +202,7 @@ class _LocationSection extends StatelessWidget {
       crossAxisAlignment: .start,
       children: [
         SizedBox(
-          height: 40,
+          height: context.screenHeight * 0.049,
           child: Align(
             alignment: AlignmentDirectional.centerStart,
             child: AppText(
@@ -306,7 +307,7 @@ class _ActionChip extends StatelessWidget {
         child: Row(
           mainAxisAlignment: .center,
           children: [
-            AppSvgIcon(icon, size: 18, color: context.cs.primary),
+            AppSvgIcon(icon, size: ThemeConstants.iconS, color: context.cs.primary),
             if (label != null) ...[
               AppSpacing.w4,
               Flexible(

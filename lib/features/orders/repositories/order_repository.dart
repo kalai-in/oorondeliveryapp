@@ -14,6 +14,7 @@ import 'package:deliveryboy/features/orders/models/order_status_model.dart'
     as status_model
     show OrderStatus;
 import 'package:deliveryboy/features/orders/models/return_order_model.dart';
+import 'package:deliveryboy/features/orders/models/scan_delivery_receipt_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -32,6 +33,15 @@ class OrderRepository {
       queryParameters: {ApiParameters.orderId: orderId},
     );
     return OrderDetail.fromJson(response as Map<String, dynamic>);
+  }
+
+  /// POST /scan_delivery_receipt — resolves a scanned QR [code] to its order id.
+  Future<ScanDeliveryReceiptResponse> scanDeliveryReceipt(String code) async {
+    final response = await _apiClient.post(
+      ApiEndpoints.scanDeliveryReceipt,
+      data: {ApiParameters.code: code},
+    );
+    return ScanDeliveryReceiptResponse.fromJson(response as Map<String, dynamic>);
   }
 
   /// GET /return_request_by_id — fetch single return request detail.

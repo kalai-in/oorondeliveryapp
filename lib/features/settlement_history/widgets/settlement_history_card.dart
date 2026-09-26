@@ -56,7 +56,7 @@ class SettlementHistoryCard extends StatelessWidget {
         ),
         child: Column(
           crossAxisAlignment: .start,
-          spacing: 6,
+          spacing: ThemeConstants.spaceS,
           children: [
             Row(
               crossAxisAlignment: .start,
@@ -79,7 +79,7 @@ class SettlementHistoryCard extends StatelessWidget {
               ],
             ),
             Row(
-              spacing: 8,
+              spacing: ThemeConstants.spaceS,
               children: [
                 AppText(
                   '${isCredit ? '+' : '-'} $currencySymbol${item.amount ?? 0}',

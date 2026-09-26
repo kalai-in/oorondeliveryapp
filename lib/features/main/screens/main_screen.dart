@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:deliveryboy/commons/widgets/app_scaffold.dart';
 import 'package:deliveryboy/core/api/api_parameters.dart';
@@ -7,6 +9,8 @@ import 'package:deliveryboy/core/local_storage/auth_hive_box.dart';
 import 'package:deliveryboy/core/localization/language_label_key.dart';
 import 'package:deliveryboy/core/localization/cubit/language_cubit.dart';
 import 'package:deliveryboy/core/services/notification_service.dart';
+import 'package:deliveryboy/core/theme/cubit/theme_cubit.dart';
+import 'package:deliveryboy/core/theme/theme_switch_overlay.dart';
 import 'package:deliveryboy/features/auth/cubit/add_fcm_token_cubit.dart';
 import 'package:deliveryboy/features/home/cubit/dashboard_cubit.dart';
 import 'package:deliveryboy/features/main/models/bottom_navigation.dart';
@@ -17,6 +21,7 @@ import 'package:deliveryboy/features/orders/cubit/ecommerce_order_cubit.dart';
 import 'package:deliveryboy/features/orders/cubit/return_order_cubit.dart';
 import 'package:deliveryboy/utils/extensions/localization_extensions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../cubit/nav_cubit.dart';
 import '../../home/screens/dashboard_screen.dart';
@@ -29,6 +34,23 @@ class MainScreen extends StatefulWidget {
 
   @override
   State<MainScreen> createState() => _MainScreenState();
+
+  /// Triggers the circular theme-reveal animation: a snapshot
+  /// of the current UI is punched with a growing transparent hole from
+  /// [position], exposing the already-switched [newTheme] underneath.
+  ///
+  /// The returned future resolves once the heavy tab rebuild the theme
+  /// switch triggers has had its first frame painted — callers that also
+  /// animate (e.g. the toggle icon's rotation) should wait for it before
+  /// starting, so their animation doesn't begin ticking right as that
+  /// rebuild's jank hits and freeze partway through.
+  static Future<void> changeTheme(
+    BuildContext context, {
+    required ThemeMode newTheme,
+    required Offset position,
+  }) async {
+    await context.findAncestorStateOfType<_MainScreenState>()?._changeTheme(newTheme, position);
+  }
 }
 
 class _MainScreenState extends State<MainScreen> {
@@ -38,6 +60,57 @@ class _MainScreenState extends State<MainScreen> {
     EarningsScreen(),
     ProfileScreen(),
   ];
+
+  final _shellBoundaryKey = GlobalKey();
+
+  // Theme-reveal animation state (mirrors snapbuy_customer's MainScreen).
+  Offset? _animationPosition;
+  ui.Image? _oldSnapshot;
+  ThemeMode? _pendingTheme;
+  bool _isAnimating = false;
+
+  Future<void> _changeTheme(ThemeMode newTheme, Offset position) async {
+    final themeCubit = context.read<ThemeCubit>();
+    if (themeCubit.state.themeMode == newTheme || _isAnimating) return;
+
+    final boundary = _shellBoundaryKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+    final oldSnapshot = await boundary?.toImage(pixelRatio: MediaQuery.of(context).devicePixelRatio);
+    if (!mounted || oldSnapshot == null) return;
+
+    // Switch the real tree to the new theme immediately — it renders live
+    // underneath the old snapshot for the whole animation, so the reveal
+    // always shows real content, never a flat placeholder color.
+    if (newTheme == ThemeMode.dark) {
+      themeCubit.setDark();
+    } else {
+      themeCubit.setLight();
+    }
+
+    setState(() {
+      _animationPosition = position;
+      _oldSnapshot = oldSnapshot;
+      _pendingTheme = newTheme;
+      _isAnimating = true;
+    });
+
+    // Let the rebuild this setState just triggered actually paint before
+    // handing control back — see the doc comment on the static [changeTheme].
+    final settled = Completer<void>();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!settled.isCompleted) settled.complete();
+    });
+    await settled.future;
+  }
+
+  void _finishAnimation() {
+    setState(() {
+      _isAnimating = false;
+      _animationPosition = null;
+      _oldSnapshot?.dispose();
+      _oldSnapshot = null;
+      _pendingTheme = null;
+    });
+  }
 
   @override
   void initState() {
@@ -87,7 +160,35 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   @override
+  void dispose() {
+    _oldSnapshot?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        RepaintBoundary(key: _shellBoundaryKey, child: _buildShell(context)),
+
+        // Covers the whole shell (tab content + bottom nav bar) so the
+        // punched-hole reveal sweeps over everything.
+        if (_isAnimating && _animationPosition != null && _oldSnapshot != null && _pendingTheme != null)
+          Positioned.fill(
+            child: IgnorePointer(
+              child: ThemeRevealAnimation(
+                position: _animationPosition!,
+                oldSnapshot: _oldSnapshot!,
+                targetTheme: _pendingTheme!,
+                onComplete: _finishAnimation,
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildShell(BuildContext context) {
     final navItems = [
       BottomNavItem(
         label: context.translate(LanguageLabelKeys.home),

@@ -1,26 +1,37 @@
+import 'package:deliveryboy/commons/widgets/app_item_image.dart';
 import 'package:deliveryboy/commons/widgets/app_text.dart';
 import 'package:deliveryboy/commons/widgets/status_chip.dart';
+import 'package:deliveryboy/core/theme/app_radius.dart';
 import 'package:deliveryboy/core/theme/app_spacing.dart';
 import 'package:deliveryboy/features/orders/utils/payment_breakdown.dart';
 import 'package:deliveryboy/features/orders/widgets/payment_summary_section.dart';
 import 'package:deliveryboy/utils/app_date_formatter.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
+import 'package:deliveryboy/utils/extensions/num_extensions.dart';
+import 'package:deliveryboy/utils/extensions/size_extensions.dart';
 import 'package:flutter/material.dart';
 
-/// Header row shared by [OrderCard]/[EcommerceOrderCard]: order number + date
-/// on the left, status chip on the right.
+/// Header row shared by [OrderCard], [EcommerceOrderCard] and
+/// [ReturnOrderCard]: order/return number + date on the left, status chip
+/// on the right. The status chip is passed in since order and return
+/// statuses use different [StatusChip] factories; number/date styling can
+/// be overridden so each card keeps its existing look.
 class OrderCardHeader extends StatelessWidget {
   final String orderNumber;
   final dynamic date;
-  final String? activeStatus;
-  final String? orderStatusName;
+  final Widget statusChip;
+  final TextStyle? numberStyle;
+  final TextStyle? dateStyle;
+  final double spacing;
 
   const OrderCardHeader({
     super.key,
     required this.orderNumber,
     required this.date,
-    required this.activeStatus,
-    required this.orderStatusName,
+    required this.statusChip,
+    this.numberStyle,
+    this.dateStyle,
+    this.spacing = 2,
   });
 
   @override
@@ -33,13 +44,15 @@ class OrderCardHeader extends StatelessWidget {
           child: Column(
             crossAxisAlignment: .start,
             children: [
-              AppText(orderNumber, style: context.tt.displayMedium),
-              AppSpacing.h2,
+              AppText(orderNumber, style: numberStyle ?? context.tt.displayMedium),
+              SizedBox(height: spacing),
               AppText(
                 AppDateFormatter.formatDateTime(date),
-                style: context.tt.labelSmall?.copyWith(
-                  color: context.cs.onSurfaceVariant,
-                ),
+                style:
+                    dateStyle ??
+                    context.tt.labelSmall?.copyWith(
+                      color: context.cs.onSurfaceVariant,
+                    ),
                 maxLines: 1,
                 overflow: .ellipsis,
               ),
@@ -47,11 +60,7 @@ class OrderCardHeader extends StatelessWidget {
           ),
         ),
         AppSpacing.w8,
-        StatusChip.fromDynamicStatus(
-          context,
-          activeStatus,
-          orderStatusName: orderStatusName,
-        ),
+        statusChip,
       ],
     );
   }
@@ -89,7 +98,7 @@ class OrderCardFooter extends StatelessWidget {
             ),
             AppSpacing.w8,
             AppText(
-              '$symbol${breakdown.combinedTotalAmount.toStringAsFixed(0)}',
+              '$symbol${breakdown.combinedTotalAmount.trimmedFixed()}',
               style: context.tt.displayMedium?.copyWith(
                 color: context.cs.onSurface,
               ),
@@ -101,6 +110,79 @@ class OrderCardFooter extends StatelessWidget {
           CollectFromCustomerCallout(breakdown: breakdown, symbol: symbol),
         ],
       ],
+    );
+  }
+}
+
+/// Compact "qty x name" row with optional variant, trailing price, and an
+/// optional leading thumbnail — shared by [OrderCard] and
+/// [EcommerceOrderCard] list rows so both stay in sync instead of each
+/// carrying its own near-identical private row widget.
+class CompactProductRow extends StatelessWidget {
+  final String? image;
+  final String name;
+  final String variant;
+  final String? currency;
+  final num price;
+  final EdgeInsetsDirectional padding;
+
+  const CompactProductRow({
+    super.key,
+    this.image,
+    required this.name,
+    required this.variant,
+    required this.currency,
+    required this.price,
+    this.padding = EdgeInsetsDirectional.zero,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: padding,
+      child: Row(
+        crossAxisAlignment: .start,
+        children: [
+          if (image != null) ...[
+            AppItemImage(
+              url: image,
+              size: context.screenWidth * 0.13,
+              borderRadius: AppRadius.r8,
+              iconSize: context.screenWidth * 0.053,
+            ),
+            AppSpacing.w10,
+          ],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: .start,
+              children: [
+                AppText(
+                  name,
+                  style: context.tt.labelMedium?.copyWith(
+                    fontWeight: FontWeight.w500,
+                  ),
+                  maxLines: 1,
+                  overflow: .ellipsis,
+                ),
+                if (variant.isNotEmpty)
+                  AppText(
+                    variant,
+                    style: context.tt.labelSmall?.copyWith(
+                      color: context.cs.onSurfaceVariant,
+                    ),
+                    maxLines: 1,
+                    overflow: .ellipsis,
+                  ),
+              ],
+            ),
+          ),
+          AppSpacing.w8,
+          AppText(
+            '$currency${price.trimmedFixed()}',
+            style: context.tt.labelMedium?.copyWith(fontWeight: FontWeight.w600),
+          ),
+        ],
+      ),
     );
   }
 }

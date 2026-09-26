@@ -11,23 +11,36 @@ import 'package:deliveryboy/features/chat/models/chat_message.dart';
 import 'package:deliveryboy/features/chat/services/chat_conversation_resolver.dart';
 import 'package:deliveryboy/features/orders/widgets/order_action_buttons.dart'
     show openOrderTracking;
-import 'package:deliveryboy/features/orders/widgets/order_billing_card.dart';
+import 'package:deliveryboy/features/orders/widgets/bill_summary_card.dart';
 import 'package:deliveryboy/features/orders/widgets/order_appbar_title.dart';
 import 'package:deliveryboy/features/orders/widgets/order_items_card.dart';
 import 'package:deliveryboy/features/orders/widgets/order_note_card.dart';
+import 'package:deliveryboy/features/orders/widgets/order_refund_card.dart';
 import 'package:deliveryboy/features/orders/widgets/pickup_delivery_card.dart';
+import 'package:deliveryboy/utils/extensions/size_extensions.dart';
 import 'package:deliveryboy/utils/extensions/string_extensions.dart';
-import 'package:deliveryboy/features/orders/widgets/order_status_sheet.dart';
+import 'package:deliveryboy/features/orders/widgets/order_status_slide_bar.dart';
 import 'package:deliveryboy/features/orders/widgets/order_timeline_card.dart';
 import 'package:deliveryboy/core/theme/app_spacing.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
 import 'package:deliveryboy/utils/extensions/localization_extensions.dart';
-import 'package:deliveryboy/utils/extensions/size_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../cubit/order_detail_cubit.dart';
 import '../models/order_detail_model.dart';
+import '../models/order_status.dart';
 import 'package:deliveryboy/features/orders/widgets/order_skeletons.dart';
+
+/// Route args accepted by [OrderDetailScreen]: either the order id (normal
+/// navigation, fetched via API) or an already-fetched [OrderDetailData] —
+/// e.g. from [OrderScannerScreen], which resolves the scan API's response
+/// itself and hands it straight to the cubit, skipping a redundant
+/// order-detail API call.
+String _orderIdFromArgs(BuildContext context) {
+  final args = ModalRoute.of(context)?.settings.arguments;
+  if (args is OrderDetailData) return args.order?.orderId?.toString() ?? '';
+  return args as String? ?? '';
+}
 
 /// Detail screen for a single quick order, keyed by the ID passed as route args.
 class OrderDetailScreen extends StatefulWidget {
@@ -40,9 +53,17 @@ class OrderDetailScreen extends StatefulWidget {
 class _OrderDetailScreenState extends State<OrderDetailScreen> {
   @override
   Widget build(BuildContext context) {
-    final orderId = ModalRoute.of(context)?.settings.arguments as String? ?? '';
+    final args = ModalRoute.of(context)?.settings.arguments;
     return BlocProvider(
-      create: (_) => OrderDetailCubit()..loadOrder(orderId),
+      create: (_) {
+        final cubit = OrderDetailCubit();
+        if (args is OrderDetailData) {
+          cubit.loadFromData(args);
+        } else {
+          cubit.loadOrder(args as String? ?? '');
+        }
+        return cubit;
+      },
       child: const _OrderDetailView(),
     );
   }
@@ -60,9 +81,7 @@ class _OrderDetailView extends StatelessWidget {
     return BlocListener<ConnectivityCubit, ConnectivityState>(
       listener: (context, state) {
         if (state is ConnectivityConnected) {
-          final orderId =
-              ModalRoute.of(context)?.settings.arguments as String? ?? '';
-          context.read<OrderDetailCubit>().loadOrder(orderId);
+          context.read<OrderDetailCubit>().loadOrder(_orderIdFromArgs(context));
         }
       },
       child: AppScaffold(
@@ -92,10 +111,9 @@ class _OrderDetailView extends StatelessWidget {
                     LanguageLabelKeys.pullDownToRefresh,
                   ),
                   onRetry: () {
-                    final orderId =
-                        ModalRoute.of(context)?.settings.arguments as String? ??
-                        '';
-                    context.read<OrderDetailCubit>().loadOrder(orderId);
+                    context.read<OrderDetailCubit>().loadOrder(
+                      _orderIdFromArgs(context),
+                    );
                   },
                 ),
               );
@@ -111,19 +129,36 @@ class _OrderDetailView extends StatelessWidget {
   }
 }
 
-class _OrderDetailBody extends StatelessWidget {
+class _OrderDetailBody extends StatefulWidget {
   final OrderDetailData detail;
   const _OrderDetailBody({required this.detail});
 
-  static const _hiddenStatuses = ['1', '2', '7', '8', '9'];
+  @override
+  State<_OrderDetailBody> createState() => _OrderDetailBodyState();
+}
+
+class _OrderDetailBodyState extends State<_OrderDetailBody> {
+  final _scrollController = ScrollController();
+
+  static const _hiddenStatuses = ['1', '2', '6', '7', '8', '9'];
   bool _hideUpdateStatusButton(String? activeStatus) =>
       _hiddenStatuses.contains(activeStatus);
 
   @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final detail = widget.detail;
     final order = detail.order;
     final items = detail.orderItems ?? [];
-    final bottomPad = context.bottomSafePadding;
+    final hideUpdateStatusButton = _hideUpdateStatusButton(
+      order?.activeStatus?.toString(),
+    );
+    final bottomPad = hideUpdateStatusButton ? context.bottomSafePadding : 0.0;
     final symbol = order?.currency ?? "";
 
     return AppScaffold(
@@ -135,6 +170,7 @@ class _OrderDetailBody extends StatelessWidget {
           statusLabel: order?.orderStatusName ?? order?.statusName ?? '—',
           idLine: order?.orderNumber?.toString() ?? '—',
         ),
+        scrollController: _scrollController,
       ),
       body: RefreshIndicator(
         color: context.cs.primary,
@@ -142,7 +178,8 @@ class _OrderDetailBody extends StatelessWidget {
           detail.order?.orderId?.toString() ?? '',
         ),
         child: CustomScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
+          controller: _scrollController,
+          physics: const ClampingScrollPhysics(),
           slivers: [
             SliverPadding(
               padding: EdgeInsetsDirectional.fromSTEB(ThemeConstants.paddingL, ThemeConstants.paddingL, ThemeConstants.paddingL, bottomPad),
@@ -187,12 +224,18 @@ class _OrderDetailBody extends StatelessWidget {
                           }
                         : null,
                   ),
+                  if ((order?.refundAmount ?? 0) > 0) ...[
+                    OrderRefundCard(
+                      refundAmount: order!.refundAmount!,
+                      currency: symbol,
+                    ),
+                  ],
                   if (order?.orderNote.isNotNullOrEmpty ?? false)
                     OrderNoteCard(note: order!.orderNote!),
                   if (detail.timeline?.isNotEmpty ?? false) ...[
                     OrderTimelineCard(
                       timeline: detail.timeline!,
-                      onTrackOrder: order?.activeStatus == 5
+                      onTrackOrder: OrderStatus.isTrackable(order?.activeStatus)
                           ? () => openOrderTracking(context, order)
                           : null,
                     ),
@@ -200,7 +243,8 @@ class _OrderDetailBody extends StatelessWidget {
                   ],
                   if (items.isNotEmpty)
                     OrderItemsCard(items: items, symbol: symbol),
-                  OrderBillingCard(
+                  BillSummaryCard(
+                    type: BillOrderType.order,
                     order: order,
                     detail: detail,
                     symbol: symbol,
@@ -211,10 +255,9 @@ class _OrderDetailBody extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar:
-          _hideUpdateStatusButton(order?.activeStatus?.toString())
+      bottomNavigationBar: hideUpdateStatusButton
           ? null
-          : OrderStatusActionButton(detail: detail),
+          : OrderStatusSlideBar.normal(detail: detail),
     );
   }
 }

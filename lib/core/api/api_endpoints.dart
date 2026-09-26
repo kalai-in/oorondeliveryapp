@@ -34,6 +34,7 @@ class ApiEndpoints {
   static const String updateStatus = "update_status";
   static const String orderStatuses = "order_statuses";
   static const String ecomOrders = "ecom_orders";
+  static const String scanDeliveryReceipt = "scan_delivery_receipt";
 
   // Mail Settings
   static const String notificationPreferences = "notification_preferences";

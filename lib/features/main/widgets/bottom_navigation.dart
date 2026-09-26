@@ -1,4 +1,5 @@
 import 'package:deliveryboy/commons/widgets/app_svg_icon.dart';
+import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/features/main/models/bottom_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:deliveryboy/commons/widgets/app_text.dart';
@@ -41,7 +42,7 @@ class BottomNavBarState extends State<BottomNavBar> {
       child: SafeArea(
         top: false,
         child: SizedBox(
-          height: 60,
+          height: context.screenHeight * 0.074,
           child: Stack(
             children: [
               Row(
@@ -54,7 +55,7 @@ class BottomNavBarState extends State<BottomNavBar> {
                       behavior: .opaque,
                       child: Column(
                         mainAxisAlignment: .center,
-                        spacing: 2,
+                        spacing: ThemeConstants.spaceXXS,
                         children: [
                           AnimatedSwitcher(
                             duration: const Duration(milliseconds: 200),
@@ -91,7 +92,7 @@ class BottomNavBarState extends State<BottomNavBar> {
                 width: (context.screenWidth / widget.items.length) * 0.6,
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 250),
-                  height: 3,
+                  height: context.screenHeight * 0.004,
                   decoration: AppDecorations.card(
                     color: context.cs.onSurface,
                     borderRadius: const BorderRadius.only(
@@ -126,7 +127,7 @@ class BottomNavBarState extends State<BottomNavBar> {
       return AppSvgIcon(
         path,
         key: ValueKey(path + (isActive ? '-active' : '-inactive')),
-        size: 24,
+        size: context.screenWidth * 0.064,
         colorMapper: AppSvgColorMapper(
           context.cs.primary,
           context.cs.outline,

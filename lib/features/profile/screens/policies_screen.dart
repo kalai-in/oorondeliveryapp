@@ -16,10 +16,24 @@ import '../../../commons/widgets/loading_widget.dart';
 enum PoliciesType { privacyPolicy, termsConditions }
 
 /// Displays the privacy policy or terms and conditions HTML content.
-class PoliciesScreen extends StatelessWidget {
+class PoliciesScreen extends StatefulWidget {
   final PoliciesType type;
 
   const PoliciesScreen({super.key, required this.type});
+
+  @override
+  State<PoliciesScreen> createState() => _PoliciesScreenState();
+}
+
+class _PoliciesScreenState extends State<PoliciesScreen> {
+  final _scrollController = ScrollController();
+  PoliciesType get type => widget.type;
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   String _title(BuildContext context) => switch (type) {
     PoliciesType.privacyPolicy => context.translate(
@@ -64,7 +78,10 @@ class PoliciesScreen extends StatelessWidget {
         final isOffline = connectivityState is ConnectivityDisconnected;
         return AppScaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          appBar: CustomAppBar(title: _title(context)),
+          appBar: CustomAppBar(
+            title: _title(context),
+            scrollController: _scrollController,
+          ),
           // Offline state lives in the body so the app bar — and its back
           // button — stays available on this pushed route.
           body: isOffline
@@ -107,6 +124,7 @@ class PoliciesScreen extends StatelessWidget {
                       }
 
                       return SingleChildScrollView(
+                        controller: _scrollController,
                         padding: const EdgeInsetsDirectional.symmetric(
                           horizontal: ThemeConstants.paddingM,
                           vertical: ThemeConstants.paddingS,

@@ -1,8 +1,10 @@
+import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:deliveryboy/core/theme/app_decorations.dart';
 import '../../../commons/widgets/app_text.dart';
 import '../../../utils/extensions/context_extensions.dart';
+import '../../../utils/extensions/size_extensions.dart';
 
 /// Half-donut chart for the Active Orders status breakdown (Out for Pickup,
 /// Delivered, Picked Up, ...). Primary color at varying shades — no
@@ -31,7 +33,7 @@ class _ActiveStatusChartState extends State<ActiveStatusChart> {
 
     return Row(
       crossAxisAlignment: .center,
-      spacing: 16,
+      spacing: ThemeConstants.spaceL,
       children: [
         SizedBox(
           width: _chartSize,
@@ -94,7 +96,7 @@ class _ActiveStatusChartState extends State<ActiveStatusChart> {
         Expanded(
           child: Column(
             crossAxisAlignment: .start,
-            spacing: 8,
+            spacing: ThemeConstants.spaceS,
             children: [
               for (var i = 0; i < items.length; i++)
                 InkWell(
@@ -102,11 +104,11 @@ class _ActiveStatusChartState extends State<ActiveStatusChart> {
                     () => _touchedIndex = _touchedIndex == i ? null : i,
                   ),
                   child: Row(
-                    spacing: 8,
+                    spacing: ThemeConstants.spaceS,
                     children: [
                       Container(
-                        width: 10,
-                        height: 10,
+                        width: context.screenWidth * 0.027,
+                        height: context.screenWidth * 0.027,
                         decoration: AppDecorations.circle(
                           color: primary.withValues(
                             alpha: _shades[i % _shades.length],

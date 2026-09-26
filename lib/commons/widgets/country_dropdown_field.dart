@@ -42,7 +42,7 @@ class CountryDropdownField extends StatelessWidget {
               padding: const EdgeInsetsDirectional.only(start: ThemeConstants.paddingS, end: ThemeConstants.paddingM),
               child: AppSvgIcon(
                 AssetsConstants.arrowDownIcon,
-                size: 18,
+                size: ThemeConstants.iconS,
                 color: context.cs.onSurfaceVariant,
               ),
             ),

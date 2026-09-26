@@ -64,7 +64,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               child: AppButton(
                 label: context.translate(LanguageLabelKeys.signUp),
-                height: 50,
+                height: context.screenHeight * 0.062,
                 isLoading: state is SignUpLoading,
                 onPressed: () => _registerFormKey.currentState?.submit(),
               ),

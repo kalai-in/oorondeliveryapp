@@ -56,7 +56,7 @@ class HomeOverviewSection extends StatelessWidget {
         IntrinsicHeight(
           child: Row(
             crossAxisAlignment: .stretch,
-            spacing: 12,
+            spacing: ThemeConstants.spaceM,
             children: [
               DashboardStatCard(
                 icon: AssetsConstants.orderIcon,
@@ -76,7 +76,7 @@ class HomeOverviewSection extends StatelessWidget {
         IntrinsicHeight(
           child: Row(
             crossAxisAlignment: .stretch,
-            spacing: 12,
+            spacing: ThemeConstants.spaceM,
             children: [
               DashboardStatCard(
                 icon: AssetsConstants.cashCollectionIcon,
@@ -162,7 +162,7 @@ class HomeOverviewSection extends StatelessWidget {
                   ])
                     Column(
                       crossAxisAlignment: .center,
-                      spacing: 4,
+                      spacing: ThemeConstants.spaceXS,
                       children: [
                         AppText(
                           item.key,
@@ -216,7 +216,7 @@ class HomeOverviewSection extends StatelessWidget {
                   padding: const EdgeInsetsDirectional.symmetric(vertical: 3),
                   child: Column(
                     crossAxisAlignment: .start,
-                    spacing: 6,
+                    spacing: ThemeConstants.spaceS,
                     children: [
                       Row(
                         children: [

@@ -9,11 +9,13 @@ import 'package:deliveryboy/commons/widgets/custom_app_bar.dart';
 import 'package:deliveryboy/core/configs/app_config.dart';
 import 'package:deliveryboy/core/constants/app_constants.dart';
 import 'package:deliveryboy/core/constants/assets_constants.dart';
+import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/core/localization/language_label_key.dart';
 import 'package:deliveryboy/features/orders/cubit/road_route_cubit.dart';
 import 'package:deliveryboy/features/orders/widgets/order_tracking_info_card.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
 import 'package:deliveryboy/utils/extensions/localization_extensions.dart';
+import 'package:deliveryboy/utils/extensions/size_extensions.dart';
 import 'package:deliveryboy/utils/extensions/string_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,6 +40,11 @@ class OrderTrackingMapView extends StatefulWidget {
   final VoidCallback? onChatCustomer;
   final VoidCallback onRecenter;
 
+  /// True while tracking the store leg (before pickup) — swaps the
+  /// destination marker for [AssetsConstants.storePinIcon] instead of the
+  /// regular destination pin, matching snapbuy_customer's store marker.
+  final bool isStoreDestination;
+
   const OrderTrackingMapView({
     super.key,
     required this.isGoogle,
@@ -52,6 +59,7 @@ class OrderTrackingMapView extends StatefulWidget {
     required this.address,
     required this.onChatCustomer,
     required this.onRecenter,
+    this.isStoreDestination = false,
   });
 
   @override
@@ -151,20 +159,33 @@ class _OrderTrackingMapViewState extends State<OrderTrackingMapView> {
   /// Rasterizes the destination SVG into a [gmap.BitmapDescriptor], since
   /// Google Maps markers only accept raster images and can't render SVG
   /// directly the way [AppSvgIcon] does for the OSM view.
+  ///
+  /// Rendered at [size] * the device's pixel ratio and reported back via
+  /// `imagePixelRatio` — without that, Google treats the bitmap's raw pixel
+  /// count as device-independent pixels, so a plain `size`px bitmap either
+  /// showed undersized/blurry (no supersampling) or, once supersampled,
+  /// oversized (missing `imagePixelRatio` to tell Maps how to scale it back
+  /// down).
   Future<void> _loadDestinationIcon() async {
     const size = 40.0;
+    final pixelRatio = MediaQuery.of(context).devicePixelRatio;
     final pictureInfo = await vg.loadPicture(
-      SvgAssetLoader(AssetsConstants.destinationLocationIcon),
+      SvgAssetLoader(
+        widget.isStoreDestination
+            ? AssetsConstants.storePinIcon
+            : AssetsConstants.destinationLocationIcon,
+      ),
       null,
     );
     final recorder = ui.PictureRecorder();
     final canvas = Canvas(recorder);
-    final scale = size / pictureInfo.size.width;
+    final scale = (size * pixelRatio) / pictureInfo.size.width;
     canvas.scale(scale);
     canvas.drawPicture(pictureInfo.picture);
     final image = await recorder.endRecording().toImage(
-      size.toInt(),
-      (size * pictureInfo.size.height / pictureInfo.size.width).toInt(),
+      (size * pixelRatio).round(),
+      (size * pixelRatio * pictureInfo.size.height / pictureInfo.size.width)
+          .round(),
     );
     final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
     pictureInfo.picture.dispose();
@@ -172,6 +193,7 @@ class _OrderTrackingMapViewState extends State<OrderTrackingMapView> {
     setState(
       () => _destinationIcon = gmap.BitmapDescriptor.bytes(
         bytes.buffer.asUint8List(),
+        imagePixelRatio: pixelRatio,
       ),
     );
   }
@@ -179,6 +201,10 @@ class _OrderTrackingMapViewState extends State<OrderTrackingMapView> {
   @override
   void didUpdateWidget(covariant OrderTrackingMapView oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (widget.isGoogle &&
+        oldWidget.isStoreDestination != widget.isStoreDestination) {
+      _loadDestinationIcon();
+    }
     if (!_hasFittedBounds &&
         oldWidget.currentLatLng == null &&
         widget.currentLatLng != null) {
@@ -285,8 +311,10 @@ class _OrderTrackingMapViewState extends State<OrderTrackingMapView> {
               rotate: true,
               alignment: Alignment.topCenter,
               child: AppSvgIcon(
-                AssetsConstants.destinationLocationIcon,
-                size: 40,
+                widget.isStoreDestination
+                    ? AssetsConstants.storePinIcon
+                    : AssetsConstants.destinationLocationIcon,
+                size: ThemeConstants.iconXL,
               ),
             ),
             if (current != null)
@@ -301,7 +329,7 @@ class _OrderTrackingMapViewState extends State<OrderTrackingMapView> {
                       180,
                   child: AppPngIcon(
                     AssetsConstants.deliveryBoyTrackingIcon,
-                    size: 40,
+                    size: ThemeConstants.iconXL,
                   ),
                 ),
               ),
@@ -409,13 +437,13 @@ class _OrderTrackingMapViewState extends State<OrderTrackingMapView> {
                   onTap: widget.onRecenter,
                   borderRadius: AppRadius.r12,
                   child: SizedBox(
-                    width: 44,
-                    height: 44,
+                    width: context.screenWidth * 0.117,
+                    height: context.screenWidth * 0.117,
                     child: Center(
                       child: AppSvgIcon(
                         AssetsConstants.enableLocationIcon,
                         color: context.cs.primary,
-                        size: 20,
+                        size: ThemeConstants.iconM,
                       ),
                     ),
                   ),

@@ -15,6 +15,7 @@ import 'package:deliveryboy/core/theme/app_spacing.dart';
 import 'package:deliveryboy/utils/app_date_formatter.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
 import 'package:deliveryboy/utils/extensions/localization_extensions.dart';
+import 'package:deliveryboy/utils/extensions/size_extensions.dart';
 import 'package:flutter/material.dart';
 
 /// Shown once per app session when the settings api reports an upcoming/
@@ -275,7 +276,7 @@ class _MaintenanceScheduledDialogState
                           AppButton(
                             label: context.translate(LanguageLabelKeys.ok),
                             variant: AppButtonVariant.primary,
-                            height: 50,
+                            height: context.screenHeight * 0.062,
                             onPressed: () {
                               SettingsHiveBox.instance
                                   .setMaintenanceDialogDismissedWindow(
@@ -308,7 +309,7 @@ class _MaintenanceScheduledDialogState
                     ),
                     child: AppSvgIcon(
                       AssetsConstants.warningIcon,
-                      size: 30,
+                      size: ThemeConstants.iconXL,
                       color: context.cs.onPrimary,
                     ),
                   ),
@@ -407,7 +408,7 @@ class _DigitGroup extends StatelessWidget {
             fontFeatures: const [FontFeature.tabularFigures()],
           ),
         ),
-        const SizedBox(height: 4),
+        SizedBox(height: context.screenHeight * 0.005),
         Text(
           label,
           style: textTheme.labelSmall?.copyWith(

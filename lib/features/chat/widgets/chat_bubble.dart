@@ -97,7 +97,7 @@ class ChatBubble extends StatelessWidget {
                         ),
                       ),
                       if (isMe) ...[
-                        const SizedBox(width: 4),
+                        SizedBox(width: context.screenWidth * 0.011),
                         ChatStatusIcon(status: message.status),
                       ],
                     ],

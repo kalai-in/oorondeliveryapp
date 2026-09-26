@@ -5,6 +5,7 @@ import 'package:deliveryboy/core/theme/app_spacing.dart';
 import 'package:deliveryboy/features/orders/models/timeline_model.dart';
 import 'package:deliveryboy/utils/app_date_formatter.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
+import 'package:deliveryboy/utils/extensions/size_extensions.dart';
 import 'package:deliveryboy/utils/order_status_labels.dart';
 import 'package:deliveryboy/commons/animations/slide_animation.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +38,7 @@ class OrderStatusTimeline extends StatelessWidget {
           : OrderStatusLabels.name(context, item.status);
       final date = item.datetime ?? '';
       final isLast = i == statusList.length - 1;
+      final isDone = item.isDone ?? true;
       final dotSize = isLast ? 40.0 : 30.0;
 
       final row = IntrinsicHeight(
@@ -44,17 +46,19 @@ class OrderStatusTimeline extends StatelessWidget {
           crossAxisAlignment: .start,
           children: [
             SizedBox(
-              width: 44,
+              width: context.screenWidth * 0.117,
               child: Column(
                 children: [
                   Container(
                     width: dotSize,
                     height: dotSize,
                     decoration: AppDecorations.circle(
-                      color: isLast
+                      color: !isDone
+                          ? context.cs.onSurfaceVariant.withValues(alpha: 0.12)
+                          : isLast
                           ? context.cs.primary
                           : context.cs.primary.withValues(alpha: 0.12),
-                      boxShadow: isLast
+                      boxShadow: isLast && isDone
                           ? [
                               BoxShadow(
                                 color: context.cs.primary.withValues(
@@ -68,8 +72,12 @@ class OrderStatusTimeline extends StatelessWidget {
                     ),
                     child: AppSvgIcon(
                       OrderStatusLabels.icon(item.status),
-                      size: isLast ? 22 : 17,
-                      color: isLast ? context.cs.onPrimary : context.cs.primary,
+                      size: isLast ? ThemeConstants.iconL : ThemeConstants.iconS,
+                      color: !isDone
+                          ? context.cs.onSurfaceVariant
+                          : isLast
+                          ? context.cs.onPrimary
+                          : context.cs.primary,
                       fit: BoxFit.scaleDown,
                     ),
                   ),
@@ -81,7 +89,9 @@ class OrderStatusTimeline extends StatelessWidget {
                           vertical: ThemeConstants.paddingXS,
                         ),
                         decoration: AppDecorations.card(
-                          color: context.cs.primary.withValues(alpha: 0.2),
+                          color: !isDone
+                              ? context.cs.onSurfaceVariant.withValues(alpha: 0.2)
+                              : context.cs.primary.withValues(alpha: 0.2),
                           borderRadius: AppRadius.r2,
                         ),
                       ),
@@ -109,13 +119,15 @@ class OrderStatusTimeline extends StatelessWidget {
                                 fontWeight: isLast
                                     ? FontWeight.w700
                                     : FontWeight.w600,
-                                color: isLast
+                                color: !isDone
+                                    ? context.cs.onSurfaceVariant
+                                    : isLast
                                     ? context.cs.primary
                                     : context.cs.onSurface,
                               ),
                     ),
                     if (date.isNotEmpty && date != 'null') ...[
-                      const SizedBox(height: 3),
+                      AppSpacing.h3,
                       AppText(
                         AppDateFormatter.formatDateTime(date),
                         style: context.tt.labelSmall?.copyWith(
@@ -140,7 +152,9 @@ class OrderStatusTimeline extends StatelessWidget {
         ),
         margin: const EdgeInsetsDirectional.only(bottom: 2),
         decoration: AppDecorations.card(
-          color: context.cs.primary.withValues(alpha: 0.06),
+          color: !isDone
+              ? context.cs.onSurfaceVariant.withValues(alpha: 0.06)
+              : context.cs.primary.withValues(alpha: 0.06),
           borderRadius: AppRadius.r12,
         ),
         child: row,

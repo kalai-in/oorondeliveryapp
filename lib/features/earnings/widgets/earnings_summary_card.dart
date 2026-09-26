@@ -5,6 +5,7 @@ import 'package:deliveryboy/core/localization/language_label_key.dart';
 import 'package:deliveryboy/core/theme/app_radius.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
 import 'package:deliveryboy/utils/extensions/localization_extensions.dart';
+import 'package:deliveryboy/utils/extensions/size_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:deliveryboy/core/theme/app_decorations.dart';
 import 'package:deliveryboy/commons/widgets/app_text.dart';
@@ -44,15 +45,15 @@ class EarningsSummaryCard extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: .start,
-        spacing: 16,
+        spacing: ThemeConstants.spaceL,
         children: [
           Row(
             crossAxisAlignment: .center,
-            spacing: 12,
+            spacing: ThemeConstants.spaceM,
             children: [
               Container(
-                width: 44,
-                height: 44,
+                width: context.screenWidth * 0.117,
+                height: context.screenWidth * 0.117,
                 decoration: AppDecorations.card(
                   color: context.cs.primary,
                   borderRadius: AppRadius.r14,
@@ -60,14 +61,14 @@ class EarningsSummaryCard extends StatelessWidget {
                 child: AppSvgIcon(
                   AssetsConstants.earingIcon,
                   color: context.cs.onPrimary,
-                  size: 16,
+                  size: ThemeConstants.iconM,
                   fit: BoxFit.scaleDown,
                 ),
               ),
               Expanded(
                 child: Column(
                   crossAxisAlignment: .start,
-                  spacing: 2,
+                  spacing: ThemeConstants.spaceXXS,
                   children: [
                     AppText(
                       context.translate(LanguageLabelKeys.totalEarning),
@@ -92,12 +93,12 @@ class EarningsSummaryCard extends StatelessWidget {
             color: context.cs.outlineVariant.withValues(alpha: 0.5),
           ),
           Row(
-            spacing: 6,
+            spacing: ThemeConstants.spaceS,
             children: [
               AppSvgIcon(
                 AssetsConstants.dateIcon,
                 color: context.cs.onSurfaceVariant,
-                size: 24,
+                size: ThemeConstants.iconL,
               ),
               AppText(
                 context.translate(LanguageLabelKeys.todayEarning),

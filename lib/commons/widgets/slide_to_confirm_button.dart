@@ -29,7 +29,7 @@ class SlideToConfirmButton extends StatefulWidget {
 }
 
 class _SlideToConfirmButtonState extends State<SlideToConfirmButton>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   static const double _height = 58;
   static const double _thumbSize = 46;
   static const double _thumbPadding = 6;
@@ -41,6 +41,9 @@ class _SlideToConfirmButtonState extends State<SlideToConfirmButton>
   late final Animation<double> _snapAnimation;
   double _snapFrom = 0;
 
+  late final AnimationController _hint;
+  late final Animation<double> _hintAnimation;
+
   @override
   void initState() {
     super.initState();
@@ -49,16 +52,40 @@ class _SlideToConfirmButtonState extends State<SlideToConfirmButton>
       duration: const Duration(milliseconds: 300),
     );
     _snapAnimation = CurvedAnimation(parent: _snapBack, curve: Curves.easeOut);
-    _snapBack.addListener(
-      () =>
-          setState(() => _dragOffset = _snapFrom * (1 - _snapAnimation.value)),
+    _snapBack.addListener(() {
+      setState(() => _dragOffset = _snapFrom * (1 - _snapAnimation.value));
+      _updateHint();
+    });
+
+    _hint = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 900),
     );
+    _hintAnimation = CurvedAnimation(parent: _hint, curve: Curves.easeInOut);
+    _updateHint();
   }
 
   @override
   void dispose() {
     _snapBack.dispose();
+    _hint.dispose();
     super.dispose();
+  }
+
+  // Idle nudge that hints the thumb is draggable. Runs only while the button
+  // sits untouched at the start; any drag, load, or completion stops it.
+  void _updateHint() {
+    final bool idle =
+        widget.onConfirm != null &&
+        !widget.isLoading &&
+        !_completed &&
+        _dragOffset == 0;
+    if (idle && !_hint.isAnimating) {
+      _hint.repeat(reverse: true);
+    } else if (!idle && _hint.isAnimating) {
+      _hint.stop();
+      _hint.value = 0;
+    }
   }
 
   double _maxDrag(double trackWidth) =>
@@ -70,6 +97,7 @@ class _SlideToConfirmButtonState extends State<SlideToConfirmButton>
     setState(() {
       _dragOffset = (_dragOffset + delta).clamp(0, _maxDrag(trackWidth));
     });
+    _updateHint();
     if (_dragOffset >= _maxDrag(trackWidth)) unawaited(_complete());
   }
 
@@ -86,6 +114,7 @@ class _SlideToConfirmButtonState extends State<SlideToConfirmButton>
   Future<void> _complete() async {
     if (_completed) return;
     setState(() => _completed = true);
+    _updateHint();
     final result = widget.onConfirm?.call();
     if (result is Future<void>) await result;
     // The callback may end without starting any work (e.g. the OTP sheet was
@@ -94,6 +123,7 @@ class _SlideToConfirmButtonState extends State<SlideToConfirmButton>
     if (!mounted || widget.isLoading) return;
     setState(() => _completed = false);
     _snapToStart();
+    _updateHint();
   }
 
   @override
@@ -103,6 +133,7 @@ class _SlideToConfirmButtonState extends State<SlideToConfirmButton>
       setState(() => _completed = false);
       _snapToStart();
     }
+    _updateHint();
   }
 
   @override
@@ -171,9 +202,16 @@ class _SlideToConfirmButtonState extends State<SlideToConfirmButton>
                     ),
                   ),
                 ),
-                // Thumb
-                PositionedDirectional(
-                  start: _thumbPadding + clampedOffset,
+                // Thumb — nudges right on an idle loop to hint it's draggable
+                AnimatedBuilder(
+                  animation: _hintAnimation,
+                  builder: (_, child) => PositionedDirectional(
+                    start:
+                        _thumbPadding +
+                        clampedOffset +
+                        _hintAnimation.value * 10,
+                    child: child!,
+                  ),
                   child: Container(
                     width: _thumbSize,
                     height: _thumbSize,
@@ -190,7 +228,7 @@ class _SlideToConfirmButtonState extends State<SlideToConfirmButton>
                     child: widget.isLoading
                         ? const Padding(
                             padding: EdgeInsetsDirectional.all(ThemeConstants.paddingM),
-                            child: LoadingWidget(size: 22),
+                            child: LoadingWidget(size: ThemeConstants.loaderSize),
                           )
                         : Transform.flip(
                             flipX: Directionality.of(context) ==
@@ -198,7 +236,7 @@ class _SlideToConfirmButtonState extends State<SlideToConfirmButton>
                             child: AppSvgIcon(
                               AssetsConstants.arrowRightIcon,
                               color: context.cs.primary,
-                              size: 24,
+                              size: ThemeConstants.iconL,
                               fit: BoxFit.scaleDown,
                             ),
                           ),

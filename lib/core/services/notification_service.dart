@@ -8,6 +8,7 @@ import 'package:deliveryboy/core/utils/app_logger.dart';
 import 'package:deliveryboy/features/auth/repositories/auth_repository.dart';
 import 'package:deliveryboy/features/chat/cubit/chat_cubit.dart';
 import 'package:deliveryboy/features/chat/models/chat_message.dart';
+import 'package:deliveryboy/features/orders/cubit/order_live_tracking_cubit.dart';
 import 'package:deliveryboy/core/localization/language_label_key.dart';
 import 'package:deliveryboy/utils/extensions/localization_extensions.dart';
 import 'package:deliveryboy/firebase_options.dart';
@@ -122,7 +123,7 @@ class NotificationService {
     // Not awaited: on a slow/unreachable network this call can hang for a
     // long time, and initialize() itself is awaited before runApp() — a
     // stuck token fetch must not block the app from ever showing its UI.
-    _messaging.getToken().then((token) {
+    getToken().then((token) {
       if (token != null) _syncToken(token);
     });
     _messaging.onTokenRefresh.listen(_syncToken);
@@ -212,8 +213,26 @@ class NotificationService {
   void _setupForegroundHandler() {
     FirebaseMessaging.onMessage.listen((message) async {
       if (await _handleChatForegroundMessage(message)) return;
+      _handleOrderForegroundMessage(message);
       showLocalNotification(message);
     });
+  }
+
+  /// Order-status pushes for the order currently open on
+  /// [OrderTrackingScreen]: refreshes that screen's live tracking cubit in
+  /// place (via [OrderLiveTrackingCubit.refreshFromNotification]) so it can
+  /// switch store↔customer tracking / start the live-location API as soon
+  /// as the status changes, without the delivery boy leaving the screen.
+  /// Unlike chat, the popup notification still shows as normal — this is a
+  /// side effect only.
+  void _handleOrderForegroundMessage(RemoteMessage message) {
+    if (message.data['type']?.toString() != NotificationType.order) return;
+    final orderId = message.data['id']?.toString();
+    final active = OrderLiveTrackingCubit.active;
+    if (active == null || orderId == null || active.orderId != orderId) {
+      return;
+    }
+    active.refreshFromNotification();
   }
 
   /// Chat pushes for the conversation the user already has open: the
@@ -428,11 +447,7 @@ class NotificationService {
         break;
 
       case NotificationType.returnOrder:
-        if (id != null) {
-          navigator.pushNamed(RouteNames.returnOrderDetail, arguments: id);
-        } else {
-          navigator.pushNamed(RouteNames.returnOrder);
-        }
+        navigator.pushNamed(RouteNames.returnOrderDetail, arguments: id);
         break;
 
       case NotificationType.cashCollection:
@@ -499,7 +514,19 @@ class NotificationService {
     ).catchError((_) => false);
   }
 
-  Future<String?> getToken() => _messaging.getToken();
+  /// Wraps `FirebaseMessaging.getToken()`, which throws
+  /// `apns-token-not-set` on iOS when the platform hasn't handed out an APNs
+  /// token yet (a real, not just simulator-only, race right after a fresh
+  /// install/permission grant) — every caller already treats a null token as
+  /// "nothing to sync yet", so folding that failure into null here means
+  /// none of them need their own try/catch.
+  Future<String?> getToken() async {
+    try {
+      return await _messaging.getToken();
+    } catch (_) {
+      return null;
+    }
+  }
 
   Stream<String> get onTokenRefresh => _messaging.onTokenRefresh;
 }

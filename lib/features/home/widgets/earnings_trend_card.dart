@@ -4,6 +4,7 @@ import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/core/localization/language_label_key.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
 import 'package:deliveryboy/utils/extensions/localization_extensions.dart';
+import 'package:deliveryboy/utils/extensions/size_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:deliveryboy/core/theme/app_decorations.dart';
 import '../models/dashboard_model.dart';
@@ -59,7 +60,7 @@ class EarningsTrendCard extends StatelessWidget {
 
     return Column(
       crossAxisAlignment: .start,
-      spacing: 12,
+      spacing: ThemeConstants.spaceM,
       children: [
         AppText(
           context.translate(LanguageLabelKeys.last30DaysEarnings),
@@ -90,7 +91,7 @@ class EarningsTrendCard extends StatelessWidget {
                   Expanded(
                     child: Row(
                       crossAxisAlignment: .end,
-                      spacing: 8,
+                      spacing: ThemeConstants.spaceS,
                       children: [
                         AppText(
                           '$currencySymbol${trend.total ?? 0}',
@@ -106,7 +107,7 @@ class EarningsTrendCard extends StatelessWidget {
                           color: isUp
                               ? context.cs.onSecondaryContainer
                               : context.cs.error,
-                          size: 20,
+                          size: ThemeConstants.iconM,
                         ),
                       ],
                     ),
@@ -135,7 +136,7 @@ class EarningsTrendCard extends StatelessWidget {
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
-                        spacing: 6,
+                        spacing: ThemeConstants.spaceS,
                         children: [
                           AppText(
                             context.translate(selectedPeriod),
@@ -146,7 +147,7 @@ class EarningsTrendCard extends StatelessWidget {
                           ),
                           AppSvgIcon(
                             AssetsConstants.arrowDownIcon,
-                            size: 18,
+                            size: ThemeConstants.iconS,
                             color: context.cs.primary,
                           ),
                         ],
@@ -158,7 +159,7 @@ class EarningsTrendCard extends StatelessWidget {
               AppSpacing.h16,
               if (values.isEmpty)
                 SizedBox(
-                  height: 140,
+                  height: context.screenHeight * 0.172,
                   child: Center(
                     child: AppText(
                       '-',

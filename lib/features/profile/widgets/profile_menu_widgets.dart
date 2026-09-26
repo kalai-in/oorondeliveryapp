@@ -4,6 +4,7 @@ import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:deliveryboy/core/theme/app_decorations.dart';
+import 'package:deliveryboy/core/theme/app_radius.dart';
 import 'package:deliveryboy/core/theme/app_spacing.dart';
 import 'package:deliveryboy/commons/widgets/app_text.dart';
 
@@ -76,6 +77,7 @@ class ProfileMenuCard extends StatelessWidget {
               children: [
                 InkWell(
                   onTap: item.onTap,
+                  borderRadius: isLast ? AppRadius.bottom12 : null,
                   child: Padding(
                     padding: const EdgeInsetsDirectional.symmetric(
                       horizontal: ThemeConstants.paddingL,
@@ -85,7 +87,7 @@ class ProfileMenuCard extends StatelessWidget {
                       children: [
                         AppSvgIcon(
                           item.iconPath,
-                          size: 18,
+                          size: ThemeConstants.iconS,
                           color: context.cs.onSurfaceVariant,
                         ),
                         AppSpacing.w10,
@@ -118,7 +120,7 @@ class ProfileMenuCard extends StatelessWidget {
                           child: AppSvgIcon(
                             AssetsConstants.arrowRightIcon,
                             color: context.cs.onSurfaceVariant,
-                            size: 18,
+                            size: ThemeConstants.iconS,
                           ),
                         ),
                       ],
@@ -189,6 +191,7 @@ class _ProfileExpandableMenuSectionState
           ],
           InkWell(
             onTap: () => setState(() => _expanded = !_expanded),
+            borderRadius: _expanded ? null : AppRadius.bottom12,
             child: Padding(
               padding: const EdgeInsetsDirectional.symmetric(
                 horizontal: ThemeConstants.paddingL,
@@ -198,7 +201,7 @@ class _ProfileExpandableMenuSectionState
                 children: [
                   AppSvgIcon(
                     widget.iconPath,
-                    size: 22,
+                    size: ThemeConstants.iconM,
                     color: context.cs.onSurfaceVariant,
                   ),
                   AppSpacing.w14,
@@ -217,7 +220,7 @@ class _ProfileExpandableMenuSectionState
                     child: AppSvgIcon(
                       AssetsConstants.arrowDownIcon,
                       color: context.cs.onSurfaceVariant,
-                      size: 18,
+                      size: ThemeConstants.iconS,
                     ),
                   ),
                 ],
@@ -242,6 +245,9 @@ class _ProfileExpandableMenuSectionState
                     ),
                     InkWell(
                       onTap: child.onTap,
+                      borderRadius: i == widget.children.length - 1
+                          ? AppRadius.bottom12
+                          : null,
                       child: Padding(
                         padding: const EdgeInsetsDirectional.only(
                           start: 52,
@@ -266,7 +272,7 @@ class _ProfileExpandableMenuSectionState
                               child: AppSvgIcon(
                                 AssetsConstants.arrowRightIcon,
                                 color: context.cs.onSurfaceVariant,
-                                size: 18,
+                                size: ThemeConstants.iconS,
                               ),
                             ),
                           ],

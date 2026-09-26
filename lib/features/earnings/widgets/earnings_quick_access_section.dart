@@ -1,4 +1,5 @@
 import 'package:deliveryboy/core/constants/assets_constants.dart';
+import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/core/localization/language_label_key.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
 import 'package:deliveryboy/utils/extensions/localization_extensions.dart';
@@ -35,10 +36,10 @@ class EarningsQuickAccessSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: .start,
-      spacing: 16,
+      spacing: ThemeConstants.spaceL,
       children: [
         Row(
-          spacing: 16,
+          spacing: ThemeConstants.spaceL,
           children: [
             EarningsStatCard(
               icon: AssetsConstants.walletIcon,
@@ -58,7 +59,7 @@ class EarningsQuickAccessSection extends StatelessWidget {
           ],
         ),
         Row(
-          spacing: 16,
+          spacing: ThemeConstants.spaceL,
           children: [
             EarningsStatCard(
               icon: AssetsConstants.salaryIcon,

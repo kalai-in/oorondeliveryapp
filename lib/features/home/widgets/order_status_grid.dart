@@ -1,6 +1,7 @@
 import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/core/localization/language_label_key.dart';
 import 'package:deliveryboy/core/theme/app_radius.dart';
+import 'package:deliveryboy/core/theme/app_spacing.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
 import 'package:deliveryboy/utils/extensions/localization_extensions.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +40,7 @@ class OrderStatusGrid extends StatelessWidget {
 
     return Column(
       crossAxisAlignment: .start,
-      spacing: 10,
+      spacing: ThemeConstants.spaceM,
       children: [
         AppText(
           context.translate(LanguageLabelKeys.activeOrders),
@@ -65,9 +66,9 @@ class OrderStatusGrid extends StatelessWidget {
             crossAxisAlignment: .start,
             children: [
               ActiveStatusChart(items: statusRows),
-              const SizedBox(height: 8),
+              AppSpacing.h8,
               Divider(height: 1, color: context.cs.outlineVariant),
-              const SizedBox(height: 10),
+              AppSpacing.h10,
               Row(
                 children: [
                   Expanded(

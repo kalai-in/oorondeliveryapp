@@ -58,7 +58,7 @@ class NotificationSaveBar extends StatelessWidget {
               ),
               child: AppButton(
                 label: context.translate(LanguageLabelKeys.saveSettings),
-                height: 50,
+                height: context.screenHeight * 0.062,
                 isLoading: isLoading,
                 onPressed: () => _save(context),
               ),

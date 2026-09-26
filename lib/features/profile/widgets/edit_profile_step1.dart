@@ -122,7 +122,7 @@ class EditProfileStep1 extends StatelessWidget {
               onTap: onPickDob,
               suffixIcon: AppSvgIcon(
                 AssetsConstants.dateIcon,
-                size: 24,
+                size: ThemeConstants.iconL,
                 color: context.cs.onSurfaceVariant,
                 fit: BoxFit.scaleDown,
               ),

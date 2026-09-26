@@ -2,6 +2,7 @@ import 'package:deliveryboy/commons/widgets/shimmer_loading.dart';
 import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/core/theme/app_radius.dart';
 import 'package:deliveryboy/core/theme/app_spacing.dart';
+import 'package:deliveryboy/utils/extensions/size_extensions.dart';
 import 'package:flutter/material.dart';
 
 /// Shimmering placeholder that mirrors the home dashboard layout
@@ -19,47 +20,47 @@ class DashboardSkeletonLoader extends StatelessWidget {
           crossAxisAlignment: .start,
           children: [
             // Today's performance — section title + date chip
-            const Row(
+            Row(
               children: [
-                ShimmerBox(width: 150, height: 16, borderRadius: AppRadius.r8),
-                Spacer(),
-                ShimmerBox(width: 84, height: 24, borderRadius: AppRadius.r20),
+                ShimmerBox(width: context.screenWidth * 0.4, height: context.screenHeight * 0.02, borderRadius: AppRadius.r8),
+                const Spacer(),
+                ShimmerBox(width: context.screenWidth * 0.224, height: context.screenHeight * 0.03, borderRadius: AppRadius.r20),
               ],
             ),
             AppSpacing.h16,
-            const ShimmerCardRow(height: 108),
+            ShimmerCardRow(height: context.screenHeight * 0.133),
             AppSpacing.h16,
-            const ShimmerCardRow(height: 108),
+            ShimmerCardRow(height: context.screenHeight * 0.133),
             AppSpacing.h16,
 
             // Delivery overview — stat tiles
-            const ShimmerBox(
-              width: 140,
-              height: 16,
+            ShimmerBox(
+              width: context.screenWidth * 0.373,
+              height: context.screenHeight * 0.02,
               borderRadius: AppRadius.r8,
             ),
             AppSpacing.h12,
-            const ShimmerCardRow(height: 70, spacing: 12),
+            ShimmerCardRow(height: context.screenHeight * 0.086, spacing: ThemeConstants.spaceM),
             AppSpacing.h12,
-            const ShimmerCardRow(height: 70, spacing: 12),
+            ShimmerCardRow(height: context.screenHeight * 0.086, spacing: ThemeConstants.spaceM),
             AppSpacing.h14,
 
             // Active orders status grid
-            const ShimmerBox(height: 170, borderRadius: AppRadius.r16),
+            ShimmerBox(height: context.screenHeight * 0.209, borderRadius: AppRadius.r16),
             AppSpacing.h14,
 
             // Earnings trend card
-            const ShimmerBox(height: 210, borderRadius: AppRadius.r16),
+            ShimmerBox(height: context.screenHeight * 0.259, borderRadius: AppRadius.r16),
             AppSpacing.h14,
 
             // Delivery performance card
-            const ShimmerBox(
-              width: 160,
-              height: 16,
+            ShimmerBox(
+              width: context.screenWidth * 0.427,
+              height: context.screenHeight * 0.02,
               borderRadius: AppRadius.r8,
             ),
             AppSpacing.h10,
-            const ShimmerBox(height: 200, borderRadius: AppRadius.r16),
+            ShimmerBox(height: context.screenHeight * 0.246, borderRadius: AppRadius.r16),
             AppSpacing.h90,
           ],
         ),

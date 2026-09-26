@@ -6,6 +6,7 @@ import 'package:deliveryboy/commons/widgets/country_phone_field.dart';
 import 'package:deliveryboy/commons/widgets/password_requirements_checklist.dart';
 import 'package:deliveryboy/commons/widgets/zone_dropdown_field.dart';
 import 'package:deliveryboy/core/constants/assets_constants.dart';
+import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/core/localization/language_label_key.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
 import 'package:deliveryboy/utils/extensions/localization_extensions.dart';
@@ -104,7 +105,7 @@ class RegisterCredentialFields extends StatelessWidget {
           onTap: onPickDob,
           suffixIcon: AppSvgIcon(
             AssetsConstants.dateIcon,
-            size: 18,
+            size: ThemeConstants.iconS,
             color: context.cs.onSurfaceVariant,
             fit: BoxFit.scaleDown,
           ),
@@ -182,7 +183,7 @@ class RegisterCredentialFields extends StatelessWidget {
                   ? AssetsConstants.passwordHideIcon
                   : AssetsConstants.passwordVisibleIcon,
               color: context.cs.onSurfaceVariant,
-              size: 20,
+              size: ThemeConstants.iconM,
             ),
             onPressed: onToggleObscurePassword,
           ),
@@ -216,7 +217,7 @@ class RegisterCredentialFields extends StatelessWidget {
                   ? AssetsConstants.passwordHideIcon
                   : AssetsConstants.passwordVisibleIcon,
               color: context.cs.onSurfaceVariant,
-              size: 20,
+              size: ThemeConstants.iconM,
             ),
             onPressed: onToggleObscureConfirm,
           ),

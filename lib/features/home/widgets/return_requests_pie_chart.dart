@@ -7,6 +7,7 @@ import '../../../commons/widgets/app_text.dart';
 import '../../../core/localization/language_label_key.dart';
 import '../../../utils/extensions/context_extensions.dart';
 import '../../../utils/extensions/localization_extensions.dart';
+import '../../../utils/extensions/size_extensions.dart';
 import '../models/dashboard_model.dart';
 
 List<Color> _sliceColors(BuildContext context) => [
@@ -59,7 +60,7 @@ class _ReturnRequestsPieChartState extends State<ReturnRequestsPieChart> {
 
     return Row(
       crossAxisAlignment: .center,
-      spacing: 16,
+      spacing: ThemeConstants.spaceL,
       children: [
         SizedBox(
           width: _chartSize,
@@ -173,17 +174,17 @@ class _ReturnRequestsPieChartState extends State<ReturnRequestsPieChart> {
         Expanded(
           child: Column(
             crossAxisAlignment: .start,
-            spacing: 8,
+            spacing: ThemeConstants.spaceS,
             children: [
               for (var i = 0; i < items.length; i++)
                 InkWell(
                   onTap: () => _select(_touchedIndex == i ? null : i),
                   child: Row(
-                    spacing: 8,
+                    spacing: ThemeConstants.spaceS,
                     children: [
                       Container(
-                        width: 10,
-                        height: 10,
+                        width: context.screenWidth * 0.027,
+                        height: context.screenWidth * 0.027,
                         decoration: AppDecorations.circle(
                           color: _sliceColors(
                             context,

@@ -54,6 +54,7 @@ class _SalaryScreenState extends State<SalaryScreen> {
         return AppScaffold(
           appBar: CustomAppBar(
             title: context.translate(LanguageLabelKeys.salary),
+            scrollController: _scrollController.controller,
           ),
           // Offline state lives in the body so the app bar — and its back
           // button — stays available on this pushed route.

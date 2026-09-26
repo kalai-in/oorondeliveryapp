@@ -37,7 +37,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Allow camera access to capture and update your profile picture.</string>
+	<string>Allow camera access to update your profile picture and scan order QR codes.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Allow location access in the background to provide live delivery tracking while you are on an active delivery.</string>
 	<key>NSLocationAlwaysUsageDescription</key>

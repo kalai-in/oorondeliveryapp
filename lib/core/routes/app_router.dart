@@ -4,6 +4,8 @@ import 'package:deliveryboy/features/chat/screens/chat_screen.dart';
 import 'package:deliveryboy/features/orders/cubit/order_live_tracking_cubit.dart';
 import 'package:deliveryboy/features/orders/cubit/road_route_cubit.dart';
 import 'package:deliveryboy/features/orders/screens/order_tracking_screen.dart';
+import 'package:deliveryboy/features/orders/cubit/scan_delivery_receipt_cubit.dart';
+import 'package:deliveryboy/features/orders/screens/order_scanner_screen.dart';
 import 'package:deliveryboy/features/cash_collection/cubit/cash_collection_cubit.dart';
 import 'package:deliveryboy/features/cash_collection/screens/cash_collection_screen.dart';
 import 'package:deliveryboy/features/settlement_history/cubit/settlement_history_cubit.dart';
@@ -11,7 +13,6 @@ import 'package:deliveryboy/features/settlement_history/screens/settlement_histo
 import 'package:deliveryboy/features/orders/screens/order_detail_screen.dart';
 import 'package:deliveryboy/features/orders/screens/ecommerce_order_detail_screen.dart';
 import 'package:deliveryboy/features/orders/screens/return_order_detail_screen.dart';
-import 'package:deliveryboy/features/orders/screens/return_orders_screen.dart';
 import 'package:deliveryboy/features/profile/screens/account_settings_screen.dart';
 import 'package:deliveryboy/features/profile/screens/edit_profile_screen.dart';
 import 'package:deliveryboy/features/salary/cubit/salary_cubit.dart';
@@ -23,6 +24,7 @@ import 'package:deliveryboy/features/wallet/cubit/wallet_cubit.dart';
 import 'package:deliveryboy/features/wallet/screens/wallet_screen.dart';
 import 'package:deliveryboy/core/localization/language_label_key.dart';
 import 'package:deliveryboy/core/localization/services/localization_service.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'route_names.dart';
@@ -84,9 +86,6 @@ class AppRouter {
       case RouteNames.earnings:
         return _materialRoute(const EarningsScreen());
 
-      case RouteNames.returnOrder:
-        return _materialRoute(const ReturnOrdersScreen());
-
       case RouteNames.orderDetail:
         return _materialRoute(const OrderDetailScreen(), settings: settings);
 
@@ -119,6 +118,14 @@ class AppRouter {
               BlocProvider(create: (context) => RoadRouteCubit()),
             ],
             child: OrderTrackingScreen(args: args),
+          ),
+        );
+
+      case RouteNames.orderScanner:
+        return _materialRoute(
+          BlocProvider(
+            create: (context) => ScanDeliveryReceiptCubit(),
+            child: const OrderScannerScreen(),
           ),
         );
 
@@ -161,10 +168,7 @@ class AppRouter {
     }
   }
 
-  static MaterialPageRoute _materialRoute(
-    Widget child, {
-    RouteSettings? settings,
-  }) {
-    return MaterialPageRoute(builder: (_) => child, settings: settings);
+  static CupertinoPageRoute _materialRoute(Widget child, {RouteSettings? settings}) {
+    return CupertinoPageRoute(builder: (_) => child, settings: settings);
   }
 }

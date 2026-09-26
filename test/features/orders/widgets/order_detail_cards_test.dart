@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:deliveryboy/core/api/hive_box_keys.dart';
 import 'package:deliveryboy/features/orders/models/order_detail_model.dart';
-import 'package:deliveryboy/features/orders/widgets/order_billing_card.dart';
+import 'package:deliveryboy/features/orders/widgets/bill_summary_card.dart';
 import 'package:deliveryboy/features/orders/widgets/order_items_card.dart';
 import 'package:deliveryboy/features/orders/widgets/order_note_card.dart';
 import 'package:deliveryboy/features/orders/widgets/order_timeline_card.dart';
@@ -142,7 +142,12 @@ void main() {
       printTestDivider('OrderBillingCard summarises the order payment');
       await pumpCard(
         tester,
-        OrderBillingCard(order: detail.order, detail: detail, symbol: '₹'),
+        BillSummaryCard(
+          type: BillOrderType.order,
+          order: detail.order,
+          detail: detail,
+          symbol: '₹',
+        ),
       );
 
       printTestLog(
@@ -161,7 +166,12 @@ void main() {
       detail.order!.paymentMethod = 'COD';
       await pumpCard(
         tester,
-        OrderBillingCard(order: detail.order, detail: detail, symbol: '₹'),
+        BillSummaryCard(
+          type: BillOrderType.order,
+          order: detail.order,
+          detail: detail,
+          symbol: '₹',
+        ),
       );
 
       printTestLog(
@@ -174,7 +184,12 @@ void main() {
       printTestDivider('OrderBillingCard renders with no order attached');
       await pumpCard(
         tester,
-        OrderBillingCard(order: null, detail: detail, symbol: '₹'),
+        BillSummaryCard(
+          type: BillOrderType.order,
+          order: null,
+          detail: detail,
+          symbol: '₹',
+        ),
       );
 
       printTestLog('exception → expected: none, actual: ${tester.takeException()}');

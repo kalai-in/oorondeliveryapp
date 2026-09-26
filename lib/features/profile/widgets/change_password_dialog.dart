@@ -14,6 +14,7 @@ import 'package:deliveryboy/core/theme/app_spacing.dart';
 import 'package:deliveryboy/features/auth/cubit/change_password_cubit.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
 import 'package:deliveryboy/utils/extensions/localization_extensions.dart';
+import 'package:deliveryboy/utils/extensions/size_extensions.dart';
 import 'package:deliveryboy/utils/input_validators.dart';
 import 'package:deliveryboy/utils/password_policy.dart';
 import 'package:deliveryboy/utils/show_app_bottom_sheet.dart';
@@ -110,8 +111,8 @@ class _ChangePasswordSheetBodyState extends State<_ChangePasswordSheetBody> {
               children: [
                 Center(
                   child: Container(
-                    width: 40,
-                    height: 4,
+                    width: context.screenWidth * 0.107,
+                    height: context.screenHeight * 0.005,
                     decoration: AppDecorations.dragHandle(
                       color: context.cs.outlineVariant,
                     ),
@@ -144,7 +145,7 @@ class _ChangePasswordSheetBodyState extends State<_ChangePasswordSheetBody> {
                       _obscureOldPassword
                           ? AssetsConstants.passwordHideIcon
                           : AssetsConstants.passwordVisibleIcon,
-                      size: 20,
+                      size: ThemeConstants.iconM,
                       color: context.cs.onSurfaceVariant,
                     ),
                     onPressed: () => setState(
@@ -174,7 +175,7 @@ class _ChangePasswordSheetBodyState extends State<_ChangePasswordSheetBody> {
                       _obscurePassword
                           ? AssetsConstants.passwordHideIcon
                           : AssetsConstants.passwordVisibleIcon,
-                      size: 20,
+                      size: ThemeConstants.iconM,
                       color: context.cs.onSurfaceVariant,
                     ),
                     onPressed: () =>
@@ -211,7 +212,7 @@ class _ChangePasswordSheetBodyState extends State<_ChangePasswordSheetBody> {
                       _obscureConfirm
                           ? AssetsConstants.passwordHideIcon
                           : AssetsConstants.passwordVisibleIcon,
-                      size: 20,
+                      size: ThemeConstants.iconM,
                       color: context.cs.onSurfaceVariant,
                     ),
                     onPressed: () =>
@@ -239,12 +240,12 @@ class _ChangePasswordSheetBodyState extends State<_ChangePasswordSheetBody> {
                     ),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 8,
+                      spacing: ThemeConstants.spaceS,
                       children: [
                         AppSvgIcon(
                           AssetsConstants.dangerIcon,
                           color: context.cs.error,
-                          size: 18,
+                          size: ThemeConstants.iconS,
                         ),
                         Expanded(
                           child: AppText(

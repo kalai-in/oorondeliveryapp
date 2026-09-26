@@ -5,6 +5,8 @@ import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/core/localization/language_label_key.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
 import 'package:deliveryboy/utils/extensions/localization_extensions.dart';
+import 'package:deliveryboy/utils/extensions/size_extensions.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:deliveryboy/core/theme/app_decorations.dart';
 import 'package:deliveryboy/core/theme/app_spacing.dart';
@@ -31,10 +33,25 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? searchHint;
   final VoidCallback? onSearchStart;
   final VoidCallback? onSearchCancel;
+  // Defaults to the back arrow (matches leaving-the-screen navigation). Pass
+  // [AssetsConstants.closeIcon] on screens where cancelling search dismisses
+  // an overlay rather than navigating back, so the icon matches the action.
+  final String? searchCancelIcon;
   // Extra bottom row (e.g. status chips)
   final PreferredSizeWidget? bottom;
   // Custom multi-line title content — overrides the plain [title] Text when set.
   final Widget? titleWidget;
+  // When provided, the app bar shows a shadow only once the attached
+  // scrollable has scrolled content under it (offset > 0), and stays
+  // flat while the list sits at rest — keeps the bar visually distinct
+  // from cards once they touch it, without a shadow when there's still
+  // a gap.
+  final ScrollController? scrollController;
+  // Alternative to [scrollController] for screens where the scrollable
+  // isn't a single ScrollController the app bar can listen to directly
+  // (e.g. multiple tabs, each with their own controller) — the caller
+  // drives the shadow by pushing true/false into this instead.
+  final ValueListenable<bool>? shadowListenable;
 
   const CustomAppBar({
     super.key,
@@ -53,8 +70,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.searchHint,
     this.onSearchStart,
     this.onSearchCancel,
+    this.searchCancelIcon,
     this.bottom,
     this.titleWidget,
+    this.scrollController,
+    this.shadowListenable,
   });
 
   bool get _hasSearch => onSearchStart != null;
@@ -65,19 +85,39 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (shadowListenable != null) {
+      return ValueListenableBuilder<bool>(
+        valueListenable: shadowListenable!,
+        builder: (context, scrolled, _) => _build(context, scrolled: scrolled),
+      );
+    }
+    if (scrollController != null) {
+      return AnimatedBuilder(
+        animation: scrollController!,
+        builder: (context, _) {
+          final scrolled =
+              scrollController!.hasClients && scrollController!.offset > 0;
+          return _build(context, scrolled: scrolled);
+        },
+      );
+    }
+    return _build(context, scrolled: false);
+  }
+
+  Widget _build(BuildContext context, {required bool scrolled}) {
     final titleColor = foregroundColor ?? context.cs.onSurface;
 
     return AppBar(
       backgroundColor: backgroundColor ?? context.cs.surface,
       foregroundColor: titleColor,
-      elevation: 0,
+      elevation: scrolled ? 4 : 0,
       surfaceTintColor: Colors.transparent,
-      shadowColor: Colors.transparent,
+      shadowColor: scrolled ? Colors.black.withValues(alpha: 0.15) : Colors.transparent,
       centerTitle: false, //!isSearching,
       titleSpacing: _hasSearch && isSearching
           ? 16
           : NavigationToolbar.kMiddleSpacing,
-      automaticallyImplyLeading: showBackButton,
+      automaticallyImplyLeading: showBackButton && !isSearching,
       title: _hasSearch
           ? AnimatedSwitcher(
               duration: const Duration(milliseconds: 240),
@@ -101,6 +141,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                           searchHint ??
                           context.translate(LanguageLabelKeys.searchHint),
                       onChanged: onSearchChanged ?? (_) {},
+                      onCancel: onSearchCancel,
+                      cancelIcon: searchCancelIcon,
                     )
                   : AppText(
                       title ?? '',
@@ -143,13 +185,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                               ),
                             ))
                     : null),
-      leading: showBackButton
+      leading: showBackButton && !isSearching
           ? IconButton(
               icon: Transform.flip(
                 flipX: Directionality.of(context) == TextDirection.rtl,
                 child: AppSvgIcon(
                   AssetsConstants.arrowLeftIcon,
-                  size: 24,
+                  size: ThemeConstants.iconL,
                   color: titleColor,
                 ),
               ),
@@ -157,30 +199,16 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             )
           : null,
       actions: [
-        if (_hasSearch)
-          AnimatedSwitcher(
-            duration: const Duration(milliseconds: 200),
-            child: isSearching
-                ? IconButton(
-                    key: const ValueKey('close'),
-                    icon: AppSvgIcon(
-                      AssetsConstants.closeIcon,
-                      size: 18,
-                      color: context.cs.onSurfaceVariant,
-                    ),
-                    onPressed: onSearchCancel,
-                    color: context.cs.onSurfaceVariant,
-                  )
-                : IconButton(
-                    key: const ValueKey('searchBtn'),
-                    icon: AppSvgIcon(
-                      AssetsConstants.searchIcon,
-                      size: 18,
-                      color: context.cs.onSurfaceVariant,
-                    ),
-                    onPressed: onSearchStart,
-                    color: context.cs.onSurfaceVariant,
-                  ),
+        if (_hasSearch && !isSearching)
+          IconButton(
+            key: const ValueKey('searchBtn'),
+            icon: AppSvgIcon(
+              AssetsConstants.searchIcon,
+              size: ThemeConstants.iconS,
+              color: context.cs.onSurfaceVariant,
+            ),
+            onPressed: onSearchStart,
+            color: context.cs.onSurfaceVariant,
           ),
         ...?actions,
         if (currentStep != null && totalSteps != null)
@@ -211,8 +239,8 @@ class _StepProgressRing extends StatelessWidget {
     final progress = (currentStep + 1) / totalSteps;
     return ExcludeSemantics(
       child: SizedBox(
-        width: 34,
-        height: 34,
+        width: context.screenWidth * 0.091,
+        height: context.screenWidth * 0.091,
         child: Stack(
           alignment: Alignment.center,
           children: [
@@ -249,12 +277,16 @@ class _AppBarSearchField extends StatelessWidget {
   final TextEditingController controller;
   final String hint;
   final ValueChanged<String> onChanged;
+  final VoidCallback? onCancel;
+  final String? cancelIcon;
 
   const _AppBarSearchField({
     super.key,
     required this.controller,
     required this.hint,
     required this.onChanged,
+    this.onCancel,
+    this.cancelIcon,
   });
 
   @override
@@ -262,21 +294,41 @@ class _AppBarSearchField extends StatelessWidget {
     return ValueListenableBuilder<TextEditingValue>(
       valueListenable: controller,
       builder: (context, value, _) {
+        final borders = AppDecorations.inputBorderSet(context.cs);
         return Container(
-          height: 40,
+          height: context.screenHeight * 0.049,
           decoration: AppDecorations.card(
-            color: context.cs.onSurface.withValues(alpha: 0.07),
+            color: context.cs.surface,
             borderRadius: AppRadius.r10,
+            border: Border.fromBorderSide(borders.enabledBorder.borderSide),
           ),
           child: Row(
             children: [
-              AppSpacing.w12,
-              AppSvgIcon(
-                AssetsConstants.searchIcon,
-                size: 18,
-                color: context.cs.onSurfaceVariant,
+              InkWell(
+                key: const ValueKey('searchCancel'),
+                onTap: onCancel,
+                borderRadius: AppRadius.r10,
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.symmetric(
+                    horizontal: ThemeConstants.paddingS,
+                  ),
+                  child: cancelIcon != null
+                      ? AppSvgIcon(
+                          cancelIcon!,
+                          size: ThemeConstants.iconS,
+                          color: context.cs.onSurfaceVariant,
+                        )
+                      : Transform.flip(
+                          flipX: Directionality.of(context) == TextDirection.rtl,
+                          child: AppSvgIcon(
+                            AssetsConstants.arrowLeftIcon,
+                            size: ThemeConstants.iconS,
+                            color: context.cs.onSurfaceVariant,
+                          ),
+                        ),
+                ),
               ),
-              AppSpacing.w8,
+              AppSpacing.w4,
               Expanded(
                 child: AppTextField(
                   controller: controller,
@@ -298,7 +350,7 @@ class _AppBarSearchField extends StatelessWidget {
                     padding: const EdgeInsetsDirectional.all(ThemeConstants.paddingS),
                     child: AppSvgIcon(
                       AssetsConstants.closeCircleIcon,
-                      size: 18,
+                      size: ThemeConstants.iconS,
                       color: context.cs.onSurfaceVariant,
                     ),
                   ),

@@ -23,7 +23,6 @@
       "mobile": "+91 9876543210",
       "order_note": "",
       "total": 195.3,
-      "delivery_charge": 51,
       "tax_amount": 9.3,
       "tax_percentage": 15,
       "paid_wallet": 0,
@@ -231,6 +230,25 @@
           "date": "2026-08-11T05:45:13.000000Z",
           "image_url": "https://admin-snapbuy.wrteam.me/storage/https://admin-snapbuy.wrteam.me/storage/products/dal/rajdhani-arhar-dal-1kg.webp",
           "prescription_url": ""
+        }
+      ],
+      "delivery_charges": {
+        "amount": 51,
+        "taxable_amount": 45.0,
+        "tax_amount": 6.0,
+        "tax_name": "Delivery Tax",
+        "tax_rate": 5
+      },
+      "tax_breakdown": [
+        {
+          "name": "CGST",
+          "rate": 7.5,
+          "amount": 4.65
+        },
+        {
+          "name": "SGST",
+          "rate": 7.5,
+          "amount": 4.65
         }
       ]
     },

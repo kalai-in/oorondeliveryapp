@@ -4,6 +4,7 @@ import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/core/localization/language_label_key.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
 import 'package:deliveryboy/utils/extensions/localization_extensions.dart';
+import 'package:deliveryboy/utils/extensions/size_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:deliveryboy/core/theme/app_decorations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -103,11 +104,11 @@ class _StatItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      spacing: 10,
+      spacing: ThemeConstants.spaceM,
       children: [
         Container(
-          width: 38,
-          height: 38,
+          width: context.screenWidth * 0.101,
+          height: context.screenWidth * 0.101,
           padding: const EdgeInsetsDirectional.all(9),
           decoration: AppDecorations.card(
             color: color,
@@ -116,13 +117,13 @@ class _StatItem extends StatelessWidget {
           child: AppSvgIcon(
             icon,
             color: context.cs.onPrimary,
-            size: 18,
+            size: ThemeConstants.iconS,
             fit: BoxFit.scaleDown,
           ),
         ),
         Column(
           crossAxisAlignment: .start,
-          spacing: 3,
+          spacing: ThemeConstants.spaceXS,
           children: [
             AppText(
               label,

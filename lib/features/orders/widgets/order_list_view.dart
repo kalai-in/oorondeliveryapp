@@ -52,7 +52,7 @@ class OrderListView<T> extends StatelessWidget {
         ThemeConstants.paddingL,
         ThemeConstants.paddingM,
         ThemeConstants.paddingL,
-        ThemeConstants.paddingXXL,
+        ThemeConstants.paddingS,
       ),
       itemBuilder: itemBuilder,
     );

@@ -14,7 +14,7 @@ import 'package:deliveryboy/core/localization/language_label_key.dart';
 import 'package:deliveryboy/features/orders/cubit/order_detail_cubit.dart';
 import 'package:deliveryboy/features/orders/models/order_detail_model.dart';
 import 'package:deliveryboy/features/orders/widgets/delivery_otp_bottom_sheet.dart';
-import 'package:deliveryboy/features/orders/widgets/order_status_sheet.dart';
+import 'package:deliveryboy/features/orders/widgets/order_status_slide_bar.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../../helpers/fake_api_adapter.dart';
@@ -25,7 +25,7 @@ import '../../../helpers/test_logging.dart';
 class MockOrderDetailCubit extends MockCubit<OrderDetailState>
     implements OrderDetailCubit {}
 
-/// OrderStatusActionButton builds its own OrderStatusListCubit and
+/// OrderStatusSlideBar.normal builds its own OrderStatusListCubit and
 /// OrderStatusUpdateCubit internally, so mock cubits can't be injected. The
 /// real cubits run instead, driven through the ApiClient adapter seam.
 void main() {
@@ -83,7 +83,7 @@ void main() {
         child: pumpTestWidget(
           Align(
             alignment: Alignment.bottomCenter,
-            child: OrderStatusActionButton(detail: data),
+            child: OrderStatusSlideBar.normal(detail: data),
           ),
         ),
       ),
@@ -137,7 +137,7 @@ void main() {
     await tester.pumpWidget(
       BlocProvider<OrderDetailCubit>.value(
         value: orderDetailCubit,
-        child: pumpTestWidget(OrderStatusActionButton(detail: detail)),
+        child: pumpTestWidget(OrderStatusSlideBar.normal(detail: detail)),
       ),
     );
     // Only the first frame — the fetch has not resolved yet.

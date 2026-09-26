@@ -21,6 +21,10 @@ class LanguageLabelKeys {
   static const String inclTax = "incl_tax";
   static const String deliveryCharge = "delivery_charge";
   static const String tax = "tax";
+  static const String taxRate = "tax_rate";
+  static const String taxBreakdown = "tax_breakdown";
+  static const String refundable = "refundable";
+  static const String notRefundable = "not_refundable";
   static const String discount = "discount";
   static const String promoDiscount = "promo_discount";
   static const String walletUsed = "wallet_used";
@@ -46,6 +50,7 @@ class LanguageLabelKeys {
   static const String noMoreReturnOrders = "no_more_return_orders";
   static const String pullDownToRefresh = "pull_down_to_refresh";
   static const String dateRange = "date_range";
+  static const String startDateEndDate = "start_date_end_date";
   static const String items = "items";
   static const String delivery = "delivery";
   static const String customer = "customer";
@@ -90,6 +95,8 @@ class LanguageLabelKeys {
   static const String customerDirectionLabel = "customer_direction_label";
   static const String sellerDirectionLabel = "seller_direction_label";
   static const String trackOrder = "track_order";
+  static const String scanQrCode = "scan_qr_code";
+  static const String orderNotFoundForCode = "order_not_found_for_code";
   static const String country = "country";
   static const String selectCountry = "select_country";
   static const String zone = "zone";
@@ -110,6 +117,7 @@ class LanguageLabelKeys {
   static const String additionalCharges = "additional_charges";
   static const String surgeCharges = "surge_charges";
   static const String refundAmount = "refund_amount";
+  static const String refundCreditedToWallet = "refund_credited_to_wallet";
   static const String orderItem = "order_item";
   static const String copied = "copied";
   static const String otherItemsInOrder = "other_items_in_order";

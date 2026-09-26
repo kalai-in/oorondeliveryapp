@@ -11,7 +11,7 @@ import 'package:deliveryboy/features/orders/cubit/order_status_list_filter_cubit
 import 'package:deliveryboy/features/orders/models/ecommerce_order_model.dart';
 import 'package:deliveryboy/features/orders/models/order_model.dart';
 import 'package:deliveryboy/features/orders/models/order_status_model.dart';
-import 'package:deliveryboy/features/orders/widgets/orders_filter.dart';
+import 'package:deliveryboy/features/orders/widgets/status_filter_chips.dart';
 
 import '../../../helpers/pump_test_widget.dart';
 import '../../../helpers/test_logging.dart';

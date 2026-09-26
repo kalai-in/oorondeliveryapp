@@ -44,7 +44,7 @@ abstract final class AppConfig {
   static const String appName = 'SnapBuy Deliveryboy';
 
   // package name
-  static const String appPackageName = 'app.ooron.partners';
+  static const String appPackageName = 'app.snapbuy.deliveryboy';
 
   //osm map render url
   static const String osmMapRenderUrl =
@@ -54,7 +54,7 @@ abstract final class AppConfig {
   static const String androidNavigationUrl = "google.navigation:q=";
   static const String appleMapsDirectionUrl = "http://maps.apple.com/?daddr=";
   static const String googleMapsDirectionUrl =
-      "https://www.google.com/maps/dir/?api=1&destination=";
+      "https://tile.openstreetmap.org/{z}/{x}/{y}.png"; //"https://www.google.com/maps/dir/?api=1&destination=";
 
   // App-wide font family
   static final String? fontFamily = GoogleFonts.instrumentSans().fontFamily;

@@ -5,10 +5,12 @@ import 'package:deliveryboy/commons/widgets/app_text_field.dart';
 import 'package:deliveryboy/commons/widgets/country_picker_sheet.dart';
 import 'package:deliveryboy/core/configs/app_config.dart';
 import 'package:deliveryboy/core/constants/assets_constants.dart';
+import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/core/localization/language_label_key.dart';
 import 'package:deliveryboy/core/theme/app_spacing.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
 import 'package:deliveryboy/utils/extensions/localization_extensions.dart';
+import 'package:deliveryboy/utils/extensions/size_extensions.dart';
 import 'package:deliveryboy/utils/input_validators.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -154,11 +156,11 @@ class _CountryDialCodeChip extends StatelessWidget {
         children: [
           AppNetworkImage(
             url: country?.logoUrl ?? '',
-            width: 20,
-            height: 20,
+            width: context.screenWidth * 0.053,
+            height: context.screenWidth * 0.053,
             errorWidget: AppSvgIcon(
               AssetsConstants.flagIcon,
-              size: 16,
+              size: ThemeConstants.iconM,
               color: context.cs.onSurfaceVariant,
             ),
           ),
@@ -171,11 +173,11 @@ class _CountryDialCodeChip extends StatelessWidget {
           if (!disabled)
             AppSvgIcon(
               AssetsConstants.arrowDownIcon,
-              size: 18,
+              size: ThemeConstants.iconS,
               color: context.cs.onSurfaceVariant,
             ),
           AppSpacing.w6,
-          Container(width: 1, height: 22, color: context.cs.outline),
+          Container(width: 1, height: context.screenHeight * 0.027, color: context.cs.outline),
         ],
       ),
     );

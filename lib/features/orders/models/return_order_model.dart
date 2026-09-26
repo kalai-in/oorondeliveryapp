@@ -1,6 +1,8 @@
 import 'package:deliveryboy/features/orders/models/additional_charges_model.dart';
 import 'package:deliveryboy/features/orders/models/address_model.dart';
 import 'package:deliveryboy/features/orders/models/delivery_boy_bonus_details_model.dart';
+import 'package:deliveryboy/features/orders/models/delivery_charges_model.dart';
+import 'package:deliveryboy/features/orders/models/tax_charges_model.dart';
 import 'package:deliveryboy/features/orders/models/return_order_status.dart';
 import 'package:deliveryboy/features/orders/models/storeinfo_model.dart';
 import 'package:deliveryboy/features/orders/models/surge_charges_model.dart';
@@ -39,6 +41,7 @@ class ReturnRequestData {
   String? paymentMethod;
   double? finalTotal;
   String? currency;
+  String? decimalPoint;
   String? returnNumber;
   int? zoneId;
   String? cityName;
@@ -81,6 +84,7 @@ class ReturnRequestData {
     this.paymentMethod,
     this.finalTotal,
     this.currency,
+    this.decimalPoint,
     this.returnNumber,
     this.zoneId,
     this.cityName,
@@ -130,6 +134,7 @@ class ReturnRequestData {
     paymentMethod = json['payment_method']?.toString();
     finalTotal = toSafeDouble(json['final_total']);
     currency = json['currency']?.toString();
+    decimalPoint = json['decimal_point']?.toString();
     returnNumber = json['return_number']?.toString();
     zoneId = toSafeIntOrNull(json['zone_id']);
     cityName = json['city_name']?.toString();
@@ -189,6 +194,7 @@ class ReturnRequestData {
     data['payment_method'] = paymentMethod;
     data['final_total'] = finalTotal;
     data['currency'] = currency;
+    data['decimal_point'] = decimalPoint;
     data['return_number'] = returnNumber;
     data['zone_id'] = zoneId;
     data['city_name'] = cityName;
@@ -248,9 +254,10 @@ class ReturnItem {
   double? taxAmount;
   double? taxPercentage;
   double? subTotal;
-  double? deliveryCharge;
+  DeliveryCharges? deliveryCharges;
   List<AdditionalCharges>? additionalCharges;
   List<SurgeCharges>? surgeCharges;
+  List<TaxCharges>? taxBreakdown;
   double? promoDiscount;
   double? walletBalance;
   double? finalTotal;
@@ -279,6 +286,7 @@ class ReturnItem {
   String? image;
   String? statusName;
   double? amountToRefund;
+  String? decimalPoint;
 
   ReturnItem({
     this.id,
@@ -296,9 +304,10 @@ class ReturnItem {
     this.taxAmount,
     this.taxPercentage,
     this.subTotal,
-    this.deliveryCharge,
+    this.deliveryCharges,
     this.additionalCharges,
     this.surgeCharges,
+    this.taxBreakdown,
     this.promoDiscount,
     this.walletBalance,
     this.finalTotal,
@@ -327,6 +336,7 @@ class ReturnItem {
     this.image,
     this.statusName,
     this.amountToRefund,
+    this.decimalPoint,
   });
 
   ReturnItem.fromJson(Map<String, dynamic> json) {
@@ -352,7 +362,9 @@ class ReturnItem {
     taxAmount = toSafeDouble(json['tax_amount']);
     taxPercentage = toSafeDouble(json['tax_percentage']);
     subTotal = toSafeDouble(json['sub_total']);
-    deliveryCharge = toSafeDouble(json['delivery_charge']);
+    deliveryCharges = json['delivery_charges'] is Map<String, dynamic>
+        ? DeliveryCharges.fromJson(json['delivery_charges'] as Map<String, dynamic>)
+        : null;
     additionalCharges = toSafeList(
       json['additional_charges'],
       (v) => AdditionalCharges.fromJson(v as Map<String, dynamic>),
@@ -360,6 +372,10 @@ class ReturnItem {
     surgeCharges = toSafeList(
       json['surge_charges'],
       (v) => SurgeCharges.fromJson(v as Map<String, dynamic>),
+    );
+    taxBreakdown = toSafeList(
+      json['tax_breakdown'],
+      (v) => TaxCharges.fromJson(v as Map<String, dynamic>),
     );
     promoDiscount = toSafeDouble(json['promo_discount']);
     walletBalance = toSafeDouble(json['wallet_balance']);
@@ -391,6 +407,7 @@ class ReturnItem {
     image = json['image']?.toString();
     statusName = json['status_name']?.toString();
     amountToRefund = toSafeDouble(json['amount_to_refund']);
+    decimalPoint = json['decimal_point']?.toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -416,7 +433,7 @@ class ReturnItem {
     data['tax_amount'] = taxAmount;
     data['tax_percentage'] = taxPercentage;
     data['sub_total'] = subTotal;
-    data['delivery_charge'] = deliveryCharge;
+    data['delivery_charges'] = deliveryCharges?.toJson();
     if (additionalCharges != null) {
       data['additional_charges'] = additionalCharges!
           .map((v) => v.toJson())
@@ -424,6 +441,9 @@ class ReturnItem {
     }
     if (surgeCharges != null) {
       data['surge_charges'] = surgeCharges!.map((v) => v.toJson()).toList();
+    }
+    if (taxBreakdown != null) {
+      data['tax_breakdown'] = taxBreakdown!.map((v) => v.toJson()).toList();
     }
     data['promo_discount'] = promoDiscount;
     data['wallet_balance'] = walletBalance;
@@ -455,6 +475,7 @@ class ReturnItem {
     data['image'] = image;
     data['status_name'] = statusName;
     data['amount_to_refund'] = amountToRefund;
+    data['decimal_point'] = decimalPoint;
     return data;
   }
 }

@@ -31,7 +31,7 @@ class DashboardListCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: .start,
-      spacing: 10,
+      spacing: ThemeConstants.spaceM,
       children: [
         if (title != null && title!.isNotEmpty)
           AppText(
@@ -62,7 +62,7 @@ class DashboardListCard extends StatelessWidget {
                   padding: const EdgeInsetsDirectional.symmetric(vertical: 3),
                   child: Column(
                     crossAxisAlignment: .start,
-                    spacing: 6,
+                    spacing: ThemeConstants.spaceS,
                     children: [
                       Row(
                         children: [

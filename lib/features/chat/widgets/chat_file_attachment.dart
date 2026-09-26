@@ -7,6 +7,7 @@ import 'package:deliveryboy/core/localization/language_label_key.dart';
 import 'package:deliveryboy/core/theme/app_radius.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
 import 'package:deliveryboy/utils/extensions/localization_extensions.dart';
+import 'package:deliveryboy/utils/extensions/size_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:deliveryboy/core/theme/app_decorations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -73,8 +74,8 @@ class _ChatFileAttachmentState extends State<ChatFileAttachment> {
           mainAxisSize: .min,
           children: [
             Container(
-              width: 38,
-              height: 38,
+              width: context.screenWidth * 0.101,
+              height: context.screenWidth * 0.101,
               decoration: AppDecorations.card(
                 color: isMe
                     ? context.cs.onPrimary.withValues(alpha: 0.2)
@@ -91,7 +92,8 @@ class _ChatFileAttachmentState extends State<ChatFileAttachment> {
                           ? AssetsConstants.playCircleIcon
                           : AssetsConstants.fileIcon,
                       color: isMe ? context.cs.onPrimary : context.cs.primary,
-                      size: 20,
+                      size: ThemeConstants.iconL,
+                      fit: BoxFit.scaleDown,
                     ),
             ),
             const SizedBox(width: 10),

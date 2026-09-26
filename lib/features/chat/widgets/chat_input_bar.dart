@@ -149,9 +149,8 @@ class _ChatInputBarState extends State<ChatInputBar> {
 
   Future<void> _pickFile({bool fromSheet = false}) async {
     if (fromSheet) AppNavigator.pop(context);
-    final result = await FilePicker.pickFiles();
-    if (result == null || result.isEmpty) return;
-    final path = result.first.path;
+    final file = await FilePicker.pickFile();
+    final path = file?.path;
     if (path == null) return;
     final ext = p.extension(path).toLowerCase().replaceFirst('.', '');
     if (!_isWithinSizeLimit(
@@ -229,7 +228,7 @@ class _ChatInputBarState extends State<ChatInputBar> {
                               ? AssetsConstants.keyboardIcon
                               : AssetsConstants.emojiIcon,
                           color: context.cs.onSurfaceVariant,
-                          size: 22,
+                          size: ThemeConstants.iconM,
                         ),
                         padding: EdgeInsetsDirectional.zero,
                         constraints: const BoxConstraints(
@@ -255,7 +254,7 @@ class _ChatInputBarState extends State<ChatInputBar> {
                         icon: AppSvgIcon(
                           AssetsConstants.attachmentIcon,
                           color: context.cs.onSurfaceVariant,
-                          size: 20,
+                          size: ThemeConstants.iconM,
                         ),
                         padding: EdgeInsetsDirectional.zero,
                         constraints: const BoxConstraints(
@@ -277,8 +276,8 @@ class _ChatInputBarState extends State<ChatInputBar> {
                     : _startRecording,
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 180),
-                  width: 48,
-                  height: 48,
+                  width: context.screenWidth * 0.128,
+                  height: context.screenWidth * 0.128,
                   decoration: AppDecorations.circle(
                     color: _isRecording ? context.cs.error : context.cs.primary,
                   ),
@@ -297,7 +296,7 @@ class _ChatInputBarState extends State<ChatInputBar> {
                             ? 'send'
                             : 'mic',
                       ),
-                      size: 22,
+                      size: ThemeConstants.iconM,
                       color: context.cs.onPrimary,
                     ),
                   ),

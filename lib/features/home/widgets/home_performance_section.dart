@@ -1,5 +1,6 @@
 import 'package:deliveryboy/commons/cubit/country_settings_cubit.dart';
 import 'package:deliveryboy/core/constants/assets_constants.dart';
+import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/core/localization/language_label_key.dart';
 import 'package:deliveryboy/utils/app_date_formatter.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
@@ -57,7 +58,7 @@ class HomePerformanceSection extends StatelessWidget {
         ),
         AppSpacing.h16,
         Row(
-          spacing: 16,
+          spacing: ThemeConstants.spaceL,
           children: [
             EarningsStatCard(
               icon: AssetsConstants.walletIcon,
@@ -75,7 +76,7 @@ class HomePerformanceSection extends StatelessWidget {
         ),
         AppSpacing.h16,
         Row(
-          spacing: 16,
+          spacing: ThemeConstants.spaceL,
           children: [
             EarningsStatCard(
               icon: AssetsConstants.cashCollectionIcon,

@@ -5,6 +5,7 @@ import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/core/localization/language_label_key.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
 import 'package:deliveryboy/utils/extensions/localization_extensions.dart';
+import 'package:deliveryboy/utils/extensions/size_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:deliveryboy/core/theme/app_decorations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -49,8 +50,8 @@ class WalletBalanceCard extends StatelessWidget {
         crossAxisAlignment: .center,
         children: [
           Container(
-            width: 48,
-            height: 48,
+            width: context.screenWidth * 0.128,
+            height: context.screenWidth * 0.128,
             decoration: AppDecorations.card(
               color: context.cs.primary,
               borderRadius: AppRadius.r14,
@@ -58,7 +59,7 @@ class WalletBalanceCard extends StatelessWidget {
             child: AppSvgIcon(
               AssetsConstants.walletIcon,
               color: context.cs.onPrimary,
-              size: 24,
+              size: ThemeConstants.iconL,
               fit: BoxFit.scaleDown,
             ),
           ),
@@ -68,7 +69,7 @@ class WalletBalanceCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: .start,
                 mainAxisSize: .min,
-                spacing: 4,
+                spacing: ThemeConstants.spaceXS,
                 children: [
                   AppText(
                     context.translate(LanguageLabelKeys.availableBalance),

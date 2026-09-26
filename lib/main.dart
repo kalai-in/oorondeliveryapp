@@ -1,6 +1,7 @@
 import 'package:deliveryboy/core/localization/cubit/language_cubit.dart';
 import 'package:deliveryboy/core/localization/cubit/language_select_cubit.dart';
 import 'package:deliveryboy/core/localization/cubit/localization_cubit.dart';
+import 'package:deliveryboy/core/localization/services/localization_service.dart';
 import 'package:deliveryboy/core/configs/app_config.dart';
 import 'package:deliveryboy/core/localization/locale_resolver.dart';
 import 'package:deliveryboy/core/api/dio_interceptor.dart';
@@ -202,6 +203,11 @@ class MyApp extends StatelessWidget {
                     theme: AppTheme.lightTheme(lightColor),
                     darkTheme: AppTheme.darkTheme(darkColor),
                     themeMode: themeState.themeMode,
+                    // Disabled: MaterialApp's own theme cross-fade otherwise
+                    // plays underneath our circular-reveal overlay, washing
+                    // out its colors while both animate at once. Our reveal
+                    // is the only theme transition that should be visible.
+                    themeAnimationDuration: Duration.zero,
                     locale: locale,
                     supportedLocales: [locale],
                     localeResolutionCallback: (_, _) => locale,
@@ -212,8 +218,13 @@ class MyApp extends StatelessWidget {
                     ],
                     initialRoute: RouteNames.splash,
                     onGenerateRoute: AppRouter.generateRoute,
-                    builder: (_, child) =>
-                        Directionality(textDirection: direction, child: child!),
+                    builder: (_, child) => LocalizationScope(
+                      notifier: LocalizationService.instance,
+                      child: Directionality(
+                        textDirection: direction,
+                        child: child!,
+                      ),
+                    ),
                   );
                 },
               );

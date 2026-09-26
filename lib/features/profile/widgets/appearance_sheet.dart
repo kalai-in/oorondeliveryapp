@@ -1,6 +1,7 @@
 import 'package:deliveryboy/commons/widgets/app_radio_option_tile.dart';
 import 'package:deliveryboy/commons/widgets/app_svg_icon.dart';
 import 'package:deliveryboy/core/constants/assets_constants.dart';
+import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/core/localization/language_label_key.dart';
 import 'package:deliveryboy/core/theme/cubit/theme_cubit.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
@@ -44,7 +45,7 @@ class _AppearanceSheet extends StatelessWidget {
           AppRadioOptionTile<ThemeMode>(
             leading: AppSvgIcon(
               AssetsConstants.systemThemeIcon,
-              size: 22,
+              size: ThemeConstants.iconM,
               color: context.cs.onSurfaceVariant,
             ),
             title: context.translate(LanguageLabelKeys.systemDefault),
@@ -55,7 +56,7 @@ class _AppearanceSheet extends StatelessWidget {
           AppRadioOptionTile<ThemeMode>(
             leading: AppSvgIcon(
               AssetsConstants.lightThemeIcon,
-              size: 22,
+              size: ThemeConstants.iconM,
               color: context.cs.onSurfaceVariant,
             ),
             title: context.translate(LanguageLabelKeys.light),
@@ -66,7 +67,7 @@ class _AppearanceSheet extends StatelessWidget {
           AppRadioOptionTile<ThemeMode>(
             leading: AppSvgIcon(
               AssetsConstants.themeIcon,
-              size: 22,
+              size: ThemeConstants.iconM,
               color: context.cs.onSurfaceVariant,
             ),
             title: context.translate(LanguageLabelKeys.dark),

@@ -1,11 +1,13 @@
 import 'package:deliveryboy/commons/widgets/app_svg_icon.dart';
 import 'package:deliveryboy/core/constants/assets_constants.dart';
+import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/core/localization/language_label_key.dart';
 import 'package:deliveryboy/core/theme/app_decorations.dart';
 import 'package:deliveryboy/core/theme/app_radius.dart';
 import 'package:deliveryboy/core/theme/app_spacing.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
 import 'package:deliveryboy/utils/extensions/localization_extensions.dart';
+import 'package:deliveryboy/utils/extensions/size_extensions.dart';
 import 'package:flutter/material.dart';
 
 /// Shared date-icon + clear-filter row used by the Quick Order, Ecommerce and
@@ -48,8 +50,8 @@ class OrderDateFilterRow extends StatelessWidget {
                 end: 10,
                 top: 10,
                 child: SizedBox(
-                  width: 7,
-                  height: 7,
+                  width: context.screenWidth * 0.019,
+                  height: context.screenWidth * 0.019,
                   child: DecoratedBox(
                     decoration: AppDecorations.circle(color: context.cs.primary),
                   ),
@@ -65,8 +67,8 @@ class OrderDateFilterRow extends StatelessWidget {
               onTap: onClear,
               borderRadius: AppRadius.r10,
               child: Container(
-                width: 40,
-                height: 40,
+                width: context.screenWidth * 0.107,
+                height: context.screenWidth * 0.107,
                 alignment: Alignment.center,
                 decoration: AppDecorations.outlinedCard(
                   color: context.cs.surface,
@@ -74,7 +76,7 @@ class OrderDateFilterRow extends StatelessWidget {
                 ),
                 child: AppSvgIcon(
                   AssetsConstants.closeIcon,
-                  size: 16,
+                  size: ThemeConstants.iconM,
                   color: context.cs.onSurfaceVariant,
                 ),
               ),

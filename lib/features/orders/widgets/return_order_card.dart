@@ -1,14 +1,15 @@
 import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/features/orders/utils/payment_breakdown.dart';
 import 'package:deliveryboy/features/orders/widgets/payment_summary_section.dart';
-import 'package:deliveryboy/utils/app_date_formatter.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
+import 'package:deliveryboy/utils/extensions/num_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:deliveryboy/core/theme/app_decorations.dart';
 import '../models/return_order_model.dart';
 import '../../../commons/widgets/status_chip.dart';
 import 'package:deliveryboy/core/theme/app_spacing.dart';
 import 'package:deliveryboy/commons/widgets/app_text.dart';
+import 'order_card_shared.dart';
 
 class ReturnOrderCard extends StatelessWidget {
   final ReturnRequestData order;
@@ -49,39 +50,22 @@ class ReturnOrderCard extends StatelessWidget {
             // Section 1 — Return ID + status + date
             Padding(
               padding: const EdgeInsetsDirectional.fromSTEB(14, ThemeConstants.paddingM, 14, ThemeConstants.paddingM),
-              child: Row(
-                crossAxisAlignment: .start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: .start,
-                      children: [
-                        AppText(
-                          '${order.returnNumber ?? order.id}',
-                          style: context.tt.titleSmall?.copyWith(
-                            fontSize: 15,
-                            color: context.cs.onSurface,
-                          ),
-                        ),
-                        AppSpacing.h4,
-                        AppText(
-                          AppDateFormatter.formatDateTime(order.date),
-                          style: context.tt.bodySmall?.copyWith(
-                            color: context.cs.onSurfaceVariant,
-                          ),
-                          maxLines: 1,
-                          overflow: .ellipsis,
-                        ),
-                      ],
-                    ),
-                  ),
-                  AppSpacing.w8,
-                  StatusChip.fromReturnOrderStatus(
-                    context,
-                    order.status,
-                    orderStatusName: order.orderStatusName,
-                  ),
-                ],
+              child: OrderCardHeader(
+                orderNumber: '${order.returnNumber ?? order.id}',
+                date: order.date,
+                numberStyle: context.tt.titleSmall?.copyWith(
+                  fontSize: 15,
+                  color: context.cs.onSurface,
+                ),
+                dateStyle: context.tt.bodySmall?.copyWith(
+                  color: context.cs.onSurfaceVariant,
+                ),
+                spacing: 4,
+                statusChip: StatusChip.fromReturnOrderStatus(
+                  context,
+                  order.status,
+                  orderStatusName: order.orderStatusName,
+                ),
               ),
             ),
 
@@ -149,7 +133,7 @@ class ReturnOrderCard extends StatelessWidget {
                   ),
                   AppSpacing.w8,
                   AppText(
-                    '${order.currency ?? ''}${breakdown.combinedTotalAmount.toStringAsFixed(0)}',
+                    '${order.currency ?? ''}${breakdown.combinedTotalAmount.trimmedFixed()}',
                     style: context.tt.titleSmall?.copyWith(
                       fontWeight: FontWeight.w700,
                       color: context.cs.onSurface,

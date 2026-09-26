@@ -10,6 +10,7 @@ import 'package:deliveryboy/core/theme/app_radius.dart';
 import 'package:deliveryboy/features/notifications/widgets/notification_settings_skeleton_loader.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
 import 'package:deliveryboy/utils/extensions/localization_extensions.dart';
+import 'package:deliveryboy/utils/extensions/size_extensions.dart';
 import 'package:deliveryboy/commons/widgets/empty_state_widget.dart';
 import 'package:deliveryboy/features/notifications/models/notification_settings_model.dart';
 import 'package:deliveryboy/features/notifications/widgets/notification_save_bar.dart';
@@ -31,6 +32,7 @@ class NotificationScreen extends StatefulWidget {
 class _NotificationScreenState extends State<NotificationScreen>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
+  final _appBarShadow = ValueNotifier<bool>(false);
 
   @override
   void initState() {
@@ -41,6 +43,7 @@ class _NotificationScreenState extends State<NotificationScreen>
   @override
   void dispose() {
     _tabController.dispose();
+    _appBarShadow.dispose();
     super.dispose();
   }
 
@@ -63,6 +66,7 @@ class _NotificationScreenState extends State<NotificationScreen>
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             appBar: CustomAppBar(
               title: context.translate(LanguageLabelKeys.notifications),
+              shadowListenable: _appBarShadow,
               // Tabs would sit above an empty body while offline.
               bottom: isOffline
                   ? null
@@ -158,9 +162,21 @@ class _NotificationScreenState extends State<NotificationScreen>
     return TabBarView(
       controller: _tabController,
       children: [
-        _ChannelList(statuses: statuses, channel: _NotifChannel.email),
-        _ChannelList(statuses: statuses, channel: _NotifChannel.mobile),
-        _ChannelList(statuses: statuses, channel: _NotifChannel.sms),
+        _ChannelList(
+          statuses: statuses,
+          channel: _NotifChannel.email,
+          onScrolledChanged: (v) => _appBarShadow.value = v,
+        ),
+        _ChannelList(
+          statuses: statuses,
+          channel: _NotifChannel.mobile,
+          onScrolledChanged: (v) => _appBarShadow.value = v,
+        ),
+        _ChannelList(
+          statuses: statuses,
+          channel: _NotifChannel.sms,
+          onScrolledChanged: (v) => _appBarShadow.value = v,
+        ),
       ],
     );
   }
@@ -193,7 +209,7 @@ class _NotifTabBar extends StatelessWidget implements PreferredSizeWidget {
     return Container(
       margin: const EdgeInsetsDirectional.fromSTEB(ThemeConstants.paddingL, ThemeConstants.paddingXS, ThemeConstants.paddingL, ThemeConstants.paddingM),
       padding: const EdgeInsetsDirectional.all(ThemeConstants.paddingXS),
-      height: 44,
+      height: context.screenHeight * 0.054,
       decoration: AppDecorations.card(
         color: context.cs.surfaceContainer,
         borderRadius: AppRadius.r12,
@@ -235,19 +251,53 @@ class _NotifTabBar extends StatelessWidget implements PreferredSizeWidget {
 
 // ── Channel list (one tab) ────────────────────────────────────────────────────
 
-class _ChannelList extends StatelessWidget {
+class _ChannelList extends StatefulWidget {
   final List<AppNotificationSettingsData> statuses;
   final _NotifChannel channel;
+  final ValueChanged<bool>? onScrolledChanged;
 
-  const _ChannelList({required this.statuses, required this.channel});
+  const _ChannelList({
+    required this.statuses,
+    required this.channel,
+    this.onScrolledChanged,
+  });
+
+  @override
+  State<_ChannelList> createState() => _ChannelListState();
+}
+
+class _ChannelListState extends State<_ChannelList> {
+  final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_notifyScrolled);
+  }
+
+  void _notifyScrolled() {
+    widget.onScrolledChanged?.call(
+      _scrollController.hasClients && _scrollController.offset > 0,
+    );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_notifyScrolled);
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final statuses = widget.statuses;
+    final channel = widget.channel;
     return RefreshIndicator(
       color: context.cs.primary,
       onRefresh: () async =>
           context.read<NotificationCubit>().getNotificationSettings(),
       child: ListView.builder(
+        controller: _scrollController,
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsetsDirectional.fromSTEB(ThemeConstants.paddingL, ThemeConstants.paddingL, ThemeConstants.paddingL, ThemeConstants.paddingL),
         itemCount: statuses.length,

@@ -29,6 +29,7 @@ class EarningsScreen extends StatefulWidget {
 
 class _EarningsScreenState extends State<EarningsScreen> {
   final DashboardCubit _cubit = DashboardCubit();
+  final _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -39,6 +40,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
   @override
   void dispose() {
     _cubit.close();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -65,6 +67,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
               appBar: CustomAppBar(
                 title: context.translate(LanguageLabelKeys.earnings),
                 showBackButton: false,
+                scrollController: _scrollController,
               ),
               // Offline state lives in the body so the tab keeps its app bar and
               // the bottom navigation bar stays reachable.
@@ -99,13 +102,14 @@ class _EarningsScreenState extends State<EarningsScreen> {
                             color: context.cs.primary,
                             onRefresh: () => _cubit.getDashboard(),
                             child: SingleChildScrollView(
+                              controller: _scrollController,
                               physics: const AlwaysScrollableScrollPhysics(),
                               padding: const EdgeInsetsDirectional.only(
                                 bottom: ThemeConstants.spaceXXXL,
                               ),
                               child: Column(
                                 crossAxisAlignment: .start,
-                                spacing: 20,
+                                spacing: ThemeConstants.spaceXL,
                                 children: [
                                   EarningsSummaryCard(
                                     totalEarning:
@@ -120,7 +124,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                                         ),
                                     child: Column(
                                       crossAxisAlignment: .start,
-                                      spacing: 20,
+                                      spacing: ThemeConstants.spaceXL,
                                       children: [
                                         EarningsQuickAccessSection(
                                           wallet: data?.wallet,

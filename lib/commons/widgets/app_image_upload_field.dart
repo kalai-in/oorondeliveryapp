@@ -9,6 +9,7 @@ import 'package:deliveryboy/core/theme/app_decorations.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../utils/extensions/context_extensions.dart';
 import '../../utils/extensions/localization_extensions.dart';
+import '../../utils/extensions/size_extensions.dart';
 import 'package:deliveryboy/core/theme/app_spacing.dart';
 import 'package:deliveryboy/core/theme/app_radius.dart';
 import 'package:deliveryboy/core/constants/navigation_service.dart';
@@ -44,7 +45,7 @@ class AppImageUploadField extends StatelessWidget {
           ListTile(
             leading: AppSvgIcon(
               AssetsConstants.cameraIcon,
-              size: 24,
+              size: ThemeConstants.iconL,
               color: context.cs.onSurfaceVariant,
             ),
             title: AppText(ctx.translate(LanguageLabelKeys.takePhoto)),
@@ -53,7 +54,7 @@ class AppImageUploadField extends StatelessWidget {
           ListTile(
             leading: AppSvgIcon(
               AssetsConstants.galleryIcon,
-              size: 24,
+              size: ThemeConstants.iconL,
               color: context.cs.onSurfaceVariant,
             ),
             title: AppText(ctx.translate(LanguageLabelKeys.chooseFromGallery)),
@@ -77,7 +78,7 @@ class AppImageUploadField extends StatelessWidget {
     return GestureDetector(
       onTap: () => _pick(context),
       child: Container(
-        height: 130,
+        height: context.screenHeight * 0.16,
         width: double.infinity,
         decoration: AppDecorations.card(
           color: context.cs.surface,
@@ -120,7 +121,7 @@ class AppImageUploadField extends StatelessWidget {
                           children: [
                             AppSvgIcon(
                               AssetsConstants.editIcon,
-                              size: 14,
+                              size: ThemeConstants.iconXS,
                               color: context.cs.onPrimary,
                             ),
                             AppText(
@@ -149,7 +150,7 @@ class AppImageUploadField extends StatelessWidget {
     return [
       AppSvgIcon(
         AssetsConstants.uploadIcon,
-        size: 32,
+        size: ThemeConstants.iconXL,
         color: hasError ? context.cs.error : context.cs.primary,
       ),
       AppSpacing.h8,

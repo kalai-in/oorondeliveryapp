@@ -58,7 +58,7 @@ class AppButton extends StatelessWidget {
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         ),
         child: isLoading
-            ? LoadingWidget(size: 16)
+            ? LoadingWidget(size: ThemeConstants.loaderSizeS)
             : _child(context, color ?? context.cs.primary),
       );
     }
@@ -131,7 +131,7 @@ class AppButton extends StatelessWidget {
 
   Widget _child(BuildContext context, Color color) {
     if (isLoading) {
-      return LoadingWidget(size: 22);
+      return LoadingWidget(size: ThemeConstants.loaderSize);
     }
     if (prefixIcon != null) {
       return Row(

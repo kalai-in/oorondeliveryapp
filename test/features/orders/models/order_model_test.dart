@@ -52,10 +52,16 @@ void main() {
     expect(order.total, 195.3);
     printTestLog('finalTotal → expected: 246.3, actual: ${order.finalTotal}');
     expect(order.finalTotal, 246.3);
-    printTestLog('deliveryCharge → expected: 51.0, actual: ${order.deliveryCharge}');
-    expect(order.deliveryCharge, 51.0);
+    printTestLog('deliveryCharges.amount → expected: 51.0, actual: ${order.deliveryCharges?.amount}');
+    expect(order.deliveryCharges?.amount, 51.0);
+    printTestLog('deliveryCharges.taxRate → expected: 5.0, actual: ${order.deliveryCharges?.taxRate}');
+    expect(order.deliveryCharges?.taxRate, 5.0);
     printTestLog('taxAmount → expected: 9.3, actual: ${order.taxAmount}');
     expect(order.taxAmount, 9.3);
+    printTestLog('taxBreakdown length → expected: 2, actual: ${order.taxBreakdown?.length}');
+    expect(order.taxBreakdown?.length, 2);
+    printTestLog('taxBreakdown first name → expected: "CGST", actual: "${order.taxBreakdown?.first.name}"');
+    expect(order.taxBreakdown?.first.name, 'CGST');
     printTestLog('orderStatus → expected: "5", actual: "${order.orderStatus}"');
     expect(order.orderStatus, '5');
     printTestLog('orderStatusName → expected: "Out For Delivery", actual: "${order.orderStatusName}"');

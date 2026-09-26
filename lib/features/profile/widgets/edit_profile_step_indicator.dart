@@ -30,7 +30,6 @@ class EditProfileStepIndicator extends StatelessWidget {
           image: profileImage,
           imageUrl: profileImageUrl,
           onPicked: onProfileImagePicked,
-          size: 88,
         ),
       ),
     );

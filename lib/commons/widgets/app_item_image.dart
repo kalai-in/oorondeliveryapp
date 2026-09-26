@@ -1,5 +1,6 @@
 import 'package:deliveryboy/commons/widgets/app_network_image.dart';
 import 'package:deliveryboy/commons/widgets/image_placeholder.dart';
+import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/core/theme/app_radius.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +22,7 @@ class AppItemImage extends StatelessWidget {
     required this.url,
     required this.size,
     this.borderRadius = AppRadius.r10,
-    this.iconSize = 24,
+    this.iconSize = ThemeConstants.iconL,
   });
 
   @override

@@ -7,6 +7,7 @@ import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/core/localization/language_label_key.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
 import 'package:deliveryboy/utils/extensions/localization_extensions.dart';
+import 'package:deliveryboy/utils/extensions/size_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:deliveryboy/core/theme/app_decorations.dart';
 import '../../../core/theme/app_radius.dart';
@@ -40,13 +41,13 @@ class OrderTrackingNoLocation extends StatelessWidget {
                   onTap: () => AppNavigator.pop(context),
                   borderRadius: AppRadius.r12,
                   child: SizedBox(
-                    width: 44,
-                    height: 44,
+                    width: context.screenWidth * 0.117,
+                    height: context.screenWidth * 0.117,
                     child: Transform.flip(
                       flipX: Directionality.of(context) == TextDirection.rtl,
                       child: AppSvgIcon(
                         AssetsConstants.arrowLeftIcon,
-                        size: 18,
+                        size: ThemeConstants.iconS,
                         color: context.cs.onSurface,
                       ),
                     ),
@@ -62,8 +63,8 @@ class OrderTrackingNoLocation extends StatelessWidget {
                     mainAxisSize: .min,
                     children: [
                       Container(
-                        width: 90,
-                        height: 90,
+                        width: context.screenWidth * 0.24,
+                        height: context.screenWidth * 0.24,
                         decoration: AppDecorations.circle(
                           color: context.cs.errorContainer.withValues(
                             alpha: 0.1,
@@ -71,7 +72,7 @@ class OrderTrackingNoLocation extends StatelessWidget {
                         ),
                         child: AppSvgIcon(
                           AssetsConstants.locationOffIcon,
-                          size: 44,
+                          size: ThemeConstants.iconXL,
                           color: context.cs.errorContainer,
                         ),
                       ),
@@ -107,7 +108,7 @@ class OrderTrackingNoLocation extends StatelessWidget {
                       AppSpacing.h28,
                       AppButton(
                         label: context.translate(LanguageLabelKeys.tryAgain),
-                        height: 50,
+                        height: context.screenHeight * 0.062,
                         onPressed: onRetry,
                       ),
                     ],

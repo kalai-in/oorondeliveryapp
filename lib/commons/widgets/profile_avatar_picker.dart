@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:deliveryboy/commons/widgets/app_network_image.dart';
 import 'package:deliveryboy/commons/widgets/app_svg_icon.dart';
-import 'package:deliveryboy/commons/widgets/loading_widget.dart';
 import 'package:deliveryboy/core/constants/assets_constants.dart';
 import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/core/localization/language_label_key.dart';
@@ -11,6 +10,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../utils/extensions/context_extensions.dart';
 import '../../utils/extensions/localization_extensions.dart';
+import '../../utils/extensions/size_extensions.dart';
 import '../../core/constants/navigation_service.dart';
 import '../../utils/show_app_bottom_sheet.dart';
 import '../animations/slide_animation.dart';
@@ -41,7 +41,7 @@ class ProfileAvatarPicker extends StatelessWidget {
           ListTile(
             leading: AppSvgIcon(
               AssetsConstants.cameraIcon,
-              size: 24,
+              size: ThemeConstants.iconL,
               color: context.cs.onSurfaceVariant,
             ),
             title: AppText(ctx.translate(LanguageLabelKeys.takePhoto)),
@@ -50,7 +50,7 @@ class ProfileAvatarPicker extends StatelessWidget {
           ListTile(
             leading: AppSvgIcon(
               AssetsConstants.galleryIcon,
-              size: 24,
+              size: ThemeConstants.iconL,
               color: context.cs.onSurfaceVariant,
             ),
             title: AppText(ctx.translate(LanguageLabelKeys.chooseFromGallery)),
@@ -117,11 +117,13 @@ class ProfileAvatarPicker extends StatelessWidget {
                   : hasNetworkImage
                   ? AppNetworkImage(
                       url: imageUrl!,
-                      placeholder: LoadingWidget(),
+                      placeholder: Center(
+                        child: AppSvgIcon(AssetsConstants.userIcon, size: ThemeConstants.iconXL, color: context.cs.primary),
+                      ),
                       errorWidget: Center(
                         child: AppSvgIcon(
                           AssetsConstants.userIcon,
-                          size: size * 0.48,
+                          size: ThemeConstants.iconXL,
                           color: context.cs.primary,
                         ),
                       ),
@@ -129,7 +131,7 @@ class ProfileAvatarPicker extends StatelessWidget {
                   : Center(
                       child: AppSvgIcon(
                         AssetsConstants.userIcon,
-                        size: size * 0.48,
+                        size: ThemeConstants.iconXL,
                         color: context.cs.primary,
                       ),
                     ),
@@ -139,8 +141,8 @@ class ProfileAvatarPicker extends StatelessWidget {
             bottom: 0,
             end: 0,
             child: Container(
-              width: 32,
-              height: 32,
+              width: context.screenWidth * 0.085,
+              height: context.screenWidth * 0.085,
               decoration: AppDecorations.circle(
                 color: context.cs.primary,
                 border: Border.all(color: context.cs.surface, width: 2),
@@ -148,7 +150,7 @@ class ProfileAvatarPicker extends StatelessWidget {
               padding: const EdgeInsetsDirectional.all(5.0),
               child: AppSvgIcon(
                 AssetsConstants.cameraIcon,
-                size: 24,
+                size: ThemeConstants.iconL,
                 color: context.cs.onPrimary,
                 fit: BoxFit.scaleDown,
               ),

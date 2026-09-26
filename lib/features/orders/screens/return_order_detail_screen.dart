@@ -10,8 +10,12 @@ import 'package:deliveryboy/utils/extensions/localization_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../cubit/return_order_detail_cubit.dart';
+import '../models/return_order_model.dart';
 
-/// Detail screen for a single return request, keyed by the ID passed as route args.
+/// Detail screen for a single return request. Route args are either the
+/// return request ID (order-card tap — fetched via API) or an already-loaded
+/// [ReturnRequestData] (QR scan — resolved by the scan API, so it's shown
+/// straight away with no second round trip).
 class ReturnOrderDetailScreen extends StatefulWidget {
   const ReturnOrderDetailScreen({super.key});
 
@@ -23,10 +27,17 @@ class ReturnOrderDetailScreen extends StatefulWidget {
 class _ReturnOrderDetailScreenState extends State<ReturnOrderDetailScreen> {
   @override
   Widget build(BuildContext context) {
-    final returnRequestId =
-        ModalRoute.of(context)?.settings.arguments?.toString() ?? '';
+    final args = ModalRoute.of(context)?.settings.arguments;
     return BlocProvider(
-      create: (_) => ReturnOrderDetailCubit()..loadDetail(returnRequestId),
+      create: (_) {
+        final cubit = ReturnOrderDetailCubit();
+        if (args is ReturnRequestData) {
+          cubit.loadLocal(args);
+        } else {
+          cubit.loadDetail(args?.toString() ?? '');
+        }
+        return cubit;
+      },
       child: const _ReturnDetailView(),
     );
   }
@@ -43,9 +54,11 @@ class _ReturnDetailView extends StatelessWidget {
     return BlocListener<ConnectivityCubit, ConnectivityState>(
       listener: (context, state) {
         if (state is ConnectivityConnected) {
-          final returnRequestId =
-              ModalRoute.of(context)?.settings.arguments?.toString() ?? '';
-          context.read<ReturnOrderDetailCubit>().loadDetail(returnRequestId);
+          final args = ModalRoute.of(context)?.settings.arguments;
+          if (args is ReturnRequestData) return;
+          context.read<ReturnOrderDetailCubit>().loadDetail(
+            args?.toString() ?? '',
+          );
         }
       },
       child: AppScaffold(

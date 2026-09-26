@@ -6,6 +6,7 @@ import 'package:deliveryboy/core/localization/language_label_key.dart';
 import 'package:deliveryboy/core/theme/app_radius.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
 import 'package:deliveryboy/utils/extensions/localization_extensions.dart';
+import 'package:deliveryboy/utils/extensions/size_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:deliveryboy/core/theme/app_decorations.dart';
 import '../models/chat_message.dart';
@@ -46,7 +47,7 @@ class AttachmentPreviewBar extends StatelessWidget {
       child: Row(
         children: [
           _Thumbnail(attachment: attachment),
-          const SizedBox(width: 10),
+          SizedBox(width: context.screenWidth * 0.027),
           Expanded(
             child: Column(
               crossAxisAlignment: .start,
@@ -73,7 +74,7 @@ class AttachmentPreviewBar extends StatelessWidget {
             onPressed: onRemove,
             icon: AppSvgIcon(
               AssetsConstants.closeIcon,
-              size: 20,
+              size: ThemeConstants.iconM,
               color: context.cs.onSurfaceVariant,
             ),
             padding: EdgeInsetsDirectional.zero,
@@ -96,8 +97,8 @@ class _Thumbnail extends StatelessWidget {
         borderRadius: AppRadius.r8,
         child: Image.file(
           File(attachment.localPath!),
-          width: 48,
-          height: 48,
+          width: context.screenWidth * 0.128,
+          height: context.screenWidth * 0.128,
           fit: .cover,
         ),
       );
@@ -106,13 +107,13 @@ class _Thumbnail extends StatelessWidget {
         ? AssetsConstants.microphoneIcon
         : AssetsConstants.fileIcon;
     return Container(
-      width: 48,
-      height: 48,
+      width: context.screenWidth * 0.128,
+      height: context.screenWidth * 0.128,
       decoration: AppDecorations.card(
         color: context.cs.primary.withValues(alpha: 0.1),
         borderRadius: AppRadius.r8,
       ),
-      child: AppSvgIcon(icon, color: context.cs.primary, size: 24),
+      child: AppSvgIcon(icon, color: context.cs.primary, size: ThemeConstants.iconL),
     );
   }
 }

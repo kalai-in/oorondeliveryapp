@@ -1,4 +1,5 @@
 import 'package:deliveryboy/commons/widgets/app_svg_icon.dart';
+import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/core/theme/app_radius.dart';
 import 'package:deliveryboy/core/theme/app_spacing.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
@@ -38,7 +39,7 @@ class EarningsStatCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: .start,
               children: [
-                AppSvgIcon(icon, color: accentColor, size: 26),
+                AppSvgIcon(icon, color: accentColor, size: ThemeConstants.iconL),
                 AppSpacing.h10,
                 FittedBox(
                   fit: BoxFit.scaleDown,

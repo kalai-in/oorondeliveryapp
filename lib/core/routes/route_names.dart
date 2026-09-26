@@ -8,7 +8,6 @@ abstract final class RouteNames {
   static const String main = '/main';
   static const String orderDetail = '/order-detail';
   static const String ecommerceOrderDetail = '/ecommerce-order-detail';
-  static const String returnOrder = '/return-order';
   static const String returnOrderDetail = '/return-order-detail';
   static const String editProfile = '/edit-profile';
   static const String salary = '/salary';
@@ -20,6 +19,7 @@ abstract final class RouteNames {
   static const String policies = '/policies';
   static const String settlementHistory = '/settlement-history';
   static const String orderTracking = '/order-tracking';
+  static const String orderScanner = '/order-scanner';
   static const String notifications = '/notifications';
   static const String wallet = '/wallet';
   static const String chat = '/chat';

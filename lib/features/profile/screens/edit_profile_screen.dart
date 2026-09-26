@@ -49,6 +49,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final _returnCommissionController = TextEditingController();
   final _returnBonusMinController = TextEditingController();
   final _returnBonusMaxController = TextEditingController();
+  final _scrollController = ScrollController();
 
   File? _profileImage;
   String? _profileImageUrl;
@@ -184,6 +185,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     _returnBonusMinController.dispose();
     _returnBonusMaxController.dispose();
     _zonesCubit.close();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -310,6 +312,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
             currentStep: _currentStep,
             totalSteps: 2,
+            scrollController: _scrollController,
           ),
           bottomNavigationBar: EditProfileBottomNav(
             currentStep: _currentStep,
@@ -337,6 +340,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
             ],
             child: SingleChildScrollView(
+              controller: _scrollController,
               child: Column(
                 children: [
                   EditProfileStepIndicator(

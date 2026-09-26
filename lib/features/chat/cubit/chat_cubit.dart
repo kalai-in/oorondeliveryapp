@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:deliveryboy/core/api/api_exception.dart';
 import 'package:deliveryboy/core/local_storage/auth_hive_box.dart';
 import 'package:deliveryboy/core/utils/app_logger.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/chat_message.dart';
 import '../repositories/chat_repository.dart';
@@ -62,11 +63,20 @@ class ChatCubit extends Cubit<ChatState> {
   String? get conversationId => _conversationId;
   bool get isSocketConnected => _socket.state == SocketConnectionState.connected;
 
-  ChatCubit({ChatRepository? repository})
+  /// Test seam: when set, [ChatCubit] builds its realtime transport from
+  /// this instead of opening a real websocket. Screens construct their own
+  /// `ChatCubit()`, so a constructor argument alone can't reach them.
+  @visibleForTesting
+  static ChatSocketService Function(ChatRepository repository)? socketFactory;
+
+  ChatCubit({ChatRepository? repository, ChatSocketService? socket})
     : _repository = repository ?? ChatRepository(),
       super(ChatInitial()) {
     _myId = int.tryParse(AuthHiveBox.instance.userId) ?? 0;
-    _socket = ChatSocketService(repository: _repository);
+    _socket =
+        socket ??
+        socketFactory?.call(_repository) ??
+        ChatSocketService(repository: _repository);
   }
 
   /// Loads REST message history for [conversationId] (if any) before

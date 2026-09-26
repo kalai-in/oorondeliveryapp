@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:deliveryboy/core/constants/assets_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:deliveryboy/commons/widgets/app_svg_icon.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 /// Cached network image with a shared placeholder/error fallback icon.
 class AppNetworkImage extends StatelessWidget {
@@ -32,6 +33,11 @@ class AppNetworkImage extends StatelessWidget {
 
   static ImageProvider provider(String url) => CachedNetworkImageProvider(url);
 
+  static bool _isSvgUrl(String url) {
+    final uri = Uri.tryParse(url);
+    return uri != null && uri.path.toLowerCase().endsWith('.svg');
+  }
+
   @override
   Widget build(BuildContext context) {
     if (url.isEmpty) {
@@ -41,16 +47,25 @@ class AppNetworkImage extends StatelessWidget {
           : empty;
     }
 
-    final img = CachedNetworkImage(
-      imageUrl: url,
-      width: width,
-      height: height,
-      fit: fit,
-      memCacheWidth: memCacheWidth,
-      memCacheHeight: memCacheHeight,
-      placeholder: (_, _) => placeholder ?? _placeholder(context),
-      errorWidget: (_, _, _) => errorWidget ?? _placeholder(context),
-    );
+    final img = _isSvgUrl(url)
+        ? SvgPicture.network(
+            url,
+            width: width,
+            height: height,
+            fit: fit,
+            placeholderBuilder: (_) => placeholder ?? _placeholder(context),
+            errorBuilder: (_, _, _) => errorWidget ?? _placeholder(context),
+          )
+        : CachedNetworkImage(
+            imageUrl: url,
+            width: width,
+            height: height,
+            fit: fit,
+            memCacheWidth: memCacheWidth,
+            memCacheHeight: memCacheHeight,
+            placeholder: (_, _) => placeholder ?? _placeholder(context),
+            errorWidget: (_, _, _) => errorWidget ?? _placeholder(context),
+          );
 
     if (borderRadius != null) {
       return ClipRRect(borderRadius: borderRadius!, child: img);

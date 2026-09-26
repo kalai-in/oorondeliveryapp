@@ -100,8 +100,8 @@ class _DeliveryOtpBottomSheetState extends State<DeliveryOtpBottomSheet> {
         children: [
           Center(
             child: Container(
-              width: 40,
-              height: 4,
+              width: context.screenWidth * 0.107,
+              height: context.screenHeight * 0.005,
               decoration: AppDecorations.card(
                 color: context.cs.outlineVariant,
                 borderRadius: AppRadius.r12,
@@ -137,7 +137,7 @@ class _DeliveryOtpBottomSheetState extends State<DeliveryOtpBottomSheet> {
           ],
           AppSpacing.h20,
           Row(
-            spacing: 12,
+            spacing: ThemeConstants.spaceM,
             children: [
               Expanded(
                 child: AppButton(

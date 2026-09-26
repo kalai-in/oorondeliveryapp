@@ -7,6 +7,7 @@ import 'package:deliveryboy/features/orders/utils/payment_breakdown.dart';
 import 'package:deliveryboy/features/orders/widgets/bill_row.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
 import 'package:deliveryboy/utils/extensions/localization_extensions.dart';
+import 'package:deliveryboy/utils/extensions/num_extensions.dart';
 import 'package:flutter/material.dart';
 
 /// Full payment breakdown block for order-detail billing-summary cards.
@@ -40,18 +41,16 @@ class PaymentSummarySection extends StatelessWidget {
             Expanded(
               child: AppText(
                 breakdown.totalLabel(context),
-                style: context.tt.bodyMedium?.copyWith(
+                style: context.tt.titleSmall?.copyWith(
                   fontWeight: FontWeight.w700,
-                  fontSize: 15,
                   color: context.cs.onSurfaceVariant,
                 ),
               ),
             ),
             AppText(
-              '$symbol${breakdown.totalAmount.toStringAsFixed(0)}',
-              style: context.tt.titleSmall?.copyWith(
+              '$symbol${breakdown.totalAmount.trimmedFixed()}',
+              style: context.tt.titleMedium?.copyWith(
                 fontWeight: FontWeight.w800,
-                fontSize: 16,
                 color: context.cs.onSurface,
               ),
             ),
@@ -61,12 +60,12 @@ class PaymentSummarySection extends StatelessWidget {
           AppSpacing.h10,
           BillRow(
             label: breakdown.walletLabel(context),
-            value: '$symbol${breakdown.wallet.toStringAsFixed(0)}',
+            value: '$symbol${breakdown.wallet.trimmedFixed()}',
           ),
           AppSpacing.h10,
           BillRow(
             label: breakdown.remainingLabel(context),
-            value: '$symbol${breakdown.remaining.toStringAsFixed(0)}',
+            value: '$symbol${breakdown.remaining.trimmedFixed()}',
           ),
         ],
         if (breakdown.mustCollectCash) ...[
@@ -117,7 +116,7 @@ class CollectFromCustomerCallout extends StatelessWidget {
             ),
           ),
           AppText(
-            '$symbol${breakdown.collectAmount.toStringAsFixed(0)}',
+            '$symbol${breakdown.collectAmount.trimmedFixed()}',
             style: context.tt.titleMedium?.copyWith(
               fontWeight: FontWeight.w800,
               color: context.cs.errorContainer,

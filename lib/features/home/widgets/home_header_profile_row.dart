@@ -4,6 +4,7 @@ import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/core/localization/language_label_key.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
 import 'package:deliveryboy/utils/extensions/localization_extensions.dart';
+import 'package:deliveryboy/utils/extensions/size_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:deliveryboy/core/theme/app_decorations.dart';
 import '../../../core/theme/app_radius.dart';
@@ -32,8 +33,8 @@ class HomeHeaderProfileRow extends StatelessWidget {
     return Row(
       children: [
         Container(
-          width: 46,
-          height: 46,
+          width: context.screenWidth * 0.123,
+          height: context.screenWidth * 0.123,
           decoration: AppDecorations.circle(
             color: context.cs.primaryContainer,
             border: Border.all(
@@ -45,8 +46,8 @@ class HomeHeaderProfileRow extends StatelessWidget {
               ? ClipOval(
                   child: AppNetworkImage(
                     url: profileUrl,
-                    width: 46,
-                    height: 46,
+                    width: context.screenWidth * 0.123,
+                    height: context.screenWidth * 0.123,
                     fit: .cover,
                   ),
                 )
@@ -63,7 +64,7 @@ class HomeHeaderProfileRow extends StatelessWidget {
         Expanded(
           child: Column(
             crossAxisAlignment: .start,
-            spacing: 2,
+            spacing: ThemeConstants.spaceXXS,
             children: [
               AppText(
                 '${context.translate(LanguageLabelKeys.helloUser)}, $name ${AppConstants.heySymbol}',
@@ -86,57 +87,61 @@ class HomeHeaderProfileRow extends StatelessWidget {
         ),
         GestureDetector(
           onTap: onToggle,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 250),
-            width: 92,
-            height: 32,
-            padding: const EdgeInsetsDirectional.symmetric(horizontal: ThemeConstants.paddingXS),
-            decoration: AppDecorations.card(
-              color: isOnline
-                  ? context.cs.primary
-                  : context.cs.surfaceContainerHighest,
-              borderRadius: AppRadius.r16,
-            ),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                AnimatedAlign(
-                  duration: const Duration(milliseconds: 250),
-                  alignment: isOnline
-                      ? AlignmentDirectional.centerStart
-                      : AlignmentDirectional.centerEnd,
-                  child: Padding(
-                    padding: EdgeInsetsDirectional.only(
-                      start: isOnline ? 10 : 0,
-                      end: isOnline ? 0 : 10,
-                    ),
-                    child: AppText(
-                      isOnline
-                          ? context.translate(LanguageLabelKeys.online)
-                          : context.translate(LanguageLabelKeys.offline),
-                      style: context.tt.labelMedium?.copyWith(
-                        color: isOnline
-                            ? context.cs.onPrimary
-                            : context.cs.onSurfaceVariant,
-                        fontWeight: FontWeight.w600,
+          child: IntrinsicWidth(
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 250),
+              constraints: const BoxConstraints(minWidth: 92),
+              height: context.screenHeight * 0.039,
+              padding: const EdgeInsetsDirectional.symmetric(horizontal: ThemeConstants.paddingXS),
+              decoration: AppDecorations.card(
+                color: isOnline
+                    ? context.cs.primary
+                    : context.cs.surfaceContainerHighest,
+                borderRadius: AppRadius.r16,
+              ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  AnimatedAlign(
+                    duration: const Duration(milliseconds: 250),
+                    alignment: isOnline
+                        ? AlignmentDirectional.centerStart
+                        : AlignmentDirectional.centerEnd,
+                    child: Padding(
+                      padding: EdgeInsetsDirectional.only(
+                        start: isOnline ? 10 : 0,
+                        end: isOnline ? 0 : 10,
+                      ),
+                      child: AppText(
+                        isOnline
+                            ? context.translate(LanguageLabelKeys.online)
+                            : context.translate(LanguageLabelKeys.offline),
+                        maxLines: 1,
+                        softWrap: false,
+                        style: context.tt.labelMedium?.copyWith(
+                          color: isOnline
+                              ? context.cs.onPrimary
+                              : context.cs.onSurfaceVariant,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                AnimatedAlign(
-                  duration: const Duration(milliseconds: 250),
-                  alignment: isOnline
-                      ? AlignmentDirectional.centerEnd
-                      : AlignmentDirectional.centerStart,
-                  child: Container(
-                    width: 24,
-                    height: 24,
-                    decoration: AppDecorations.circle(
-                      color: context.cs.surface,
+                  AnimatedAlign(
+                    duration: const Duration(milliseconds: 250),
+                    alignment: isOnline
+                        ? AlignmentDirectional.centerEnd
+                        : AlignmentDirectional.centerStart,
+                    child: Container(
+                      width: context.screenWidth * 0.064,
+                      height: context.screenWidth * 0.064,
+                      decoration: AppDecorations.circle(
+                        color: context.cs.surface,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

@@ -8,6 +8,7 @@ import '../models/order_model.dart';
 import '../models/order_status.dart';
 import 'package:deliveryboy/core/theme/app_spacing.dart';
 import 'package:deliveryboy/commons/widgets/app_text.dart';
+import 'package:deliveryboy/commons/widgets/status_chip.dart';
 import 'order_card_shared.dart';
 
 class OrderCard extends StatelessWidget {
@@ -46,8 +47,11 @@ class OrderCard extends StatelessWidget {
             OrderCardHeader(
               orderNumber: '${order.orderNumber ?? order.id}',
               date: order.date!,
-              activeStatus: order.activeStatus?.toString(),
-              orderStatusName: order.orderStatusName,
+              statusChip: StatusChip.fromDynamicStatus(
+                context,
+                order.activeStatus?.toString(),
+                orderStatusName: order.orderStatusName,
+              ),
             ),
 
             Padding(
@@ -59,7 +63,13 @@ class OrderCard extends StatelessWidget {
             if (displayItems.isNotEmpty) ...[
               AppSpacing.h10,
               ...displayItems.map(
-                (item) => _ItemRow(item: item, currency: symbol),
+                (item) => CompactProductRow(
+                  name: '${item.quantity ?? 0} x ${item.productName ?? ''}',
+                  variant: formatVariantPairs(item.variantAttributes) ?? '',
+                  currency: symbol,
+                  price: item.discountedPrice ?? 0,
+                  padding: const EdgeInsetsDirectional.only(bottom: 6),
+                ),
               ),
               if (extraCount > 0)
                 Padding(
@@ -82,60 +92,6 @@ class OrderCard extends StatelessWidget {
             OrderCardFooter(breakdown: breakdown, symbol: symbol),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _ItemRow extends StatelessWidget {
-  final OrderItems item;
-  final String? currency;
-  const _ItemRow({required this.item, this.currency});
-
-  @override
-  Widget build(BuildContext context) {
-    final name = item.productName ?? '';
-    final variant = formatVariantPairs(item.variantAttributes) ?? '';
-    final qty = item.quantity ?? 0;
-    final price = item.discountedPrice ?? 0;
-
-    return Padding(
-      padding: const EdgeInsetsDirectional.only(bottom: 6),
-      child: Row(
-        crossAxisAlignment: .start,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: .start,
-              children: [
-                AppText(
-                  '$qty x $name',
-                  style: context.tt.labelMedium?.copyWith(
-                    fontWeight: FontWeight.w500,
-                  ),
-                  maxLines: 1,
-                  overflow: .ellipsis,
-                ),
-                if (variant.isNotEmpty)
-                  AppText(
-                    variant,
-                    style: context.tt.labelSmall?.copyWith(
-                      color: context.cs.onSurfaceVariant,
-                    ),
-                    maxLines: 1,
-                    overflow: .ellipsis,
-                  ),
-              ],
-            ),
-          ),
-          AppSpacing.w8,
-          AppText(
-            '$currency$price',
-            style: context.tt.labelMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
       ),
     );
   }

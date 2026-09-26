@@ -23,7 +23,7 @@ class ChatSkeletonLoader extends StatelessWidget {
         child: ShimmerBox(
           color,
           width: width,
-          height: 40,
+          height: context.screenHeight * 0.049,
           radius: BorderRadius.only(
             topLeft: const Radius.circular(16),
             topRight: const Radius.circular(16),

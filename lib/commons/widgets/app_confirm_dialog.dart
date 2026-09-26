@@ -2,7 +2,9 @@ import 'package:deliveryboy/commons/widgets/app_button.dart';
 import 'package:deliveryboy/commons/widgets/app_text.dart';
 import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/core/theme/app_radius.dart';
+import 'package:deliveryboy/core/theme/app_spacing.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
+import 'package:deliveryboy/utils/extensions/size_extensions.dart';
 import 'package:flutter/material.dart';
 
 /// Shared confirm/cancel dialog: title, message, and two pill-shaped buttons
@@ -99,7 +101,7 @@ class AppConfirmDialog extends StatelessWidget {
             ),
           ),
           if (message.isNotEmpty) ...[
-            const SizedBox(height: 8),
+            AppSpacing.h8,
             AppText(
               message,
               textAlign: TextAlign.center,
@@ -110,7 +112,7 @@ class AppConfirmDialog extends StatelessWidget {
             ),
           ],
           if (extraContent != null) ...[
-            const SizedBox(height: 12),
+            AppSpacing.h12,
             extraContent!,
           ],
         ],
@@ -134,7 +136,7 @@ class AppConfirmDialog extends StatelessWidget {
                   : AppButtonVariant.primary)
             : AppButtonVariant.outline,
         color: swapButtonEmphasis ? null : context.cs.onSurfaceVariant,
-        height: 38,
+        height: context.screenHeight * 0.047,
         fontSize: 13,
         onPressed: isLoading ? null : onCancel,
       ),
@@ -148,7 +150,7 @@ class AppConfirmDialog extends StatelessWidget {
                   ? AppButtonVariant.danger
                   : AppButtonVariant.primary),
         color: swapButtonEmphasis ? context.cs.onSurfaceVariant : null,
-        height: 38,
+        height: context.screenHeight * 0.047,
         fontSize: 13,
         isLoading: isLoading,
         onPressed: isLoading ? null : onConfirm,

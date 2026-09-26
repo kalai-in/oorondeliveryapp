@@ -24,7 +24,7 @@ class ReturnRequestsCard extends StatelessWidget {
 
     return Column(
       crossAxisAlignment: .start,
-      spacing: 10,
+      spacing: ThemeConstants.spaceM,
       children: [
         AppText(
           context.translate(LanguageLabelKeys.returnsAndRequests),

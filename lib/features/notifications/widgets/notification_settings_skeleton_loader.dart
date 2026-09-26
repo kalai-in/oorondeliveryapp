@@ -2,6 +2,7 @@ import 'package:deliveryboy/commons/widgets/shimmer_builder.dart';
 import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/core/theme/app_decorations.dart';
 import 'package:deliveryboy/core/theme/app_radius.dart';
+import 'package:deliveryboy/utils/extensions/size_extensions.dart';
 import 'package:flutter/material.dart';
 
 /// Mirrors `_ChannelTile`'s shape (status name + switch) so the notification
@@ -27,10 +28,21 @@ class NotificationSettingsSkeletonLoader extends StatelessWidget {
           vertical: 14,
         ),
         child: Row(
-          spacing: 10,
+          spacing: ThemeConstants.spaceM,
           children: [
-            Expanded(child: ShimmerBox(color, width: 140, height: 14)),
-            ShimmerBox(color, width: 40, height: 22, radius: AppRadius.r16),
+            Expanded(
+              child: ShimmerBox(
+                color,
+                width: context.screenWidth * 0.373,
+                height: context.screenHeight * 0.017,
+              ),
+            ),
+            ShimmerBox(
+              color,
+              width: context.screenWidth * 0.107,
+              height: context.screenHeight * 0.027,
+              radius: AppRadius.r16,
+            ),
           ],
         ),
       ),

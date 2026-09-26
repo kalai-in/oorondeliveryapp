@@ -22,6 +22,7 @@ class ApiParameters {
   static const String returnBonusMaxAmount = "return_bonus_max_amount";
   static const String statusId = "status_id";
   static const String otp = "otp";
+  static const String code = "code";
   static const String entryType = "entry_type";
 
   static const String android = 'android';

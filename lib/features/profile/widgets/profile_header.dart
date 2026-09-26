@@ -6,6 +6,7 @@ import 'package:deliveryboy/core/local_storage/auth_hive_box.dart';
 import 'package:deliveryboy/core/localization/language_label_key.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
 import 'package:deliveryboy/utils/extensions/localization_extensions.dart';
+import 'package:deliveryboy/utils/extensions/size_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:deliveryboy/core/theme/app_decorations.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -43,8 +44,8 @@ class ProfileHeader extends StatelessWidget {
             child: Row(
               children: [
                 Container(
-                  width: 60,
-                  height: 60,
+                  width: context.screenWidth * 0.16,
+                  height: context.screenWidth * 0.16,
                   decoration: AppDecorations.circle(
                     color: context.cs.surfaceContainerHigh,
                   ),
@@ -54,20 +55,20 @@ class ProfileHeader extends StatelessWidget {
                           url: imageUrl,
                           placeholder: AppSvgIcon(
                             AssetsConstants.userIcon,
-                            size: 34,
+                            size: ThemeConstants.iconXL,
                             color: context.cs.onSurfaceVariant,
                             fit: BoxFit.scaleDown,
                           ),
                           errorWidget: AppSvgIcon(
                             AssetsConstants.userIcon,
-                            size: 34,
+                            size: ThemeConstants.iconXL,
                             color: context.cs.onSurfaceVariant,
                             fit: BoxFit.scaleDown,
                           ),
                         )
                       : AppSvgIcon(
                           AssetsConstants.userIcon,
-                          size: 24,
+                          size: ThemeConstants.iconL,
                           color: context.cs.onSurfaceVariant,
                           fit: BoxFit.scaleDown,
                         ),
@@ -142,11 +143,11 @@ class ProfileHeader extends StatelessWidget {
                       ),
                       child: Row(
                         mainAxisSize: .min,
-                        spacing: 4,
+                        spacing: ThemeConstants.spaceXS,
                         children: [
                           AppSvgIcon(
                             AssetsConstants.editIcon,
-                            size: 16,
+                            size: ThemeConstants.iconM,
                             color: context.cs.onSurface,
                           ),
                           AppSpacing.w4,

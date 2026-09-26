@@ -2,6 +2,7 @@ import 'package:deliveryboy/commons/models/earning_type.dart';
 import 'package:deliveryboy/core/localization/language_label_key.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
 import 'package:deliveryboy/utils/extensions/localization_extensions.dart';
+import 'package:deliveryboy/utils/extensions/size_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:deliveryboy/core/theme/app_decorations.dart';
 import '../../core/theme/app_radius.dart';
@@ -40,7 +41,7 @@ class EarningTypeSelector extends StatelessWidget {
                   value: EarningType.salaried,
                 ),
               ),
-              Container(width: 1, height: 40, color: context.cs.outline),
+              Container(width: 1, height: context.screenHeight * 0.049, color: context.cs.outline),
               Expanded(
                 child: _EarningRadioTile(
                   label: context.translate(LanguageLabelKeys.commission),

@@ -69,7 +69,7 @@ class _ZonePickerSheetState extends State<_ZonePickerSheet> {
               padding: const EdgeInsetsDirectional.only(start: ThemeConstants.paddingM, end: ThemeConstants.paddingS),
               child: AppSvgIcon(
                 AssetsConstants.searchIcon,
-                size: 18,
+                size: ThemeConstants.iconS,
                 color: context.cs.onSurfaceVariant,
                 fit: BoxFit.scaleDown,
               ),

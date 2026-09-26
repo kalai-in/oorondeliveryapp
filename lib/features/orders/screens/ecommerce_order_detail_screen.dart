@@ -20,11 +20,24 @@ import '../cubit/ecommerce_order_detail_cubit.dart';
 import '../models/ecommerce_order_model.dart';
 import '../widgets/order_appbar_title.dart';
 import '../widgets/ecommerce_order_detail_items_card.dart';
-import '../widgets/ecommerce_order_customer_info_card.dart';
-import '../widgets/ecommerce_order_billing_card.dart';
+import '../widgets/bill_summary_card.dart';
 import '../widgets/pickup_delivery_card.dart';
 import '../widgets/order_timeline_card.dart';
-import '../widgets/ecommerce_order_status_sheet.dart';
+import '../widgets/order_note_card.dart';
+import '../widgets/order_refund_card.dart';
+import 'package:deliveryboy/utils/extensions/string_extensions.dart';
+import '../widgets/order_status_slide_bar.dart';
+
+/// Route args accepted by [EcommerceOrderDetailScreen]: either the order
+/// item id (normal navigation, fetched via API) or an already-fetched
+/// [EcommerceOrderDataModel] — e.g. from [OrderScannerScreen], which
+/// resolves the scan API's response itself and hands it straight to the
+/// cubit, skipping a redundant order-detail API call.
+String _orderItemIdFromArgs(BuildContext context) {
+  final args = ModalRoute.of(context)?.settings.arguments;
+  if (args is EcommerceOrderDataModel) return args.id?.toString() ?? '';
+  return args as String? ?? '';
+}
 
 /// Detail screen for a single ecommerce order, keyed by the ID passed as route args.
 class EcommerceOrderDetailScreen extends StatefulWidget {
@@ -39,10 +52,17 @@ class _EcommerceOrderDetailScreenState
     extends State<EcommerceOrderDetailScreen> {
   @override
   Widget build(BuildContext context) {
-    final orderItemId =
-        ModalRoute.of(context)?.settings.arguments as String? ?? '';
+    final args = ModalRoute.of(context)?.settings.arguments;
     return BlocProvider(
-      create: (_) => EcommerceOrderDetailCubit()..loadOrderDetail(orderItemId),
+      create: (_) {
+        final cubit = EcommerceOrderDetailCubit();
+        if (args is EcommerceOrderDataModel) {
+          cubit.loadFromData(args);
+        } else {
+          cubit.loadOrderDetail(args as String? ?? '');
+        }
+        return cubit;
+      },
       child: const _EcommerceOrderDetailView(),
     );
   }
@@ -59,10 +79,8 @@ class _EcommerceOrderDetailView extends StatelessWidget {
     return BlocListener<ConnectivityCubit, ConnectivityState>(
       listener: (context, state) {
         if (state is ConnectivityConnected) {
-          final orderItemId =
-              ModalRoute.of(context)?.settings.arguments as String? ?? '';
           context.read<EcommerceOrderDetailCubit>().loadOrderDetail(
-            orderItemId,
+            _orderItemIdFromArgs(context),
           );
         }
       },
@@ -93,11 +111,8 @@ class _EcommerceOrderDetailView extends StatelessWidget {
                     LanguageLabelKeys.pullDownToRefresh,
                   ),
                   onRetry: () {
-                    final orderItemId =
-                        ModalRoute.of(context)?.settings.arguments as String? ??
-                        '';
                     context.read<EcommerceOrderDetailCubit>().loadOrderDetail(
-                      orderItemId,
+                      _orderItemIdFromArgs(context),
                     );
                   },
                 ),
@@ -114,19 +129,34 @@ class _EcommerceOrderDetailView extends StatelessWidget {
   }
 }
 
-class _EcommerceOrderDetailBody extends StatelessWidget {
+class _EcommerceOrderDetailBody extends StatefulWidget {
   final EcommerceOrderDataModel order;
   const _EcommerceOrderDetailBody({required this.order});
 
-  static const _hiddenStatuses = [1, 2, 3, 7, 8];
+  @override
+  State<_EcommerceOrderDetailBody> createState() =>
+      _EcommerceOrderDetailBodyState();
+}
+
+class _EcommerceOrderDetailBodyState extends State<_EcommerceOrderDetailBody> {
+  final _scrollController = ScrollController();
+
+  static const _hiddenStatuses = [1, 2, 3, 6, 7, 8];
   bool get _hideUpdateStatusButton =>
-      _hiddenStatuses.contains(order.activeStatus);
+      _hiddenStatuses.contains(widget.order.activeStatus);
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final order = widget.order;
     final symbol = order.currency ?? '';
     final timeline = order.timeline ?? [];
-    final bottomPad = context.bottomSafePadding;
+    final bottomPad = _hideUpdateStatusButton ? context.bottomSafePadding : ThemeConstants.paddingL;
 
     return AppScaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -137,6 +167,7 @@ class _EcommerceOrderDetailBody extends StatelessWidget {
           statusLabel: order.orderItemStatus ?? '—',
           idLine: order.orderNumber?.toString() ?? '—',
         ),
+        scrollController: _scrollController,
       ),
       body: RefreshIndicator(
         color: context.cs.primary,
@@ -144,6 +175,7 @@ class _EcommerceOrderDetailBody extends StatelessWidget {
             .read<EcommerceOrderDetailCubit>()
             .loadOrderDetail((order.id)?.toString() ?? ''),
         child: ListView(
+          controller: _scrollController,
           padding: EdgeInsetsDirectional.fromSTEB(ThemeConstants.paddingL, ThemeConstants.paddingL, ThemeConstants.paddingL, bottomPad),
           children: [
             PickupDeliveryCard(
@@ -186,6 +218,16 @@ class _EcommerceOrderDetailBody extends StatelessWidget {
                     }
                   : null,
             ),
+            if ((order.refundAmount ?? 0) > 0) ...[
+              OrderRefundCard(
+                refundAmount: order.refundAmount!,
+                currency: symbol,
+              ),
+            ],
+            if (order.orderNote.isNotNullOrEmpty) ...[
+              AppSpacing.h12,
+              OrderNoteCard(note: order.orderNote!),
+            ],
             if (timeline.isNotEmpty) ...[
               AppSpacing.h12,
               OrderTimelineCard(timeline: timeline),
@@ -193,15 +235,17 @@ class _EcommerceOrderDetailBody extends StatelessWidget {
             AppSpacing.h12,
             EcommerceOrderDetailItemsCard(order: order, symbol: symbol),
             AppSpacing.h12,
-            EcommerceOrderBillingCard(order: order, symbol: symbol),
-            AppSpacing.h12,
-            EcommerceOrderCustomerInfoCard(order: order),
+            BillSummaryCard(
+              type: BillOrderType.ecommerce,
+              ecommerceOrder: order,
+              symbol: symbol,
+            ),
           ],
         ),
       ),
       bottomNavigationBar: _hideUpdateStatusButton
           ? null
-          : EcommerceOrderStatusActionButton(order: order),
+          : OrderStatusSlideBar.ecommerce(order: order),
     );
   }
 }

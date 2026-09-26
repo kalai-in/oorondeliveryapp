@@ -8,6 +8,7 @@ import 'package:deliveryboy/commons/widgets/app_no_internet_widget.dart';
 import 'package:deliveryboy/commons/widgets/empty_state_widget.dart';
 import 'package:deliveryboy/commons/widgets/list_skeleton_loader.dart';
 import 'package:deliveryboy/core/constants/assets_constants.dart';
+import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/core/localization/language_label_key.dart';
 import 'package:deliveryboy/features/wallet/widgets/wallet_filter_sheet.dart';
 import 'package:deliveryboy/features/wallet/widgets/wallet_loaded_body.dart';
@@ -61,8 +62,9 @@ class _WalletScreenState extends State<WalletScreen> {
 
   void _cancelSearch() {
     setState(() => _isSearching = false);
+    final hadText = _searchController.text.trim().isNotEmpty;
     _searchController.clear();
-    _onSearchChanged('');
+    if (hadText) _onSearchChanged('');
   }
 
   @override
@@ -79,6 +81,7 @@ class _WalletScreenState extends State<WalletScreen> {
           appBar: CustomAppBar(
             title: context.translate(LanguageLabelKeys.wallet),
             showBackButton: true,
+            scrollController: _scrollController.controller,
             isSearching: _isSearching,
             searchController: _searchController,
             onSearchChanged: _onSearchChanged,
@@ -91,7 +94,7 @@ class _WalletScreenState extends State<WalletScreen> {
                   builder: (ctx) => IconButton(
                     icon: AppSvgIcon(
                       AssetsConstants.filterIcon,
-                      size: 22,
+                      size: ThemeConstants.iconM,
                       color: context.cs.onSurfaceVariant,
                     ),
                     onPressed: () => showWalletFilterSheet(context),

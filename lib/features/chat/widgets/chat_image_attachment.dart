@@ -5,7 +5,9 @@ import 'package:deliveryboy/commons/widgets/app_svg_icon.dart';
 import 'package:deliveryboy/commons/widgets/loading_widget.dart';
 import 'package:deliveryboy/core/constants/assets_constants.dart';
 import 'package:deliveryboy/core/constants/navigation_service.dart';
+import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
+import 'package:deliveryboy/utils/extensions/size_extensions.dart';
 import 'package:flutter/material.dart';
 import '../models/chat_message.dart';
 
@@ -25,17 +27,17 @@ class ChatImageAttachment extends StatelessWidget {
       img = Image.file(
         File(attachment.localPath!),
         width: double.infinity,
-        height: 200,
+        height: context.screenHeight * 0.246,
         fit: .cover,
       );
     } else if (attachment.hasRemote) {
       img = AppNetworkImage(
         url: attachment.remoteUrl!,
         width: double.infinity,
-        height: 200,
+        height: context.screenHeight * 0.246,
         placeholder: Container(
           width: double.infinity,
-          height: 200,
+          height: context.screenHeight * 0.246,
           color: isMe
               ? context.cs.primary.withValues(alpha: 0.3)
               : context.cs.surfaceContainerHighest,
@@ -57,7 +59,7 @@ class ChatImageAttachment extends StatelessWidget {
 
   Widget _brokenImage(BuildContext context) => Container(
     width: double.infinity,
-    height: 120,
+    height: context.screenHeight * 0.148,
     color: isMe
         ? context.cs.primary.withValues(alpha: 0.3)
         : context.cs.surfaceContainerHighest,
@@ -66,7 +68,8 @@ class ChatImageAttachment extends StatelessWidget {
       color: isMe
           ? context.cs.onPrimary.withValues(alpha: 0.6)
           : context.cs.onSurfaceVariant,
-      size: 32,
+      size: ThemeConstants.iconL,
+      fit: BoxFit.scaleDown,
     ),
   );
 }
@@ -93,7 +96,7 @@ class ChatFullScreenImage extends StatelessWidget {
               : AppSvgIcon(
                   AssetsConstants.fileBrokenIcon,
                   color: context.cs.onPrimary,
-                  size: 64,
+                  size: ThemeConstants.iconL, fit: BoxFit.scaleDown,
                 ),
         ),
       ),

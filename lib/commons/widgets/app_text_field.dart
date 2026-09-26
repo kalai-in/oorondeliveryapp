@@ -4,6 +4,7 @@ import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/core/localization/language_label_key.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
 import 'package:deliveryboy/utils/extensions/localization_extensions.dart';
+import 'package:deliveryboy/utils/extensions/size_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:deliveryboy/core/theme/app_spacing.dart';
@@ -182,11 +183,11 @@ class _MobilePrefix extends StatelessWidget {
           AppSpacing.w4,
           AppSvgIcon(
             AssetsConstants.arrowDownIcon,
-            size: 18,
+            size: ThemeConstants.iconS,
             color: context.cs.onSurfaceVariant,
           ),
           AppSpacing.w6,
-          Container(width: 1, height: 22, color: context.cs.outline),
+          Container(width: 1, height: context.screenHeight * 0.027, color: context.cs.outline),
           AppSpacing.w4,
         ],
       ),

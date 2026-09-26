@@ -30,4 +30,8 @@ class ReturnOrderDetailCubit extends BaseAsyncCubit<ReturnRequestData> {
     }
     return result.data!;
   });
+
+  /// Emits [data] directly, skipping the API call — used when the caller
+  /// already has the full detail (e.g. resolved locally via a QR scan).
+  void loadLocal(ReturnRequestData data) => emit(AsyncLoaded<ReturnRequestData>(data));
 }

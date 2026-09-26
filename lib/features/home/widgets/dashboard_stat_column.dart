@@ -1,3 +1,4 @@
+import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:flutter/material.dart';
 import '../../../commons/widgets/app_text.dart';
 import '../../../utils/extensions/context_extensions.dart';
@@ -28,7 +29,7 @@ class DashboardStatColumn extends StatelessWidget {
 
     return Column(
       crossAxisAlignment: center ? .center : (alignEnd ? .end : .start),
-      spacing: 4,
+      spacing: ThemeConstants.spaceXS,
       children: [
         AppText(
           label,

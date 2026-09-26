@@ -6,6 +6,7 @@ import 'package:deliveryboy/commons/widgets/app_button.dart';
 import 'package:deliveryboy/commons/widgets/app_scaffold.dart';
 import 'package:deliveryboy/commons/widgets/app_svg_icon.dart';
 import 'package:deliveryboy/commons/widgets/custom_app_bar.dart';
+import 'package:deliveryboy/commons/widgets/date_range_filter_field.dart';
 import 'package:deliveryboy/commons/widgets/empty_state_widget.dart';
 import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/features/orders/widgets/order_skeletons.dart';
@@ -19,13 +20,15 @@ import 'package:deliveryboy/features/orders/cubit/ecommerce_order_cubit.dart';
 import 'package:deliveryboy/features/orders/cubit/order_status_list_filter_cubit.dart';
 import 'package:deliveryboy/features/orders/cubit/return_order_cubit.dart';
 import 'package:deliveryboy/features/orders/cubit/return_order_status_list_filter_cubit.dart';
-import 'package:deliveryboy/features/orders/widgets/ecommerce_order_list.dart';
-import 'package:deliveryboy/features/orders/widgets/orders_filter.dart';
-import 'package:deliveryboy/features/orders/widgets/orders_list.dart';
-import 'package:deliveryboy/features/orders/widgets/return_orders_filter.dart';
-import 'package:deliveryboy/features/orders/widgets/return_orders_list.dart';
+import 'package:deliveryboy/features/orders/widgets/ecommerce_order_card.dart';
+import 'package:deliveryboy/features/orders/widgets/order_card.dart';
+import 'package:deliveryboy/features/orders/widgets/order_list_view.dart';
+import 'package:deliveryboy/features/orders/widgets/return_order_card.dart';
+import 'package:deliveryboy/features/orders/widgets/status_filter_chips.dart';
+import 'package:deliveryboy/core/routes/route_names.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
 import 'package:deliveryboy/utils/extensions/localization_extensions.dart';
+import 'package:deliveryboy/utils/extensions/size_extensions.dart';
 import 'package:deliveryboy/utils/extensions/string_extensions.dart';
 import 'package:deliveryboy/utils/show_app_bottom_sheet.dart';
 import 'package:deliveryboy/commons/widgets/app_text.dart';
@@ -59,6 +62,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
   bool get _isQuick => _selectedTypeIndex == 0;
   bool get _isReturn => _selectedTypeIndex == 2;
   bool get _showSearch => _isQuick || _isReturn;
+
+  ScrollController get _activeScrollController => switch (_selectedTypeIndex) {
+    1 => _ecommerceScrollController.controller,
+    2 => _returnScrollController.controller,
+    _ => _scrollController.controller,
+  };
 
   @override
   void initState() {
@@ -188,7 +197,6 @@ class _OrdersScreenState extends State<OrdersScreen> {
       builder: (sheetCtx) => StatefulBuilder(
         builder: (ctx, setSheetState) {
           final (startDate, endDate) = tempDates[tempType]!;
-          final hasDate = startDate != null || endDate != null;
 
           return SlideAnimationList(
             crossAxisAlignment: .start,
@@ -231,61 +239,33 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 ),
               ),
               AppSpacing.h10,
-              Row(
-                children: [
-                  Expanded(
-                    child: AppButton(
-                      label: hasDate
-                          ? '$startDate  →  $endDate'
-                          : ctx.translate(LanguageLabelKeys.dateRange),
-                      variant: AppButtonVariant.outline,
-                      color: hasDate ? ctx.cs.primary : ctx.cs.onSurfaceVariant,
-                      contentLeftAlign: true,
-                      prefixIcon: AppSvgIcon(
-                        AssetsConstants.dateIcon,
-                        size: 24,
-                        color: hasDate
-                            ? ctx.cs.primary
-                            : ctx.cs.onSurfaceVariant,
-                      ),
-                      onPressed: () async {
-                        final now = DateTime.now();
-                        final range = await showAppDateRangePicker(
-                          context: context,
-                          firstDate: DateTime(now.year - 2),
-                          lastDate: now,
-                          initialDateRange: startDate != null && endDate != null
-                              ? DateTimeRange(
-                                  start: DateTime.parse(startDate),
-                                  end: DateTime.parse(endDate),
-                                )
-                              : null,
-                        );
-                        if (range != null) {
-                          setSheetState(() {
-                            tempDates[tempType] = (
-                              range.start.toApiDateString(),
-                              range.end.toApiDateString(),
-                            );
-                          });
-                        }
-                      },
-                    ),
-                  ),
-                  if (hasDate) ...[
-                    AppSpacing.w8,
-                    IconButton(
-                      icon: AppSvgIcon(
-                        AssetsConstants.closeIcon,
-                        color: ctx.cs.onSurfaceVariant,
-                      ),
-                      tooltip: ctx.translate(LanguageLabelKeys.clear),
-                      onPressed: () => setSheetState(
-                        () => tempDates[tempType] = (null, null),
-                      ),
-                    ),
-                  ],
-                ],
+              DateRangeFilterField(
+                startDate: startDate,
+                endDate: endDate,
+                onTap: () async {
+                  final now = DateTime.now();
+                  final range = await showAppDateRangePicker(
+                    context: context,
+                    firstDate: DateTime(now.year - 2),
+                    lastDate: now,
+                    initialDateRange: startDate != null && endDate != null
+                        ? DateTimeRange(
+                            start: DateTime.parse(startDate),
+                            end: DateTime.parse(endDate),
+                          )
+                        : null,
+                  );
+                  if (range != null) {
+                    setSheetState(() {
+                      tempDates[tempType] = (
+                        range.start.toApiDateString(),
+                        range.end.toApiDateString(),
+                      );
+                    });
+                  }
+                },
+                onClear: () =>
+                    setSheetState(() => tempDates[tempType] = (null, null)),
               ),
               AppSpacing.h28,
               Row(
@@ -294,9 +274,13 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     child: AppButton(
                       label: ctx.translate(LanguageLabelKeys.clear),
                       variant: AppButtonVariant.outline,
+                      height: ctx.heightFraction(0.05),
                       onPressed: () {
                         AppNavigator.pop(sheetCtx);
-                        _clearAllFilters();
+                        // Only re-fetch when a filter is actually applied —
+                        // otherwise there's nothing to clear server-side, so
+                        // just close the sheet.
+                        if (_hasActiveFilters()) _clearAllFilters();
                       },
                     ),
                   ),
@@ -304,6 +288,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   Expanded(
                     child: AppButton(
                       label: ctx.translate(LanguageLabelKeys.apply),
+                      height: ctx.heightFraction(0.05),
                       onPressed: () {
                         AppNavigator.pop(sheetCtx);
                         _applyFilters(tempType, tempDates);
@@ -370,8 +355,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
   void _cancelSearch() {
     setState(() => _isSearching = false);
+    final hadText = _searchController.text.trim().isNotEmpty;
     _searchController.clear();
-    _onSearchSubmit('');
+    if (hadText) _onSearchSubmit('');
   }
 
   bool _hasActiveFilters() {
@@ -406,6 +392,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
           appBar: CustomAppBar(
             title: context.translate(LanguageLabelKeys.myDelivery),
             showBackButton: false,
+            scrollController: _activeScrollController,
             isSearching: _showSearch && _isSearching,
             searchController: _searchController,
             onSearchChanged: _showSearch ? _onSearchSubmit : null,
@@ -420,7 +407,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
             bottom: isOffline
                 ? null
                 : PreferredSize(
-                    preferredSize: const Size.fromHeight(44),
+                    preferredSize: Size.fromHeight(context.screenHeight * 0.054),
                     child: _isReturn
                         ? ReturnStatusChips(onStatusChanged: _onStatusChanged)
                         : OrderStatusChips(
@@ -429,13 +416,25 @@ class _OrdersScreenState extends State<OrdersScreen> {
                           ),
                   ),
             actions: [
+              IconButton(
+                icon: AppSvgIcon(
+                  AssetsConstants.scannerIcon,
+                  size: ThemeConstants.iconS,
+                  color: context.cs.onSurfaceVariant,
+                ),
+                onPressed: () => AppNavigator.pushNamed(
+                  context,
+                  RouteNames.orderScanner,
+                ),
+                tooltip: context.translate(LanguageLabelKeys.scanQrCode),
+              ),
               Stack(
                 clipBehavior: .none,
                 children: [
                   IconButton(
                     icon: AppSvgIcon(
                       AssetsConstants.filterIcon,
-                      size: 24,
+                      size: ThemeConstants.iconS,
                       color: context.cs.onSurfaceVariant,
                     ),
                     onPressed: _showFilterSheet,
@@ -446,8 +445,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       end: 10,
                       top: 10,
                       child: Container(
-                        width: 7,
-                        height: 7,
+                        width: context.screenWidth * 0.019,
+                        height: context.screenWidth * 0.019,
                         decoration: AppDecorations.circle(
                           color: context.cs.primary,
                         ),
@@ -485,13 +484,30 @@ class _OrdersScreenState extends State<OrdersScreen> {
                           );
                         }
                         if (state is PaginationLoaded<OrderData>) {
-                          return OrderList(
-                            orders: state.data,
+                          return OrderListView<OrderData>(
+                            items: state.data,
                             isLoadingMore: state.isFetchingMore,
                             hasMore: state.hasMore,
                             scrollController: _scrollController.controller,
                             onRefresh: () =>
                                 context.read<OrderCubit>().loadOrders(),
+                            emptyImagePath: AssetsConstants.noOrderFound,
+                            emptyTitle: context.translate(
+                              LanguageLabelKeys.noOrdersFound,
+                            ),
+                            emptySubtitle: context.translate(
+                              LanguageLabelKeys.noOrdersYet,
+                            ),
+                            itemBuilder: (context, order, index) => OrderCard(
+                              order: order,
+                              onTap: () => AppNavigator.pushNamed(
+                                context,
+                                RouteNames.orderDetail,
+                                arguments:
+                                    (order.id ?? order.orderId)?.toString() ??
+                                        '',
+                              ),
+                            ),
                           );
                         }
                         return const SizedBox.shrink();
@@ -522,14 +538,30 @@ class _OrdersScreenState extends State<OrdersScreen> {
                         }
                         if (state
                             is PaginationLoaded<EcommerceOrderDataModel>) {
-                          return EcommerceOrderList(
-                            orders: state.data,
+                          return OrderListView<EcommerceOrderDataModel>(
+                            items: state.data,
                             isLoadingMore: state.isFetchingMore,
                             hasMore: state.hasMore,
                             scrollController: _ecommerceScrollController.controller,
                             onRefresh: () => context
                                 .read<EcommerceOrderCubit>()
                                 .loadOrders(),
+                            emptyImagePath: AssetsConstants.noOrderFound,
+                            emptyTitle: context.translate(
+                              LanguageLabelKeys.noOrdersFound,
+                            ),
+                            emptySubtitle: context.translate(
+                              LanguageLabelKeys.noOrdersYet,
+                            ),
+                            itemBuilder: (context, order, index) =>
+                                EcommerceOrderCard(
+                              order: order,
+                              onTap: () => AppNavigator.pushNamed(
+                                context,
+                                RouteNames.ecommerceOrderDetail,
+                                arguments: order.id?.toString() ?? '',
+                              ),
+                            ),
                           );
                         }
                         return const SizedBox.shrink();
@@ -557,13 +589,30 @@ class _OrdersScreenState extends State<OrdersScreen> {
                           );
                         }
                         if (state is PaginationLoaded<ReturnRequestData>) {
-                          return ReturnOrdersList(
-                            orders: state.data,
+                          return OrderListView<ReturnRequestData>(
+                            items: state.data,
                             isLoadingMore: state.isFetchingMore,
                             hasMore: state.hasMore,
                             scrollController: _returnScrollController.controller,
                             onRefresh: () =>
                                 context.read<ReturnOrderCubit>().loadOrders(),
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            emptyImagePath: AssetsConstants.noOrderFound,
+                            emptyTitle: context.translate(
+                              LanguageLabelKeys.noReturnRequests,
+                            ),
+                            emptySubtitle: context.translate(
+                              LanguageLabelKeys.noReturnRequestsDesc,
+                            ),
+                            itemBuilder: (context, order, index) =>
+                                ReturnOrderCard(
+                              order: order,
+                              onTap: () => AppNavigator.pushNamed(
+                                context,
+                                RouteNames.returnOrderDetail,
+                                arguments: order.id,
+                              ),
+                            ),
                           );
                         }
                         return const SizedBox.shrink();

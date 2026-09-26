@@ -76,7 +76,7 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
               padding: const EdgeInsetsDirectional.only(start: ThemeConstants.paddingM, end: ThemeConstants.paddingS),
               child: AppSvgIcon(
                 AssetsConstants.searchIcon,
-                size: 24,
+                size: ThemeConstants.iconL,
                 color: context.cs.onSurfaceVariant,
               ),
             ),
@@ -144,11 +144,11 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
                             leading: ClipOval(
                               child: AppNetworkImage(
                                 url: country.logoUrl ?? '',
-                                width: 28,
-                                height: 28,
+                                width: context.screenWidth * 0.075,
+                                height: context.screenWidth * 0.075,
                                 errorWidget: AppSvgIcon(
                                   AssetsConstants.flagIcon,
-                                  size: 20,
+                                  size: ThemeConstants.iconM,
                                   color: context.cs.onSurfaceVariant,
                                 ),
                               ),

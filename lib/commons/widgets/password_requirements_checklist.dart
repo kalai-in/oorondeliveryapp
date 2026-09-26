@@ -1,7 +1,9 @@
 import 'package:deliveryboy/commons/widgets/app_svg_icon.dart';
 import 'package:deliveryboy/commons/widgets/app_text.dart';
 import 'package:deliveryboy/core/constants/assets_constants.dart';
+import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
+import 'package:deliveryboy/utils/extensions/size_extensions.dart';
 import 'package:deliveryboy/utils/password_policy.dart';
 import 'package:flutter/material.dart';
 
@@ -23,7 +25,7 @@ class PasswordRequirementsChecklist extends StatelessWidget {
     return Column(
       crossAxisAlignment: .start,
       mainAxisSize: .min,
-      spacing: 4,
+      spacing: ThemeConstants.spaceXS,
       children: rules.map((rule) {
         return Row(
           mainAxisSize: .min,
@@ -32,10 +34,10 @@ class PasswordRequirementsChecklist extends StatelessWidget {
               rule.satisfied
                   ? AssetsConstants.checkIcon
                   : AssetsConstants.closeIcon,
-              size: 16,
+              size: ThemeConstants.iconM,
               color: rule.satisfied ? green : context.cs.onSurfaceVariant,
             ),
-            const SizedBox(width: 6),
+            SizedBox(width: context.screenWidth * 0.016),
             AppText(
               rule.label,
               style: context.tt.bodySmall?.copyWith(
