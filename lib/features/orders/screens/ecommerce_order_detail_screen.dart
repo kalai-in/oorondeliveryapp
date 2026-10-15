@@ -176,6 +176,7 @@ class _EcommerceOrderDetailBodyState extends State<_EcommerceOrderDetailBody> {
             .loadOrderDetail((order.id)?.toString() ?? ''),
         child: ListView(
           controller: _scrollController,
+          physics: const AlwaysScrollableScrollPhysics(),
           padding: EdgeInsetsDirectional.fromSTEB(ThemeConstants.paddingL, ThemeConstants.paddingL, ThemeConstants.paddingL, bottomPad),
           children: [
             PickupDeliveryCard(

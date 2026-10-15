@@ -56,7 +56,9 @@ class _AppNoInternetFullScreenState extends State<AppNoInternetFullScreen> {
       width: double.infinity,
       height: double.infinity,
       color: Theme.of(context).scaffoldBackgroundColor,
-      padding: const EdgeInsetsDirectional.symmetric(horizontal: ThemeConstants.spaceXXXL),
+      padding: const EdgeInsetsDirectional.symmetric(
+        horizontal: ThemeConstants.spaceXXXL,
+      ),
       // Center + scroll view keeps the content vertically centred when it fits
       // and scrolls instead of overflowing on short screens or at large text
       // scales.

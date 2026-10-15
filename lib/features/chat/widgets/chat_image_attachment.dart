@@ -1,8 +1,8 @@
+import 'package:deliveryboy/commons/widgets/shimmer_loading.dart';
 import 'dart:io';
 import 'package:deliveryboy/commons/widgets/app_network_image.dart';
 import 'package:deliveryboy/commons/widgets/app_scaffold.dart';
 import 'package:deliveryboy/commons/widgets/app_svg_icon.dart';
-import 'package:deliveryboy/commons/widgets/loading_widget.dart';
 import 'package:deliveryboy/core/constants/assets_constants.dart';
 import 'package:deliveryboy/core/constants/navigation_service.dart';
 import 'package:deliveryboy/core/constants/theme_constants.dart';
@@ -41,7 +41,7 @@ class ChatImageAttachment extends StatelessWidget {
           color: isMe
               ? context.cs.primary.withValues(alpha: 0.3)
               : context.cs.surfaceContainerHighest,
-          child: Center(child: LoadingWidget()),
+          child: const ShimmerInline(size: 40),
         ),
         errorWidget: _brokenImage(context),
       );

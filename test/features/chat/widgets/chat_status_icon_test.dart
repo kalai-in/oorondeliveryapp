@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:deliveryboy/commons/widgets/app_svg_icon.dart';
-import 'package:deliveryboy/commons/widgets/loading_widget.dart';
+import 'package:deliveryboy/commons/widgets/shimmer_loading.dart';
 import 'package:deliveryboy/core/constants/assets_constants.dart';
 import 'package:deliveryboy/features/chat/models/chat_message.dart';
 import 'package:deliveryboy/features/chat/widgets/chat_status_icon.dart';
@@ -22,10 +22,10 @@ void main() {
     await pumpIcon(tester, MessageStatus.sending);
 
     printTestLog(
-      'spinner → expected: 1, actual: ${find.byType(LoadingWidget).evaluate().length}',
+      'spinner → expected: 1, actual: ${find.byType(ShimmerInline).evaluate().length}',
     );
-    expect(find.byType(LoadingWidget), findsOneWidget);
-    final loading = tester.widget<LoadingWidget>(find.byType(LoadingWidget));
+    expect(find.byType(ShimmerInline), findsOneWidget);
+    final loading = tester.widget<ShimmerInline>(find.byType(ShimmerInline));
     printTestLog('spinner size → expected: 10, actual: ${loading.size}');
     expect(loading.size, 10);
     printTestLog(
@@ -69,7 +69,7 @@ void main() {
     for (final status in MessageStatus.values) {
       await pumpIcon(tester, status);
       final count = status == MessageStatus.sending
-          ? find.byType(LoadingWidget).evaluate().length
+          ? find.byType(ShimmerInline).evaluate().length
           : find.byType(AppSvgIcon).evaluate().length;
       printTestLog('status $status → expected: 1, actual: $count');
       expect(count, 1);

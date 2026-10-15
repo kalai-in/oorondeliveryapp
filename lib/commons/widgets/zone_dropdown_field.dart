@@ -40,7 +40,10 @@ class ZoneDropdownField extends StatelessWidget {
       suffixIcon: readOnly
           ? null
           : Padding(
-              padding: const EdgeInsetsDirectional.only(start: ThemeConstants.paddingS, end: ThemeConstants.paddingM),
+              padding: const EdgeInsetsDirectional.only(
+                start: ThemeConstants.paddingS,
+                end: ThemeConstants.paddingM,
+              ),
               child: AppSvgIcon(
                 AssetsConstants.arrowDownIcon,
                 size: ThemeConstants.iconS,

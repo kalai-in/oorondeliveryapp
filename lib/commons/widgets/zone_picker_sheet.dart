@@ -1,10 +1,10 @@
+import 'package:deliveryboy/commons/widgets/shimmer_loading.dart';
 import 'package:deliveryboy/commons/cubit/zones_cubit.dart';
 import 'package:deliveryboy/commons/models/zones_model.dart';
 import 'package:deliveryboy/commons/widgets/app_radio_option_tile.dart';
 import 'package:deliveryboy/commons/widgets/app_svg_icon.dart';
 import 'package:deliveryboy/commons/widgets/app_text.dart';
 import 'package:deliveryboy/commons/widgets/app_text_field.dart';
-import 'package:deliveryboy/commons/widgets/loading_widget.dart';
 import 'package:deliveryboy/core/constants/assets_constants.dart';
 import 'package:deliveryboy/core/constants/navigation_service.dart';
 import 'package:deliveryboy/core/constants/theme_constants.dart';
@@ -55,9 +55,7 @@ class _ZonePickerSheetState extends State<_ZonePickerSheet> {
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
-      constraints: BoxConstraints(
-        maxHeight: context.screenHeight * 0.75,
-      ),
+      constraints: BoxConstraints(maxHeight: context.screenHeight * 0.75),
       child: Column(
         mainAxisSize: .min,
         children: [
@@ -66,7 +64,10 @@ class _ZonePickerSheetState extends State<_ZonePickerSheet> {
             onChanged: (v) => setState(() => _query = v.trim().toLowerCase()),
             hintText: context.translate(LanguageLabelKeys.search),
             prefixIcon: Padding(
-              padding: const EdgeInsetsDirectional.only(start: ThemeConstants.paddingM, end: ThemeConstants.paddingS),
+              padding: const EdgeInsetsDirectional.only(
+                start: ThemeConstants.paddingM,
+                end: ThemeConstants.paddingS,
+              ),
               child: AppSvgIcon(
                 AssetsConstants.searchIcon,
                 size: ThemeConstants.iconS,
@@ -84,10 +85,7 @@ class _ZonePickerSheetState extends State<_ZonePickerSheet> {
             child: BlocBuilder<ZonesCubit, ZonesState>(
               builder: (context, state) {
                 if (state is ZonesLoading || state is ZonesInitial) {
-                  return const Padding(
-                    padding: EdgeInsetsDirectional.symmetric(vertical: ThemeConstants.paddingXXL),
-                    child: LoadingWidget(),
-                  );
+                  return const ShimmerRows(count: 5);
                 }
                 if (state is ZonesError) {
                   return Padding(

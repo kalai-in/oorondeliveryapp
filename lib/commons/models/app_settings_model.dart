@@ -28,12 +28,12 @@ class AppSettingsData {
   String? appName;
   String? supportNumber;
   String? supportEmail;
-  String? isVersionSystemOn;
-  String? currentVersion;
-  String? iosIsVersionSystemOn;
-  String? iosCurrentVersion;
-  String? requiredForceUpdate;
-  String? iosRequiredForceUpdate;
+  String? isVersionSystemOnDeliveryBoy;
+  String? currentVersionDeliveryBoy;
+  String? iosIsVersionSystemOnDeliveryBoy;
+  String? iosCurrentVersionDeliveryBoy;
+  String? requiredForceUpdateDeliveryBoy;
+  String? iosRequiredForceUpdateDeliveryBoy;
   String? androidAppUrl;
   String? iosAppUrl;
   String? currency;
@@ -70,12 +70,12 @@ class AppSettingsData {
     this.appName,
     this.supportNumber,
     this.supportEmail,
-    this.isVersionSystemOn,
-    this.currentVersion,
-    this.iosIsVersionSystemOn,
-    this.iosCurrentVersion,
-    this.requiredForceUpdate,
-    this.iosRequiredForceUpdate,
+    this.isVersionSystemOnDeliveryBoy,
+    this.currentVersionDeliveryBoy,
+    this.iosIsVersionSystemOnDeliveryBoy,
+    this.iosCurrentVersionDeliveryBoy,
+    this.requiredForceUpdateDeliveryBoy,
+    this.iosRequiredForceUpdateDeliveryBoy,
     this.androidAppUrl,
     this.iosAppUrl,
     this.currency,
@@ -113,12 +113,18 @@ class AppSettingsData {
     appName = json['app_name']?.toString();
     supportNumber = json['support_number']?.toString();
     supportEmail = json['support_email']?.toString();
-    isVersionSystemOn = json['is_version_system_on']?.toString();
-    currentVersion = json['current_version']?.toString();
-    iosIsVersionSystemOn = json['ios_is_version_system_on']?.toString();
-    iosCurrentVersion = json['ios_current_version']?.toString();
-    requiredForceUpdate = json['required_force_update']?.toString();
-    iosRequiredForceUpdate = json['ios_required_force_update']?.toString();
+    isVersionSystemOnDeliveryBoy =
+        json['is_version_system_on_delivery_boy']?.toString();
+    currentVersionDeliveryBoy = json['current_version_delivery_boy']
+        ?.toString();
+    iosIsVersionSystemOnDeliveryBoy =
+        json['ios_is_version_system_on_delivery_boy']?.toString();
+    iosCurrentVersionDeliveryBoy = json['ios_current_version_delivery_boy']
+        ?.toString();
+    requiredForceUpdateDeliveryBoy =
+        json['required_force_update_delivery_boy']?.toString();
+    iosRequiredForceUpdateDeliveryBoy =
+        json['ios_required_force_update_delivery_boy']?.toString();
     androidAppUrl = json['playstore_url']?.toString();
     iosAppUrl = json['appstore_url']?.toString();
     currency = json['currency']?.toString();
@@ -169,12 +175,14 @@ class AppSettingsData {
     data['app_name'] = appName;
     data['support_number'] = supportNumber;
     data['support_email'] = supportEmail;
-    data['is_version_system_on'] = isVersionSystemOn;
-    data['current_version'] = currentVersion;
-    data['ios_is_version_system_on'] = iosIsVersionSystemOn;
-    data['ios_current_version'] = iosCurrentVersion;
-    data['required_force_update'] = requiredForceUpdate;
-    data['ios_required_force_update'] = iosRequiredForceUpdate;
+    data['is_version_system_on_delivery_boy'] = isVersionSystemOnDeliveryBoy;
+    data['current_version_delivery_boy'] = currentVersionDeliveryBoy;
+    data['ios_is_version_system_on_delivery_boy'] =
+        iosIsVersionSystemOnDeliveryBoy;
+    data['ios_current_version_delivery_boy'] = iosCurrentVersionDeliveryBoy;
+    data['required_force_update_delivery_boy'] = requiredForceUpdateDeliveryBoy;
+    data['ios_required_force_update_delivery_boy'] =
+        iosRequiredForceUpdateDeliveryBoy;
     data['playstore_url'] = androidAppUrl;
     data['appstore_url'] = iosAppUrl;
     data['currency'] = currency;

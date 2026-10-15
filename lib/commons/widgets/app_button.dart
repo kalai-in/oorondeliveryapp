@@ -79,7 +79,9 @@ class AppButton extends StatelessWidget {
                 ? AlignmentDirectional.centerStart
                 : Alignment.center,
             padding: contentLeftAlign
-                ? const EdgeInsetsDirectional.symmetric(horizontal: ThemeConstants.paddingM)
+                ? const EdgeInsetsDirectional.symmetric(
+                    horizontal: ThemeConstants.paddingM,
+                  )
                 : EdgeInsetsDirectional.zero,
           ),
           child: _child(context, color ?? context.cs.primary),

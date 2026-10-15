@@ -19,18 +19,30 @@ class ListSkeletonLoader extends StatelessWidget {
   Widget build(BuildContext context) {
     return ShimmerLoading(
       child: ListView.builder(
-        padding: const EdgeInsetsDirectional.fromSTEB(ThemeConstants.paddingL, ThemeConstants.paddingM, ThemeConstants.paddingL, ThemeConstants.spaceXXXL),
+        padding: const EdgeInsetsDirectional.fromSTEB(
+          ThemeConstants.paddingL,
+          ThemeConstants.paddingM,
+          ThemeConstants.paddingL,
+          ThemeConstants.spaceXXXL,
+        ),
         physics: const NeverScrollableScrollPhysics(),
         itemCount: itemCount + (showHeroCard ? 1 : 0),
         itemBuilder: (context, index) {
           if (showHeroCard && index == 0) {
             return Padding(
-              padding: const EdgeInsetsDirectional.only(bottom: ThemeConstants.paddingL),
-              child: ShimmerBox(height: context.screenHeight * 0.172, borderRadius: AppRadius.r20),
+              padding: const EdgeInsetsDirectional.only(
+                bottom: ThemeConstants.paddingL,
+              ),
+              child: ShimmerBox(
+                height: context.screenHeight * 0.172,
+                borderRadius: AppRadius.r20,
+              ),
             );
           }
           return Padding(
-            padding: const EdgeInsetsDirectional.only(bottom: ThemeConstants.paddingM),
+            padding: const EdgeInsetsDirectional.only(
+              bottom: ThemeConstants.paddingM,
+            ),
             child: ShimmerBox(height: context.screenHeight * 0.113),
           );
         },

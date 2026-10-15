@@ -4,6 +4,7 @@ import 'package:deliveryboy/commons/cubit/zones_cubit.dart';
 import 'package:deliveryboy/commons/models/countries_model.dart';
 import 'package:deliveryboy/commons/models/earning_type.dart';
 import 'package:deliveryboy/commons/models/zones_model.dart';
+import 'package:deliveryboy/commons/widgets/collapse_on_scroll.dart';
 import 'package:deliveryboy/commons/widgets/country_phone_field.dart';
 import 'package:deliveryboy/commons/widgets/earning_type_selector.dart';
 import 'package:deliveryboy/core/constants/theme_constants.dart';
@@ -48,7 +49,15 @@ class RegisterForm extends StatefulWidget {
   })
   onRegister;
 
-  const RegisterForm({super.key, required this.onRegister});
+  final ScrollController? scrollController;
+  final ValueChanged<File?>? onProfileImageChanged;
+
+  const RegisterForm({
+    super.key,
+    required this.onRegister,
+    this.scrollController,
+    this.onProfileImageChanged,
+  });
 
   @override
   State<RegisterForm> createState() => RegisterFormState();
@@ -212,8 +221,20 @@ class RegisterFormState extends State<RegisterForm> {
     );
   }
 
+  void setProfileImage(File f) {
+    setState(() => _profileImage = f);
+    widget.onProfileImageChanged?.call(f);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final avatar = ProfileAvatarPicker(
+      image: _profileImage,
+      onPicked: (f) {
+        setState(() => _profileImage = f);
+        widget.onProfileImageChanged?.call(f);
+      },
+    );
     return BlocListener<CountriesCubit, CountriesState>(
       listener: (context, state) {
         if (state is CountriesLoaded &&
@@ -225,167 +246,190 @@ class RegisterFormState extends State<RegisterForm> {
         }
       },
       child: SingleChildScrollView(
-        padding: const EdgeInsetsDirectional.symmetric(
-          horizontal: ThemeConstants.paddingXXL,
-          vertical: ThemeConstants.paddingL,
-        ),
-        child: Form(
-          key: _formKey,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          child: Column(
-            crossAxisAlignment: .start,
-            children: [
-              Center(
-                child: ProfileAvatarPicker(
-                  image: _profileImage,
-                  onPicked: (f) => setState(() => _profileImage = f),
-                ),
+        controller: widget.scrollController,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsetsDirectional.symmetric(
+                horizontal: ThemeConstants.paddingXXL,
+                vertical: ThemeConstants.paddingL,
               ),
-              AppSpacing.h24,
-
-              RegisterCredentialFields(
-                nameController: _usernameController,
-                emailController: _emailController,
-                dobController: _dobController,
-                mobileController: _mobileController,
-                passwordController: _passwordController,
-                confirmPasswordController: _confirmPasswordController,
-                selectedCountry: _selectedCountry,
-                onCountryChanged: _selectCountry,
-                selectedZone: _selectedZone,
-                onZoneChanged: (z) => setState(() => _selectedZone = z),
-                zoneValidator: _validateZone,
-                onPickDob: _pickDob,
-                obscurePassword: _obscurePassword,
-                onToggleObscurePassword: () =>
-                    setState(() => _obscurePassword = !_obscurePassword),
-                obscureConfirm: _obscureConfirm,
-                onToggleObscureConfirm: () =>
-                    setState(() => _obscureConfirm = !_obscureConfirm),
-              ),
-              AppSpacing.h14,
-
-              IdentityDocsSection(
-                nationalIdImage: _nationalIdImage,
-                nationalIdError: _nationalIdError,
-                onNationalIdPicked: (file) => setState(() {
-                  _nationalIdImage = file;
-                  _nationalIdError = null;
-                }),
-                drivingLicenseImage: _drivingLicenseImage,
-                drivingLicenseError: _drivingLicenseError,
-                onDrivingLicensePicked: (file) => setState(() {
-                  _drivingLicenseImage = file;
-                  _drivingLicenseError = null;
-                }),
-              ),
-              AppSpacing.h14,
-
-              _label(context, context.translate(LanguageLabelKeys.earningType)),
-              AppSpacing.h8,
-              EarningTypeSelector(
-                value: _earningType,
-                onChanged: (v) {
-                  if (v != null) setState(() => _earningType = v);
-                },
-              ),
-              AppSpacing.h14,
-
-              if (_earningType == EarningType.commission) ...[
-                _label(
-                  context,
-                  context.translate(LanguageLabelKeys.commissionPercent),
-                  isRequired: true,
-                ),
-                AppSpacing.h8,
-                AppTextField(
-                  controller: _commissionController,
-                  hintText: context.translate(
-                    LanguageLabelKeys.enterCommission,
-                  ),
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  validator: (v) => _earningType == EarningType.commission
-                      ? v.validateCommission(context)
-                      : null,
-                ),
-                AppSpacing.h14,
-                _MinMaxFields(
-                  minController: _bonusMinController,
-                  maxController: _bonusMaxController,
-                  enabled: _earningType == EarningType.commission,
-                ),
-                AppSpacing.h14,
-              ],
-
-              _label(
-                context,
-                context.translate(LanguageLabelKeys.returnEarningType),
-              ),
-              AppSpacing.h8,
-              EarningTypeSelector(
-                value: _returnEarningType,
-                onChanged: (v) {
-                  if (v != null) setState(() => _returnEarningType = v);
-                },
-              ),
-              AppSpacing.h14,
-
-              if (_returnEarningType == EarningType.commission) ...[
-                _label(
-                  context,
-                  context.translate(LanguageLabelKeys.returnCommissionPercent),
-                  isRequired: true,
-                ),
-                AppSpacing.h8,
-                AppTextField(
-                  controller: _returnCommissionController,
-                  hintText: context.translate(
-                    LanguageLabelKeys.enterCommission,
-                  ),
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  validator: (v) => _returnEarningType == EarningType.commission
-                      ? v.validateCommission(context)
-                      : null,
-                ),
-                AppSpacing.h14,
-                _MinMaxFields(
-                  minController: _returnBonusMinController,
-                  maxController: _returnBonusMaxController,
-                  enabled: _returnEarningType == EarningType.commission,
-                ),
-                AppSpacing.h14,
-              ],
-
-              AppSpacing.h10,
-
-              Center(
-                child: Row(
-                  mainAxisAlignment: .center,
+              child: Form(
+                key: _formKey,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                child: Column(
+                  crossAxisAlignment: .start,
                   children: [
-                    AppText(
-                      context.translate(LanguageLabelKeys.alreadyHaveAccount),
-                      style: context.tt.bodyMedium?.copyWith(
-                        color: context.cs.onSurfaceVariant,
-                      ),
+                    Center(
+                      child: widget.scrollController == null
+                          ? avatar
+                          : CollapseOnScroll(
+                              controller: widget.scrollController!,
+                              collapseOffset: 60,
+                              child: avatar,
+                            ),
                     ),
-                    GestureDetector(
-                      onTap: () => AppNavigator.pop(context),
-                      child: AppText(
-                        context.translate(LanguageLabelKeys.login),
-                        style: context.tt.labelLarge?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: context.cs.primary,
+                    AppSpacing.h24,
+
+                    RegisterCredentialFields(
+                      nameController: _usernameController,
+                      emailController: _emailController,
+                      dobController: _dobController,
+                      mobileController: _mobileController,
+                      passwordController: _passwordController,
+                      confirmPasswordController: _confirmPasswordController,
+                      selectedCountry: _selectedCountry,
+                      onCountryChanged: _selectCountry,
+                      selectedZone: _selectedZone,
+                      onZoneChanged: (z) => setState(() => _selectedZone = z),
+                      zoneValidator: _validateZone,
+                      onPickDob: _pickDob,
+                      obscurePassword: _obscurePassword,
+                      onToggleObscurePassword: () =>
+                          setState(() => _obscurePassword = !_obscurePassword),
+                      obscureConfirm: _obscureConfirm,
+                      onToggleObscureConfirm: () =>
+                          setState(() => _obscureConfirm = !_obscureConfirm),
+                    ),
+                    AppSpacing.h14,
+
+                    IdentityDocsSection(
+                      nationalIdImage: _nationalIdImage,
+                      nationalIdError: _nationalIdError,
+                      onNationalIdPicked: (file) => setState(() {
+                        _nationalIdImage = file;
+                        _nationalIdError = null;
+                      }),
+                      drivingLicenseImage: _drivingLicenseImage,
+                      drivingLicenseError: _drivingLicenseError,
+                      onDrivingLicensePicked: (file) => setState(() {
+                        _drivingLicenseImage = file;
+                        _drivingLicenseError = null;
+                      }),
+                    ),
+                    AppSpacing.h14,
+
+                    _label(
+                      context,
+                      context.translate(LanguageLabelKeys.earningType),
+                    ),
+                    AppSpacing.h8,
+                    EarningTypeSelector(
+                      value: _earningType,
+                      onChanged: (v) {
+                        if (v != null) setState(() => _earningType = v);
+                      },
+                    ),
+                    AppSpacing.h14,
+
+                    if (_earningType == EarningType.commission) ...[
+                      _label(
+                        context,
+                        context.translate(LanguageLabelKeys.commissionPercent),
+                        isRequired: true,
+                      ),
+                      AppSpacing.h8,
+                      AppTextField(
+                        controller: _commissionController,
+                        hintText: context.translate(
+                          LanguageLabelKeys.enterCommission,
                         ),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
+                        validator: (v) => _earningType == EarningType.commission
+                            ? v.validateCommission(context)
+                            : null,
+                      ),
+                      AppSpacing.h14,
+                      _MinMaxFields(
+                        minController: _bonusMinController,
+                        maxController: _bonusMaxController,
+                        enabled: _earningType == EarningType.commission,
+                      ),
+                      AppSpacing.h14,
+                    ],
+
+                    _label(
+                      context,
+                      context.translate(LanguageLabelKeys.returnEarningType),
+                    ),
+                    AppSpacing.h8,
+                    EarningTypeSelector(
+                      value: _returnEarningType,
+                      onChanged: (v) {
+                        if (v != null) setState(() => _returnEarningType = v);
+                      },
+                    ),
+                    AppSpacing.h14,
+
+                    if (_returnEarningType == EarningType.commission) ...[
+                      _label(
+                        context,
+                        context.translate(
+                          LanguageLabelKeys.returnCommissionPercent,
+                        ),
+                        isRequired: true,
+                      ),
+                      AppSpacing.h8,
+                      AppTextField(
+                        controller: _returnCommissionController,
+                        hintText: context.translate(
+                          LanguageLabelKeys.enterCommission,
+                        ),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
+                        validator: (v) =>
+                            _returnEarningType == EarningType.commission
+                            ? v.validateCommission(context)
+                            : null,
+                      ),
+                      AppSpacing.h14,
+                      _MinMaxFields(
+                        minController: _returnBonusMinController,
+                        maxController: _returnBonusMaxController,
+                        enabled: _returnEarningType == EarningType.commission,
+                      ),
+                      AppSpacing.h14,
+                    ],
+
+                    AppSpacing.h10,
+
+                    Center(
+                      child: Row(
+                        mainAxisAlignment: .center,
+                        children: [
+                          AppText(
+                            context.translate(
+                              LanguageLabelKeys.alreadyHaveAccount,
+                            ),
+                            style: context.tt.bodyMedium?.copyWith(
+                              color: context.cs.onSurfaceVariant,
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () => AppNavigator.pop(context),
+                            child: AppText(
+                              context.translate(LanguageLabelKeys.login),
+                              style: context.tt.labelLarge?.copyWith(
+                                fontWeight: FontWeight.w700,
+                                color: context.cs.primary,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
+                    AppSpacing.h24,
                   ],
                 ),
               ),
-              AppSpacing.h24,
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

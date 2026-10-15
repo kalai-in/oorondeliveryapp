@@ -1,3 +1,4 @@
+import 'package:deliveryboy/commons/widgets/shimmer_loading.dart';
 import 'dart:io';
 import 'package:deliveryboy/commons/widgets/app_svg_icon.dart';
 import 'package:deliveryboy/core/constants/assets_constants.dart';
@@ -5,7 +6,6 @@ import 'package:deliveryboy/core/constants/assets_constants.dart';
 import '../../../commons/widgets/app_text.dart';
 
 import 'package:deliveryboy/commons/widgets/app_radio_option_tile.dart';
-import 'package:deliveryboy/commons/widgets/loading_widget.dart';
 import 'package:deliveryboy/core/api/api_parameters.dart';
 import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/core/localization/cubit/language_cubit.dart';
@@ -98,12 +98,7 @@ class _LanguageSheetState extends State<_LanguageSheet> {
                 mainAxisSize: .min,
                 children: [
                   if (state is LanguageLoading)
-                    Padding(
-                      padding: const EdgeInsetsDirectional.symmetric(
-                        vertical: ThemeConstants.paddingXXL,
-                      ),
-                      child: LoadingWidget(),
-                    )
+                    const ShimmerRows(count: 4)
                   else if (state is LanguageError)
                     Padding(
                       padding: const EdgeInsetsDirectional.symmetric(
@@ -180,7 +175,7 @@ class _LanguageSheetState extends State<_LanguageSheet> {
                                       enabled: !isSelecting,
                                       trailing:
                                           isSelecting && _pendingId == lang.id
-                                          ? LoadingWidget(size: ThemeConstants.loaderSizeS)
+                                          ? ShimmerInline(size: ThemeConstants.loaderSizeS)
                                           : null,
                                       onTap: () {
                                         setState(() => _pendingId = lang.id);

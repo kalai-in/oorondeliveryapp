@@ -1,5 +1,5 @@
 import 'package:deliveryboy/commons/widgets/empty_state_widget.dart';
-import 'package:deliveryboy/commons/widgets/loading_widget.dart';
+import 'package:deliveryboy/commons/widgets/paginated_list_footer.dart';
 import 'package:deliveryboy/core/constants/assets_constants.dart';
 import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/core/localization/language_label_key.dart';
@@ -58,9 +58,9 @@ class WalletLoadedBody extends StatelessWidget {
                     itemCount: transactions.length + (state.hasMore ? 1 : 0),
                     itemBuilder: (context, index) {
                       if (index >= transactions.length) {
-                        return Padding(
-                          padding: EdgeInsetsDirectional.all(ThemeConstants.paddingL),
-                          child: LoadingWidget(),
+                        return const PaginatedListFooter(
+                          isLoadingMore: true,
+                          hasMore: true,
                         );
                       }
                       return WalletTransactionItem(

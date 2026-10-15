@@ -30,8 +30,7 @@ bool hasChargeTaxDetail({
   double? taxAmount,
   double? taxableAmount,
   double? taxRate,
-}) =>
-    (taxAmount ?? 0) > 0;
+}) => (taxAmount ?? 0) > 0;
 
 /// Tax detail sheet for a single delivery/additional/surge charge — shared
 /// across order, ecommerce and return bill summaries so all stay in sync.
@@ -99,7 +98,11 @@ Widget additionalChargeDetailSheet(
         AppSpacing.h8,
         const Divider(height: 1, thickness: 0.5),
         AppSpacing.h12,
-        row(context.translate(LanguageLabelKeys.total), totalAmount, bold: true),
+        row(
+          context.translate(LanguageLabelKeys.total),
+          totalAmount,
+          bold: true,
+        ),
       ],
       if (isRefundable != null) ...[
         AppSpacing.h16,

@@ -7,7 +7,7 @@ import 'package:deliveryboy/commons/models/country_settings_model.dart';
 import 'package:deliveryboy/commons/widgets/app_no_internet_widget.dart';
 import 'package:deliveryboy/commons/widgets/app_text.dart';
 import 'package:deliveryboy/commons/widgets/empty_state_widget.dart';
-import 'package:deliveryboy/commons/widgets/loading_widget.dart';
+import 'package:deliveryboy/commons/widgets/shimmer_loading.dart';
 import 'package:deliveryboy/core/localization/language_label_key.dart';
 import 'package:deliveryboy/features/profile/screens/policies_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -183,9 +183,9 @@ void main() {
     await pumpScreen(tester, state: CountrySettingsLoading());
 
     printTestLog(
-      'loader → expected: 1, actual: ${find.byType(LoadingWidget).evaluate().length}',
+      'loader → expected: 1, actual: ${find.byType(ShimmerRows).evaluate().length}',
     );
-    expect(find.byType(LoadingWidget), findsOneWidget);
+    expect(find.byType(ShimmerRows), findsOneWidget);
   });
 
   testWidgets('fetches the settings itself when they were never loaded', (
@@ -198,9 +198,9 @@ void main() {
     verify(() => settingsCubit.loadCountrySettings()).called(1);
     printTestLog('loadCountrySettings → verified once');
     printTestLog(
-      'loader → expected: 1, actual: ${find.byType(LoadingWidget).evaluate().length}',
+      'loader → expected: 1, actual: ${find.byType(ShimmerRows).evaluate().length}',
     );
-    expect(find.byType(LoadingWidget), findsOneWidget);
+    expect(find.byType(ShimmerRows), findsOneWidget);
   });
 
   testWidgets('shows the error message with a retry that forces a refetch', (

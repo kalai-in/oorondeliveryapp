@@ -7,7 +7,10 @@ import '../../utils/extensions/context_extensions.dart';
 class ShimmerLoading extends StatefulWidget {
   final Widget child;
 
-  const ShimmerLoading({super.key, required this.child});
+  /// Base tone of the sweep; defaults to the theme's on-surface colour.
+  final Color? color;
+
+  const ShimmerLoading({super.key, required this.child, this.color});
 
   @override
   State<ShimmerLoading> createState() => _ShimmerLoadingState();
@@ -34,8 +37,9 @@ class _ShimmerLoadingState extends State<ShimmerLoading>
 
   @override
   Widget build(BuildContext context) {
-    final base = context.cs.onSurface.withValues(alpha: 0.06);
-    final highlight = context.cs.onSurface.withValues(alpha: 0.14);
+    final tone = widget.color ?? context.cs.onSurface;
+    final base = tone.withValues(alpha: 0.06);
+    final highlight = tone.withValues(alpha: 0.14);
 
     return AnimatedBuilder(
       animation: _controller,
@@ -110,6 +114,107 @@ class ShimmerBox extends StatelessWidget {
       decoration: AppDecorations.card(
         color: context.cs.onSurface.withValues(alpha: 0.08),
         borderRadius: borderRadius,
+      ),
+    );
+  }
+}
+
+/// Small shimmering square that replaces an inline spinner (buttons, icons, trailing slots).
+class ShimmerInline extends StatelessWidget {
+  final double size;
+  final Color? color;
+
+  const ShimmerInline({super.key, this.size = 24, this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ShimmerLoading(
+        color: color,
+        child: ShimmerBox(
+          width: size,
+          height: size,
+          borderRadius: AppRadius.r8,
+        ),
+      ),
+    );
+  }
+}
+
+/// Stacked shimmering text lines — mimics a paragraph of copy (policy/terms
+/// pages) instead of the chunky card-row look of [ShimmerRows].
+class ShimmerParagraph extends StatelessWidget {
+  final int lines;
+  final double lineHeight;
+  final EdgeInsetsGeometry padding;
+
+  const ShimmerParagraph({
+    super.key,
+    this.lines = 10,
+    this.lineHeight = 14,
+    this.padding = const EdgeInsetsDirectional.symmetric(
+      horizontal: 16,
+      vertical: 16,
+    ),
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Cycles line widths so the block reads like wrapped text, ending each
+    // "paragraph" of 4 lines on a short one.
+    const widthFactors = [1.0, 0.95, 1.0, 0.6];
+
+    return ShimmerLoading(
+      child: Padding(
+        padding: padding,
+        child: Column(
+          crossAxisAlignment: .start,
+          mainAxisSize: MainAxisSize.min,
+          spacing: 10,
+          children: [
+            for (var i = 0; i < lines; i++)
+              FractionallySizedBox(
+                widthFactor: widthFactors[i % widthFactors.length],
+                child: ShimmerBox(
+                  height: lineHeight,
+                  borderRadius: AppRadius.r6,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// A few stacked shimmering rows for content that loads inside a sheet or screen.
+class ShimmerRows extends StatelessWidget {
+  final int count;
+  final double rowHeight;
+  final EdgeInsetsGeometry padding;
+
+  const ShimmerRows({
+    super.key,
+    this.count = 4,
+    this.rowHeight = 56,
+    this.padding = const EdgeInsetsDirectional.symmetric(
+      horizontal: 16,
+      vertical: 16,
+    ),
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ShimmerLoading(
+      child: Padding(
+        padding: padding,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          spacing: 12,
+          children: [
+            for (var i = 0; i < count; i++) ShimmerBox(height: rowHeight),
+          ],
+        ),
       ),
     );
   }

@@ -255,9 +255,12 @@ class NotificationService {
         active.conversationId != conversationId) {
       return false;
     }
-    if (!active.isSocketConnected) {
-      await active.refreshFromNotification();
-    }
+    // Always pull via REST, even when the socket reports "connected" —
+    // that state only reflects the channel subscription, not that every
+    // broadcast on it actually arrived (dropped frame, subscribe-race,
+    // etc.), and refreshFromNotification merges by id so this is a no-op
+    // when the socket already delivered the message.
+    await active.refreshFromNotification();
     return true;
   }
 

@@ -3,7 +3,7 @@ import '../../utils/extensions/context_extensions.dart';
 import 'paginated_list_footer.dart';
 
 /// Generic pull-to-refresh, infinite-scroll list: renders [itemBuilder] for
-/// each item plus a trailing [PaginatedListFooter] slot for the loading spinner.
+/// each item plus a trailing [PaginatedListFooter] slot for the loading skeleton.
 class PaginatedListView<T> extends StatelessWidget {
   final List<T> items;
   final bool isLoadingMore;
@@ -39,7 +39,7 @@ class PaginatedListView<T> extends StatelessWidget {
       onRefresh: onRefresh,
       child: ListView.builder(
         controller: scrollController,
-        physics: physics,
+        physics: physics ?? const AlwaysScrollableScrollPhysics(),
         padding: padding,
         itemCount: items.length + (isLoadingMore ? 1 : 0),
         itemBuilder: (context, index) {

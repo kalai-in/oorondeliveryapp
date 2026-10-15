@@ -41,7 +41,11 @@ class EarningTypeSelector extends StatelessWidget {
                   value: EarningType.salaried,
                 ),
               ),
-              Container(width: 1, height: context.screenHeight * 0.049, color: context.cs.outline),
+              Container(
+                width: 1,
+                height: context.screenHeight * 0.049,
+                color: context.cs.outline,
+              ),
               Expanded(
                 child: _EarningRadioTile(
                   label: context.translate(LanguageLabelKeys.commission),

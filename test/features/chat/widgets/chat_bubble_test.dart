@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:deliveryboy/commons/widgets/app_svg_icon.dart';
-import 'package:deliveryboy/commons/widgets/loading_widget.dart';
+import 'package:deliveryboy/commons/widgets/shimmer_loading.dart';
 import 'package:deliveryboy/core/api/hive_box_keys.dart';
 import 'package:deliveryboy/core/constants/assets_constants.dart';
 import 'package:deliveryboy/features/chat/models/chat_message.dart';
@@ -227,9 +227,9 @@ void main() {
       await pumpIcon(tester, MessageStatus.sending);
 
       printTestLog(
-        'spinner → expected: 1, actual: ${find.byType(LoadingWidget).evaluate().length}',
+        'spinner → expected: 1, actual: ${find.byType(ShimmerInline).evaluate().length}',
       );
-      expect(find.byType(LoadingWidget), findsOneWidget);
+      expect(find.byType(ShimmerInline), findsOneWidget);
     });
 
     testWidgets('sent shows the read-check icon', (tester) async {

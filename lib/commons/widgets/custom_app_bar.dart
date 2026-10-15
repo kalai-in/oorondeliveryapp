@@ -52,6 +52,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   // (e.g. multiple tabs, each with their own controller) — the caller
   // drives the shadow by pushing true/false into this instead.
   final ValueListenable<bool>? shadowListenable;
+  // With [scrollController] and [collapseOffset], [collapsedLeading] (e.g. a
+  // small avatar) grows in before the title as the offset nears
+  // [collapseOffset]; pair with a CollapseOnScroll in the body.
+  final double? collapseOffset;
+  final Widget? collapsedLeading;
 
   const CustomAppBar({
     super.key,
@@ -75,6 +80,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.titleWidget,
     this.scrollController,
     this.shadowListenable,
+    this.collapseOffset,
+    this.collapsedLeading,
   });
 
   bool get _hasSearch => onSearchStart != null;
@@ -97,14 +104,51 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         builder: (context, _) {
           final scrolled =
               scrollController!.hasClients && scrollController!.offset > 0;
-          return _build(context, scrolled: scrolled);
+          final progress = collapseOffset == null
+              ? 1.0
+              : (scrollController!.hasClients
+                        ? scrollController!.offset / collapseOffset!
+                        : 0.0)
+                    .clamp(0.0, 1.0);
+          return _build(context, scrolled: scrolled, progress: progress);
         },
       );
     }
     return _build(context, scrolled: false);
   }
 
-  Widget _build(BuildContext context, {required bool scrolled}) {
+  Widget? _collapsing(double progress, Widget? child) {
+    if (collapseOffset == null || collapsedLeading == null || child == null) {
+      return child;
+    }
+    return Row(
+      children: [
+        ClipRect(
+          child: Align(
+            alignment: AlignmentDirectional.centerStart,
+            widthFactor: progress,
+            child: Opacity(
+              opacity: progress,
+              child: Padding(
+                padding: const EdgeInsetsDirectional.only(end: 12),
+                child: Transform.scale(
+                  scale: 0.6 + 0.4 * progress,
+                  child: collapsedLeading,
+                ),
+              ),
+            ),
+          ),
+        ),
+        Flexible(child: child),
+      ],
+    );
+  }
+
+  Widget _build(
+    BuildContext context, {
+    required bool scrolled,
+    double progress = 1,
+  }) {
     final titleColor = foregroundColor ?? context.cs.onSurface;
 
     return AppBar(
@@ -112,79 +156,84 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       foregroundColor: titleColor,
       elevation: scrolled ? 4 : 0,
       surfaceTintColor: Colors.transparent,
-      shadowColor: scrolled ? Colors.black.withValues(alpha: 0.15) : Colors.transparent,
+      shadowColor: scrolled
+          ? Colors.black.withValues(alpha: 0.15)
+          : Colors.transparent,
       centerTitle: false, //!isSearching,
       titleSpacing: _hasSearch && isSearching
           ? 16
           : NavigationToolbar.kMiddleSpacing,
       automaticallyImplyLeading: showBackButton && !isSearching,
-      title: _hasSearch
-          ? AnimatedSwitcher(
-              duration: const Duration(milliseconds: 240),
-              switchInCurve: Curves.easeOutCubic,
-              switchOutCurve: Curves.easeInCubic,
-              transitionBuilder: (child, animation) => FadeTransition(
-                opacity: animation,
-                child: ScaleTransition(
-                  scale: Tween<double>(
-                    begin: 0.92,
-                    end: 1.0,
-                  ).animate(animation),
-                  child: child,
+      title: _collapsing(
+        progress,
+        _hasSearch
+            ? AnimatedSwitcher(
+                duration: const Duration(milliseconds: 240),
+                switchInCurve: Curves.easeOutCubic,
+                switchOutCurve: Curves.easeInCubic,
+                transitionBuilder: (child, animation) => FadeTransition(
+                  opacity: animation,
+                  child: ScaleTransition(
+                    scale: Tween<double>(
+                      begin: 0.92,
+                      end: 1.0,
+                    ).animate(animation),
+                    child: child,
+                  ),
                 ),
-              ),
-              child: isSearching
-                  ? _AppBarSearchField(
-                      key: const ValueKey('search'),
-                      controller: searchController!,
-                      hint:
-                          searchHint ??
-                          context.translate(LanguageLabelKeys.searchHint),
-                      onChanged: onSearchChanged ?? (_) {},
-                      onCancel: onSearchCancel,
-                      cancelIcon: searchCancelIcon,
-                    )
-                  : AppText(
-                      title ?? '',
-                      key: const ValueKey('title'),
-                      style: context.tt.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: titleColor,
-                        letterSpacing: 0.2,
+                child: isSearching
+                    ? _AppBarSearchField(
+                        key: const ValueKey('search'),
+                        controller: searchController!,
+                        hint:
+                            searchHint ??
+                            context.translate(LanguageLabelKeys.searchHint),
+                        onChanged: onSearchChanged ?? (_) {},
+                        onCancel: onSearchCancel,
+                        cancelIcon: searchCancelIcon,
+                      )
+                    : AppText(
+                        title ?? '',
+                        key: const ValueKey('title'),
+                        style: context.tt.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: titleColor,
+                          letterSpacing: 0.2,
+                        ),
                       ),
-                    ),
-            )
-          : titleWidget ??
-                (title != null
-                    ? (subtitle != null
-                          ? Column(
-                              mainAxisSize: .min,
-                              crossAxisAlignment: .start,
-                              children: [
-                                AppText(
-                                  title!,
-                                  overflow: .ellipsis,
-                                  style: context.tt.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.w700,
-                                    color: titleColor,
+              )
+            : titleWidget ??
+                  (title != null
+                      ? (subtitle != null
+                            ? Column(
+                                mainAxisSize: .min,
+                                crossAxisAlignment: .start,
+                                children: [
+                                  AppText(
+                                    title!,
+                                    overflow: .ellipsis,
+                                    style: context.tt.titleMedium?.copyWith(
+                                      fontWeight: FontWeight.w700,
+                                      color: titleColor,
+                                    ),
                                   ),
-                                ),
-                                AppText(
-                                  subtitle!,
-                                  overflow: .ellipsis,
-                                  style: context.tt.bodySmall?.copyWith(
-                                    color: context.cs.onSurfaceVariant,
+                                  AppText(
+                                    subtitle!,
+                                    overflow: .ellipsis,
+                                    style: context.tt.bodySmall?.copyWith(
+                                      color: context.cs.onSurfaceVariant,
+                                    ),
                                   ),
+                                ],
+                              )
+                            : AppText(
+                                title!,
+                                style: context.tt.titleMedium?.copyWith(
+                                  color: titleColor,
                                 ),
-                              ],
-                            )
-                          : AppText(
-                              title!,
-                              style: context.tt.titleMedium?.copyWith(
-                                color: titleColor,
-                              ),
-                            ))
-                    : null),
+                              ))
+                      : null),
+      ),
       leading: showBackButton && !isSearching
           ? IconButton(
               icon: Transform.flip(
@@ -213,7 +262,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         ...?actions,
         if (currentStep != null && totalSteps != null)
           Padding(
-            padding: const EdgeInsetsDirectional.only(end: ThemeConstants.paddingL),
+            padding: const EdgeInsetsDirectional.only(
+              end: ThemeConstants.paddingL,
+            ),
             child: _StepProgressRing(
               currentStep: currentStep!,
               totalSteps: totalSteps!,
@@ -319,7 +370,8 @@ class _AppBarSearchField extends StatelessWidget {
                           color: context.cs.onSurfaceVariant,
                         )
                       : Transform.flip(
-                          flipX: Directionality.of(context) == TextDirection.rtl,
+                          flipX:
+                              Directionality.of(context) == TextDirection.rtl,
                           child: AppSvgIcon(
                             AssetsConstants.arrowLeftIcon,
                             size: ThemeConstants.iconS,
@@ -347,7 +399,9 @@ class _AppBarSearchField extends StatelessWidget {
                     onChanged('');
                   },
                   child: Padding(
-                    padding: const EdgeInsetsDirectional.all(ThemeConstants.paddingS),
+                    padding: const EdgeInsetsDirectional.all(
+                      ThemeConstants.paddingS,
+                    ),
                     child: AppSvgIcon(
                       AssetsConstants.closeCircleIcon,
                       size: ThemeConstants.iconS,

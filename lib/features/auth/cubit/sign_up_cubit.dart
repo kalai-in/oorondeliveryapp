@@ -72,9 +72,13 @@ class SignUpCubit extends BaseAsyncCubit<String> {
             LanguageLabelKeys.registrationSuccessful,
           );
     },
-    onSuccess: (_) => AnalyticsService.instance.logEvent(AppConstants.eventSignUp),
-    onUnexpectedError: (e, stack) =>
-        CrashlyticsService.instance.recordError(e, stack, reason: 'SignUp failed'),
+    onSuccess: (_) =>
+        AnalyticsService.instance.logEvent(AppConstants.eventSignUp),
+    onUnexpectedError: (e, stack) => CrashlyticsService.instance.recordError(
+      e,
+      stack,
+      reason: 'SignUp failed',
+    ),
   );
 
   void reset() => emit(AsyncInitial());

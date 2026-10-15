@@ -6,7 +6,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:deliveryboy/commons/cubit/base_pagination_cubit.dart';
 import 'package:deliveryboy/commons/cubit/country_settings_cubit.dart';
 import 'package:deliveryboy/commons/widgets/empty_state_widget.dart';
-import 'package:deliveryboy/commons/widgets/loading_widget.dart';
+import 'package:deliveryboy/commons/widgets/paginated_list_footer.dart';
 import 'package:deliveryboy/core/api/hive_box_keys.dart';
 import 'package:deliveryboy/features/wallet/cubit/wallet_cubit.dart';
 import 'package:deliveryboy/features/wallet/models/withdrawal_request_model.dart';
@@ -118,9 +118,9 @@ void main() {
     );
 
     printTestLog(
-      'loading widget → expected: 1, actual: ${find.byType(LoadingWidget).evaluate().length}',
+      'loading widget → expected: 1, actual: ${find.byType(PaginatedListFooter).evaluate().length}',
     );
-    expect(find.byType(LoadingWidget), findsOneWidget);
+    expect(find.byType(PaginatedListFooter), findsOneWidget);
   });
 
   testWidgets('pull to refresh calls loadWallet', (tester) async {

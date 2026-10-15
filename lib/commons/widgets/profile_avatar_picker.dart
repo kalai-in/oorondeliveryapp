@@ -23,6 +23,8 @@ class ProfileAvatarPicker extends StatelessWidget {
   final String? imageUrl;
   final ValueChanged<File> onPicked;
   final double size;
+  // Small variant (app bar): thinner ring, smaller icon and camera badge.
+  final bool compact;
 
   const ProfileAvatarPicker({
     super.key,
@@ -30,12 +32,18 @@ class ProfileAvatarPicker extends StatelessWidget {
     this.image,
     this.imageUrl,
     this.size = 100,
+    this.compact = false,
   });
 
   Future<void> _pick(BuildContext context) async {
     final source = await showAppBottomSheet<ImageSource>(
       context,
-      padding: const EdgeInsetsDirectional.fromSTEB(0, ThemeConstants.paddingS, 0, ThemeConstants.paddingS),
+      padding: const EdgeInsetsDirectional.fromSTEB(
+        0,
+        ThemeConstants.paddingS,
+        0,
+        ThemeConstants.paddingS,
+      ),
       builder: (ctx) => SlideAnimationList(
         children: [
           ListTile(
@@ -108,7 +116,7 @@ class ProfileAvatarPicker extends StatelessWidget {
               color: context.cs.primaryContainer,
               border: Border.all(
                 color: context.cs.primary.withValues(alpha: 0.25),
-                width: 3,
+                width: compact ? 1.5 : 3,
               ),
             ),
             child: ClipOval(
@@ -118,12 +126,16 @@ class ProfileAvatarPicker extends StatelessWidget {
                   ? AppNetworkImage(
                       url: imageUrl!,
                       placeholder: Center(
-                        child: AppSvgIcon(AssetsConstants.userIcon, size: ThemeConstants.iconXL, color: context.cs.primary),
+                        child: AppSvgIcon(
+                          AssetsConstants.userIcon,
+                          size: compact ? size * 0.5 : ThemeConstants.iconXL,
+                          color: context.cs.primary,
+                        ),
                       ),
                       errorWidget: Center(
                         child: AppSvgIcon(
                           AssetsConstants.userIcon,
-                          size: ThemeConstants.iconXL,
+                          size: compact ? size * 0.5 : ThemeConstants.iconXL,
                           color: context.cs.primary,
                         ),
                       ),
@@ -131,7 +143,7 @@ class ProfileAvatarPicker extends StatelessWidget {
                   : Center(
                       child: AppSvgIcon(
                         AssetsConstants.userIcon,
-                        size: ThemeConstants.iconXL,
+                        size: compact ? size * 0.5 : ThemeConstants.iconXL,
                         color: context.cs.primary,
                       ),
                     ),
@@ -141,16 +153,19 @@ class ProfileAvatarPicker extends StatelessWidget {
             bottom: 0,
             end: 0,
             child: Container(
-              width: context.screenWidth * 0.085,
-              height: context.screenWidth * 0.085,
+              width: compact ? size * 0.45 : context.screenWidth * 0.085,
+              height: compact ? size * 0.45 : context.screenWidth * 0.085,
               decoration: AppDecorations.circle(
                 color: context.cs.primary,
-                border: Border.all(color: context.cs.surface, width: 2),
+                border: Border.all(
+                  color: context.cs.surface,
+                  width: compact ? 1 : 2,
+                ),
               ),
-              padding: const EdgeInsetsDirectional.all(5.0),
+              padding: EdgeInsetsDirectional.all(compact ? 2 : 5.0),
               child: AppSvgIcon(
                 AssetsConstants.cameraIcon,
-                size: ThemeConstants.iconL,
+                size: compact ? size * 0.3 : ThemeConstants.iconL,
                 color: context.cs.onPrimary,
                 fit: BoxFit.scaleDown,
               ),

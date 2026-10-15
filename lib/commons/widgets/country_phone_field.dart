@@ -177,7 +177,11 @@ class _CountryDialCodeChip extends StatelessWidget {
               color: context.cs.onSurfaceVariant,
             ),
           AppSpacing.w6,
-          Container(width: 1, height: context.screenHeight * 0.027, color: context.cs.outline),
+          Container(
+            width: 1,
+            height: context.screenHeight * 0.027,
+            color: context.cs.outline,
+          ),
         ],
       ),
     );

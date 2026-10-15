@@ -19,7 +19,12 @@ import 'package:deliveryboy/commons/widgets/app_text.dart';
 void showForgotPasswordSheet(BuildContext context) {
   showAppBottomSheet(
     context,
-    padding: const EdgeInsetsDirectional.fromSTEB(ThemeConstants.paddingXL, ThemeConstants.paddingM, ThemeConstants.paddingXL, ThemeConstants.paddingXXL),
+    padding: const EdgeInsetsDirectional.fromSTEB(
+      ThemeConstants.paddingXL,
+      ThemeConstants.paddingM,
+      ThemeConstants.paddingXL,
+      ThemeConstants.paddingXXL,
+    ),
     builder: (sheetContext) => BlocProvider(
       create: (_) => ForgotPasswordCubit(),
       child: Padding(

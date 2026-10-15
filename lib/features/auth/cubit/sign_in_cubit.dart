@@ -53,8 +53,11 @@ class SignInCubit extends BaseAsyncCubit<AuthModel> {
         ClarityService.setCustomTag(AppConstants.paramUserId, userId);
       }
     },
-    onUnexpectedError: (e, stack) =>
-        CrashlyticsService.instance.recordError(e, stack, reason: 'SignIn failed'),
+    onUnexpectedError: (e, stack) => CrashlyticsService.instance.recordError(
+      e,
+      stack,
+      reason: 'SignIn failed',
+    ),
   );
 
   void reset() => emit(AsyncInitial());

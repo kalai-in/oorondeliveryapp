@@ -1,3 +1,4 @@
+import 'package:deliveryboy/commons/widgets/shimmer_loading.dart';
 import 'package:deliveryboy/commons/widgets/app_scaffold.dart';
 import 'package:deliveryboy/commons/widgets/app_snack_bar.dart';
 import 'package:deliveryboy/commons/widgets/custom_app_bar.dart';
@@ -157,7 +158,7 @@ class _OrderScannerScreenState extends State<OrderScannerScreen> {
                   return ColoredBox(
                     color: Colors.black45,
                     child: Center(
-                      child: CircularProgressIndicator(color: context.cs.primary),
+                      child: ShimmerInline(size: 48, color: Colors.white),
                     ),
                   );
                 },

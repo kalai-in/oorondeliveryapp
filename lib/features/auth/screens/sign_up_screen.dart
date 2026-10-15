@@ -1,8 +1,10 @@
+import 'dart:io';
 import 'package:deliveryboy/commons/cubit/countries_cubit.dart';
 import 'package:deliveryboy/commons/cubit/zones_cubit.dart';
 import 'package:deliveryboy/commons/widgets/app_button.dart';
 import 'package:deliveryboy/commons/widgets/app_scaffold.dart';
 import 'package:deliveryboy/commons/widgets/app_snack_bar.dart';
+import 'package:deliveryboy/commons/widgets/collapse_on_scroll.dart';
 import 'package:deliveryboy/commons/widgets/custom_app_bar.dart';
 import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/core/localization/language_label_key.dart';
@@ -27,6 +29,15 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final _registerFormKey = GlobalKey<RegisterFormState>();
+  final _scrollController = ScrollController();
+  final _profileImage = ValueNotifier<File?>(null);
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _profileImage.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +53,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
           title: context.translate(LanguageLabelKeys.createAccount),
           subtitle: context.translate(LanguageLabelKeys.signUpToGetStarted),
           showBackButton: true,
+          scrollController: _scrollController,
+          collapseOffset: 60,
+          collapsedLeading: ValueListenableBuilder<File?>(
+            valueListenable: _profileImage,
+            builder: (_, file, _) => CollapsedAvatar(
+              image: file,
+              onPicked: (f) =>
+                  _registerFormKey.currentState?.setProfileImage(f),
+            ),
+          ),
         ),
         bottomNavigationBar: BlocBuilder<SignUpCubit, SignUpState>(
           builder: (context, state) {
@@ -91,6 +112,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
           builder: (context, state) {
             return RegisterForm(
               key: _registerFormKey,
+              scrollController: _scrollController,
+              onProfileImageChanged: (f) => _profileImage.value = f,
               onRegister:
                   ({
                     required name,

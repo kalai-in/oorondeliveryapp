@@ -1,8 +1,9 @@
-import 'package:deliveryboy/commons/widgets/loading_widget.dart';
+import 'package:deliveryboy/commons/widgets/shimmer_loading.dart';
 import 'package:deliveryboy/core/constants/theme_constants.dart';
+import 'package:deliveryboy/utils/extensions/size_extensions.dart';
 import 'package:flutter/material.dart';
 
-/// Shows a loading spinner, an "end of list" message, or nothing at the bottom of a paginated list.
+/// Shows a skeleton placeholder, or nothing, at the bottom of a paginated list.
 class PaginatedListFooter extends StatelessWidget {
   final bool isLoadingMore;
   final bool hasMore;
@@ -16,9 +17,13 @@ class PaginatedListFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (isLoadingMore) {
-      return const Padding(
-        padding: EdgeInsetsDirectional.symmetric(vertical: ThemeConstants.paddingL),
-        child: Center(child: LoadingWidget(size: ThemeConstants.loaderSize)),
+      return Padding(
+        padding: const EdgeInsetsDirectional.only(
+          bottom: ThemeConstants.paddingM,
+        ),
+        child: ShimmerLoading(
+          child: ShimmerBox(height: context.screenHeight * 0.113),
+        ),
       );
     }
     return const SizedBox.shrink();

@@ -1,6 +1,6 @@
+import 'package:deliveryboy/commons/widgets/shimmer_loading.dart';
 import 'package:deliveryboy/commons/widgets/app_snack_bar.dart';
 import 'package:deliveryboy/commons/widgets/app_svg_icon.dart';
-import 'package:deliveryboy/commons/widgets/loading_widget.dart';
 import 'package:deliveryboy/core/constants/assets_constants.dart';
 import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/core/localization/language_label_key.dart';
@@ -85,7 +85,7 @@ class _ChatFileAttachmentState extends State<ChatFileAttachment> {
               child: _downloading
                   ? Padding(
                       padding: const EdgeInsetsDirectional.all(10),
-                      child: LoadingWidget(),
+                      child: ShimmerInline(),
                     )
                   : AppSvgIcon(
                       attachment.isVideo

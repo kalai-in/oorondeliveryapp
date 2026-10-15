@@ -1,4 +1,5 @@
-{
+{  "APPLICATION_ID": "app.ooron.partners",
+  "APP_NAME": "ooron Deliveryboy",
   "BASE_URL": "https://admin.ooron.in/delivery_boy/",
   "SOCKET_BASE_URL": "wss://admin.ooron.in/ws/chat"
 }

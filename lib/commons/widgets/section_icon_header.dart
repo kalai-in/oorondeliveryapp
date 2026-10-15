@@ -20,7 +20,11 @@ class SectionIconHeader extends StatelessWidget {
       children: [
         Row(
           children: [
-            AppSvgIcon(icon, size: ThemeConstants.iconS, color: context.cs.onSurface),
+            AppSvgIcon(
+              icon,
+              size: ThemeConstants.iconS,
+              color: context.cs.onSurface,
+            ),
             AppSpacing.w6,
             Expanded(
               child: AppText(

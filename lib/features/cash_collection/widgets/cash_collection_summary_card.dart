@@ -121,27 +121,31 @@ class _StatItem extends StatelessWidget {
             fit: BoxFit.scaleDown,
           ),
         ),
-        Column(
-          crossAxisAlignment: .start,
-          spacing: ThemeConstants.spaceXS,
-          children: [
-            AppText(
-              label,
-              style: context.tt.labelSmall?.copyWith(
-                fontWeight: FontWeight.w500,
-                color: context.cs.onSurfaceVariant,
+        Expanded(
+          child: Column(
+            crossAxisAlignment: .start,
+            spacing: ThemeConstants.spaceXS,
+            children: [
+              AppText(
+                label,
+                style: context.tt.labelSmall?.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: context.cs.onSurfaceVariant,
+                ),
+                maxLines: 1,
+                overflow: .ellipsis,
               ),
-            ),
-            AppText(
-              amount,
-              style: context.tt.titleSmall?.copyWith(
-                fontWeight: FontWeight.w800,
-                color: context.cs.onSurface,
+              AppText(
+                amount,
+                style: context.tt.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w800,
+                  color: context.cs.onSurface,
+                ),
+                maxLines: 1,
+                overflow: .ellipsis,
               ),
-              maxLines: 1,
-              overflow: .ellipsis,
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );

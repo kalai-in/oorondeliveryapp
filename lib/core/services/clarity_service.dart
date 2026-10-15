@@ -19,6 +19,19 @@ class ClarityService {
     return ClarityConfig(projectId: projectId);
   }
 
+  /// Returns whether a valid non-placeholder Clarity project ID is set.
+  static bool get isConfigured {
+    final customProjectId = SettingsHiveBox.instance
+        .getAppSettings()
+        ?.clarityProjectIdDeliveryBoy;
+    final projectId =
+        (customProjectId != null && customProjectId.trim().isNotEmpty)
+            ? customProjectId
+            : AppConfig.clarityProjectId;
+    return projectId.trim().isNotEmpty &&
+        projectId != 'YOUR_CLARITY_PROJECT_ID_HERE';
+  }
+
   /// Sends a custom named event to Clarity.
   static void sendCustomEvent(String name) => Clarity.sendCustomEvent(name);
 

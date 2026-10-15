@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:deliveryboy/commons/widgets/app_scaffold.dart';
+import 'package:deliveryboy/commons/widgets/collapse_on_scroll.dart';
 import 'package:deliveryboy/core/local_storage/auth_hive_box.dart';
 import 'package:deliveryboy/commons/cubit/countries_cubit.dart';
 import 'package:deliveryboy/commons/cubit/zones_cubit.dart';
@@ -313,6 +314,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             currentStep: _currentStep,
             totalSteps: 2,
             scrollController: _scrollController,
+            collapseOffset: 60,
+            collapsedLeading: CollapsedAvatar(
+              image: _profileImage,
+              imageUrl: _profileImageUrl,
+              onPicked: (f) => setState(() => _profileImage = f),
+            ),
           ),
           bottomNavigationBar: EditProfileBottomNav(
             currentStep: _currentStep,
@@ -343,12 +350,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               controller: _scrollController,
               child: Column(
                 children: [
-                  EditProfileStepIndicator(
-                    currentStep: _currentStep,
-                    profileImage: _profileImage,
-                    profileImageUrl: _profileImageUrl,
-                    onProfileImagePicked: (f) =>
-                        setState(() => _profileImage = f),
+                  CollapseOnScroll(
+                    controller: _scrollController,
+                    collapseOffset: 60,
+                    child: EditProfileStepIndicator(
+                      currentStep: _currentStep,
+                      profileImage: _profileImage,
+                      profileImageUrl: _profileImageUrl,
+                      onProfileImagePicked: (f) =>
+                          setState(() => _profileImage = f),
+                    ),
                   ),
                   _currentStep == 0
                       ? EditProfileStep1(

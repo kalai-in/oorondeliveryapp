@@ -1,3 +1,4 @@
+import 'package:deliveryboy/commons/widgets/shimmer_loading.dart';
 import 'package:deliveryboy/commons/cubit/countries_cubit.dart';
 import 'package:deliveryboy/commons/models/countries_model.dart';
 import 'package:deliveryboy/commons/widgets/app_network_image.dart';
@@ -5,7 +6,6 @@ import 'package:deliveryboy/commons/widgets/app_radio_option_tile.dart';
 import 'package:deliveryboy/commons/widgets/app_svg_icon.dart';
 import 'package:deliveryboy/commons/widgets/app_text_field.dart';
 import 'package:deliveryboy/commons/widgets/country_phone_field.dart';
-import 'package:deliveryboy/commons/widgets/loading_widget.dart';
 import 'package:deliveryboy/core/constants/assets_constants.dart';
 import 'package:deliveryboy/core/constants/navigation_service.dart';
 import 'package:deliveryboy/core/constants/theme_constants.dart';
@@ -62,9 +62,7 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
-      constraints: BoxConstraints(
-        maxHeight: context.heightFraction(0.75),
-      ),
+      constraints: BoxConstraints(maxHeight: context.heightFraction(0.75)),
       child: Column(
         mainAxisSize: .min,
         children: [
@@ -73,7 +71,10 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
             onChanged: (v) => setState(() => _query = v.trim().toLowerCase()),
             hintText: context.translate(LanguageLabelKeys.search),
             prefixIcon: Padding(
-              padding: const EdgeInsetsDirectional.only(start: ThemeConstants.paddingM, end: ThemeConstants.paddingS),
+              padding: const EdgeInsetsDirectional.only(
+                start: ThemeConstants.paddingM,
+                end: ThemeConstants.paddingS,
+              ),
               child: AppSvgIcon(
                 AssetsConstants.searchIcon,
                 size: ThemeConstants.iconL,
@@ -90,10 +91,7 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
             child: BlocBuilder<CountriesCubit, CountriesState>(
               builder: (context, state) {
                 if (state is CountriesLoading || state is CountriesInitial) {
-                  return const Padding(
-                    padding: EdgeInsetsDirectional.symmetric(vertical: ThemeConstants.paddingXXL),
-                    child: LoadingWidget(),
-                  );
+                  return const ShimmerRows(count: 5);
                 }
                 if (state is CountriesError) {
                   return Padding(

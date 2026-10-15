@@ -45,21 +45,23 @@ class ForceUpdateHelper {
       final appVersion = (await PackageInfo.fromPlatform()).version;
 
       if (Platform.isAndroid) {
-        if (data.isVersionSystemOn != '1') return UpdateStatus.none;
-        if (!_isOutdated(appVersion, data.currentVersion ?? '')) {
+        if (data.isVersionSystemOnDeliveryBoy != '1') return UpdateStatus.none;
+        if (!_isOutdated(appVersion, data.currentVersionDeliveryBoy ?? '')) {
           return UpdateStatus.none;
         }
-        return data.requiredForceUpdate == '1'
+        return data.requiredForceUpdateDeliveryBoy == '1'
             ? UpdateStatus.force
             : UpdateStatus.optional;
       }
 
       if (Platform.isIOS) {
-        if (data.iosIsVersionSystemOn != '1') return UpdateStatus.none;
-        if (!_isOutdated(appVersion, data.iosCurrentVersion ?? '')) {
+        if (data.iosIsVersionSystemOnDeliveryBoy != '1') {
           return UpdateStatus.none;
         }
-        return data.iosRequiredForceUpdate == '1'
+        if (!_isOutdated(appVersion, data.iosCurrentVersionDeliveryBoy ?? '')) {
+          return UpdateStatus.none;
+        }
+        return data.iosRequiredForceUpdateDeliveryBoy == '1'
             ? UpdateStatus.force
             : UpdateStatus.optional;
       }
@@ -72,8 +74,8 @@ class ForceUpdateHelper {
   /// Opens the platform app store listing so the user can update.
   static Future<void> launchStore(AppSettingsData data) async {
     final url = Platform.isIOS
-        ? (data.iosAppUrl ?? '')
-        : (data.androidAppUrl ?? '');
+        ? (data.deliveryBoyAppstoreUrl ?? '')
+        : (data.deliveryBoyPlaystoreUrl ?? '');
     if (url.isEmpty) return;
     try {
       await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);

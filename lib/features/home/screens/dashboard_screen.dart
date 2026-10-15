@@ -99,6 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
               body: RefreshIndicator(
                 onRefresh: _onRefresh,
                 child: CustomScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
                   slivers: [
                     BlocBuilder<DeliveryBoyStatusCubit, DeliveryBoyStatusState>(
                       builder: (context, statusState) {

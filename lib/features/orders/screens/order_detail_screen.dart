@@ -179,7 +179,7 @@ class _OrderDetailBodyState extends State<_OrderDetailBody> {
         ),
         child: CustomScrollView(
           controller: _scrollController,
-          physics: const ClampingScrollPhysics(),
+          physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
             SliverPadding(
               padding: EdgeInsetsDirectional.fromSTEB(ThemeConstants.paddingL, ThemeConstants.paddingL, ThemeConstants.paddingL, bottomPad),

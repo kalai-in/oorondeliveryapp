@@ -113,7 +113,7 @@ class MyApp extends StatelessWidget {
       if (navigatorKey.currentState != null) {
         navigatorKey.currentState!.pushNamedAndRemoveUntil(
           RouteNames.login,
-          (route) => false,
+              (route) => false,
         );
       }
     });

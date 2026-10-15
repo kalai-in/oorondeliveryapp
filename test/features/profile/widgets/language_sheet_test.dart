@@ -1,7 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:deliveryboy/commons/widgets/app_radio_option_tile.dart';
 import 'package:deliveryboy/commons/widgets/app_text.dart';
-import 'package:deliveryboy/commons/widgets/loading_widget.dart';
+import 'package:deliveryboy/commons/widgets/shimmer_loading.dart';
 import 'package:deliveryboy/core/api/api_client.dart';
 import 'package:deliveryboy/core/api/api_endpoints.dart';
 import 'package:deliveryboy/core/api/api_parameters.dart';
@@ -85,7 +85,7 @@ void main() {
   Finder appTextWith(String text) =>
       find.byWidgetPredicate((w) => w is AppText && w.text == text);
 
-  /// Pass `settle: false` for states that render a [LoadingWidget] — its
+  /// Pass `settle: false` for states that render a [ShimmerRows] — its
   /// animation loops forever, so `pumpAndSettle` never returns.
   Future<void> openSheet(
     WidgetTester tester,
@@ -167,9 +167,9 @@ void main() {
     await openSheet(tester, LanguageLoading(), settle: false);
 
     printTestLog(
-      'loader → expected: 1, actual: ${find.byType(LoadingWidget).evaluate().length}',
+      'loader → expected: 1, actual: ${find.byType(ShimmerRows).evaluate().length}',
     );
-    expect(find.byType(LoadingWidget), findsOneWidget);
+    expect(find.byType(ShimmerRows), findsOneWidget);
     printTestLog(
       'tiles → expected: 0, actual: ${find.byType(AppRadioOptionTile<String>).evaluate().length}',
     );

@@ -15,9 +15,11 @@ class AddFcmTokenCubit extends BaseAsyncCubit<()> {
     : _repository = repository ?? AuthRepository();
 
   /// Sends the FCM token and platform to the server.
-  Future<void> addFcmToken({required String fcmToken, required String platform}) =>
-      run(() async {
-        await _repository.addFcmToken(fcmToken: fcmToken, platform: platform);
-        return ();
-      });
+  Future<void> addFcmToken({
+    required String fcmToken,
+    required String platform,
+  }) => run(() async {
+    await _repository.addFcmToken(fcmToken: fcmToken, platform: platform);
+    return ();
+  });
 }

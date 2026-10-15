@@ -50,18 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCqYKsgvjFZur_wdaUFzF7XLTw1egvA_DM',
+    apiKey: 'AIzaSyBZzZdHPAgwkTjGSDIzRcHSPT079Ww36D4',
     appId: '1:29465567254:android:97c03c8a73a10941695537',
     messagingSenderId: '29465567254',
     projectId: 'ooron-82352',
     storageBucket: 'ooron-82352.firebasestorage.app',
   );
+
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBjaSv0yJuqO9bRia9-jOSqGBhj84rZAfs',
     appId: '1:29465567254:ios:2efea205e2456afb695537',
     messagingSenderId: '29465567254',
     projectId: 'ooron-82352',
     storageBucket: 'ooron-82352.firebasestorage.app',
+    androidClientId: '29465567254-17hnm82jakf3rb99orr69h74b2v8er2i.apps.googleusercontent.com',
     iosClientId: '29465567254-didobha4edeujtn9eq9dc607c3rubces.apps.googleusercontent.com',
     iosBundleId: 'app.ooron.partners',
   );

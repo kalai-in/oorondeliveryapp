@@ -1,7 +1,7 @@
+import 'package:deliveryboy/commons/widgets/loading_widget.dart';
 import 'dart:async';
 
 import 'package:deliveryboy/commons/widgets/app_svg_icon.dart';
-import 'package:deliveryboy/commons/widgets/loading_widget.dart';
 import 'package:deliveryboy/core/constants/assets_constants.dart';
 import 'package:deliveryboy/core/constants/theme_constants.dart';
 import 'package:deliveryboy/utils/extensions/context_extensions.dart';
@@ -227,12 +227,16 @@ class _SlideToConfirmButtonState extends State<SlideToConfirmButton>
                     ),
                     child: widget.isLoading
                         ? const Padding(
-                            padding: EdgeInsetsDirectional.all(ThemeConstants.paddingM),
-                            child: LoadingWidget(size: ThemeConstants.loaderSize),
+                            padding: EdgeInsetsDirectional.all(
+                              ThemeConstants.paddingM,
+                            ),
+                            child: LoadingWidget(
+                              size: ThemeConstants.loaderSize,
+                            ),
                           )
                         : Transform.flip(
-                            flipX: Directionality.of(context) ==
-                                TextDirection.rtl,
+                            flipX:
+                                Directionality.of(context) == TextDirection.rtl,
                             child: AppSvgIcon(
                               AssetsConstants.arrowRightIcon,
                               color: context.cs.primary,

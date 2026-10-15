@@ -11,7 +11,7 @@ import 'package:open_file_platform_interface/open_file_platform_interface.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:deliveryboy/commons/widgets/app_svg_icon.dart';
-import 'package:deliveryboy/commons/widgets/loading_widget.dart';
+import 'package:deliveryboy/commons/widgets/shimmer_loading.dart';
 import 'package:deliveryboy/core/constants/assets_constants.dart';
 import 'package:deliveryboy/core/localization/language_label_key.dart';
 import 'package:deliveryboy/features/chat/cubit/chat_cubit.dart';
@@ -179,9 +179,9 @@ void main() {
     await tester.pump();
 
     printTestLog(
-      'spinner while downloading → expected: 1, actual: ${find.byType(LoadingWidget).evaluate().length}',
+      'spinner while downloading → expected: 1, actual: ${find.byType(ShimmerInline).evaluate().length}',
     );
-    expect(find.byType(LoadingWidget), findsOneWidget);
+    expect(find.byType(ShimmerInline), findsOneWidget);
 
     final expectedPath = '${tempDir.path}/invoice.pdf';
     verify(
@@ -195,9 +195,9 @@ void main() {
     printTestLog('opened path → expected: "$expectedPath", actual: "${fakeOpenFile.opened}"');
     expect(fakeOpenFile.opened, [expectedPath]);
     printTestLog(
-      'spinner after completion → expected: gone, actual: ${find.byType(LoadingWidget).evaluate().length}',
+      'spinner after completion → expected: gone, actual: ${find.byType(ShimmerInline).evaluate().length}',
     );
-    expect(find.byType(LoadingWidget), findsNothing);
+    expect(find.byType(ShimmerInline), findsNothing);
   });
 
   testWidgets('a download failure shows the could-not-download snackbar and resets the spinner', (tester) async {
@@ -224,9 +224,9 @@ void main() {
     );
     expect(find.text(LanguageLabelKeys.couldNotDownloadFile), findsOneWidget);
     printTestLog(
-      'spinner after failure → expected: gone, actual: ${find.byType(LoadingWidget).evaluate().length}',
+      'spinner after failure → expected: gone, actual: ${find.byType(ShimmerInline).evaluate().length}',
     );
-    expect(find.byType(LoadingWidget), findsNothing);
+    expect(find.byType(ShimmerInline), findsNothing);
     printTestLog('opened → expected: none, actual: ${fakeOpenFile.opened}');
     expect(fakeOpenFile.opened, isEmpty);
   });

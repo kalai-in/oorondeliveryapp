@@ -86,8 +86,18 @@ class AppConfirmDialog extends StatelessWidget {
 
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: AppRadius.r16),
-      contentPadding: const EdgeInsetsDirectional.fromSTEB(ThemeConstants.paddingXXL, ThemeConstants.paddingXL, ThemeConstants.paddingXXL, ThemeConstants.paddingS),
-      actionsPadding: const EdgeInsetsDirectional.fromSTEB(ThemeConstants.paddingXL, ThemeConstants.paddingM, ThemeConstants.paddingXL, ThemeConstants.paddingL),
+      contentPadding: const EdgeInsetsDirectional.fromSTEB(
+        ThemeConstants.paddingXXL,
+        ThemeConstants.paddingXL,
+        ThemeConstants.paddingXXL,
+        ThemeConstants.paddingS,
+      ),
+      actionsPadding: const EdgeInsetsDirectional.fromSTEB(
+        ThemeConstants.paddingXL,
+        ThemeConstants.paddingM,
+        ThemeConstants.paddingXL,
+        ThemeConstants.paddingL,
+      ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -111,10 +121,7 @@ class AppConfirmDialog extends StatelessWidget {
               ),
             ),
           ],
-          if (extraContent != null) ...[
-            AppSpacing.h12,
-            extraContent!,
-          ],
+          if (extraContent != null) ...[AppSpacing.h12, extraContent!],
         ],
       ),
       actionsAlignment: MainAxisAlignment.center,

@@ -39,7 +39,6 @@ class _WalletScreenState extends State<WalletScreen> {
     super.initState();
     context.read<WalletCubit>().loadWallet();
     _scrollController = PaginationScrollController(
-      threshold: 200,
       onLoadMore: () => context.read<WalletCubit>().loadMore(),
     );
   }

@@ -39,7 +39,12 @@ class AppImageUploadField extends StatelessWidget {
   Future<void> _pick(BuildContext context) async {
     final source = await showAppBottomSheet<ImageSource>(
       context,
-      padding: const EdgeInsetsDirectional.fromSTEB(0, ThemeConstants.paddingS, 0, ThemeConstants.paddingS),
+      padding: const EdgeInsetsDirectional.fromSTEB(
+        0,
+        ThemeConstants.paddingS,
+        0,
+        ThemeConstants.paddingS,
+      ),
       builder: (ctx) => SlideAnimationList(
         children: [
           ListTile(
